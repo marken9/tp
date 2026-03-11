@@ -1,24 +1,30 @@
 package seedu.duke;
 
+import static seedu.duke.tasklist.CategoryList.refreshCalendar;
+
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.time.format.DateTimeFormatter;
 
+import seedu.duke.calender.Calendar;
 import seedu.duke.storage.Storage;
+import seedu.duke.task.Deadline;
 import seedu.duke.tasklist.CategoryList;
 
 public class UniTasker {
-    private static CategoryList categories;
+    private static CategoryList categories = new CategoryList();
+    private static Calendar calendar = new Calendar();
     private static Storage storage = new Storage("todos.txt", "deadlines.txt");
 
     UniTasker() {
-        categories = new CategoryList();
         storage.load(categories);
+        refreshCalendar(categories, calendar);
     }
 
     public static void handleMark(String[] sentence, boolean isMark) {
         String secondCommand = sentence[1];
-        int categoryIndex = Integer.parseInt(sentence[2]) - 1;
+        int categoryIndex = getCategoryIndex(sentence);
         int taskIndex = Integer.parseInt(sentence[3]) - 1;
         switch (secondCommand) {
         case "todo":
@@ -38,26 +44,44 @@ public class UniTasker {
     }
 
     public static void handleDelete(String[] sentence) {
-        String secondCommand = sentence[1];
-        switch (secondCommand) {
-        case "category":
-            int deleteIndex = Integer.parseInt(sentence[2]);
-            categories.deleteCategory(deleteIndex - 1);
-            break;
-        case "todo":
-            int categoryIndex = Integer.parseInt(sentence[2]) - 1;
-            int todoIndex = Integer.parseInt(sentence[3]) - 1;
-            categories.deleteTodo(categoryIndex, todoIndex);
-            break;
-        case "deadline":
-            int deadlineCatIndex = Integer.parseInt(sentence[2]) - 1;
-            int deadlineIndex = Integer.parseInt(sentence[3]) - 1;
-            categories.deleteDeadline(deadlineCatIndex, deadlineIndex);
-            break;
-        default:
-            break;
+        try {
+            String secondCommand = sentence[1];
+            int categoryIndex = getCategoryIndex(sentence);
+            switch (secondCommand) {
+            case "category":
+                int deleteIndex = Integer.parseInt(sentence[2]);
+                categories.deleteCategory(deleteIndex - 1);
+                break;
+            case "todo":
+                int todoIndex = Integer.parseInt(sentence[3]) - 1;
+                categories.deleteTodo(categoryIndex, todoIndex);
+                break;
+            case "deadline":
+                if (sentence[3].equalsIgnoreCase("all")) {
+                    categories.deleteAllDeadlines(categoryIndex);
+                    System.out.println("All deadlines in this category have been deleted.");
+                } else {
+                    int deadlineIndex = Integer.parseInt(sentence[3]) - 1;
+                    categories.deleteDeadline(categoryIndex, deadlineIndex);
+                    System.out.println("Deleted deadline " + (deadlineIndex + 1)
+                            + " from category " + (categoryIndex + 1));
+                }
+                break;
+            default:
+                System.out.println("Unknown delete command. Use: delete category/todo/deadline [index]");
+                break;
+            }
+            saveData();
+            refreshCalendar(categories, calendar);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Error: Missing arguments. Example: delete todo 1 1");
+        } catch (NumberFormatException e) {
+            System.out.println("Error: Please provide a valid index number.");
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Error: That index does not exist in the list.");
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
         }
-        saveData();
     }
 
     public static void handleAdd(String[] sentence) {
@@ -67,37 +91,50 @@ public class UniTasker {
             String[] nameArr = Arrays.copyOfRange(sentence, 2, sentence.length);
             String name = String.join(" ", nameArr);
             categories.addCategory(name);
+            System.out.println("Added category: " + name);
             break;
         case "todo":
-            int todoIndex = Integer.parseInt(sentence[2]) - 1;
+            int todoCatIdx = getCategoryIndex(sentence);
             String[] descriptionArr = Arrays.copyOfRange(sentence, 3, sentence.length);
             String description = String.join(" ", descriptionArr);
-            categories.addTodo(todoIndex, description);
+            categories.addTodo(todoCatIdx, description);
             break;
         case "deadline":
-            int deadlineIndex = Integer.parseInt(sentence[2]) - 1;
-            String raw = String.join(" ", Arrays.copyOfRange(sentence, 3, sentence.length));
-            String[] parts = raw.split(" /by ");
-            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            java.time.LocalDateTime by = java.time.LocalDateTime.parse(parts[1], inputFormatter);
-            categories.addDeadline(deadlineIndex, parts[0], by);
+            try {
+                int deadlineCatIdx = getCategoryIndex(sentence);
+                String raw = String.join(" ", Arrays.copyOfRange(sentence, 3, sentence.length));
+                String[] parts = raw.split(" /by ");
+                DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                java.time.LocalDateTime by = java.time.LocalDateTime.parse(parts[1], inputFormatter);
+                categories.addDeadline(deadlineCatIdx, parts[0], by);
+                Deadline newDeadline = categories.getCategory(deadlineCatIdx).getDeadlineList().getLatest();
+                if (newDeadline != null) {
+                    calendar.registerDeadline(newDeadline);
+                }
+            } catch (java.time.format.DateTimeParseException e) {
+                System.out.println("Error: Use format yyyy-MM-dd HH:mm (e.g., 2026-03-11 18:30)");
+            } catch (Exception e) {
+                System.out.println("Error: Could not add deadline. Check your input format.");
+            }
             break;
         default:
             break;
         }
+
         saveData();
     }
+
 
     public static void handleReorder(String[] sentence) {
         String secondCommand = sentence[1];
         switch (secondCommand) {
         case "category":
-            int categoryIndex1 = Integer.parseInt(sentence[2]) - 1;
+            int categoryIndex1 = getCategoryIndex(sentence);
             int categoryIndex2 = Integer.parseInt(sentence[3]) - 1;
             categories.reorderCategory(categoryIndex1, categoryIndex2);
             break;
         case "todo":
-            int categoryIndex = Integer.parseInt(sentence[2]) - 1;
+            int categoryIndex = getCategoryIndex(sentence);
             int todoIndex1 = Integer.parseInt(sentence[3]) - 1;
             int todoIndex2 = Integer.parseInt(sentence[4]) - 1;
             categories.reorderTodo(categoryIndex, todoIndex1, todoIndex2);
@@ -112,7 +149,7 @@ public class UniTasker {
         String secondCommand = sentence[1];
         switch (secondCommand) {
         case "todo":
-            int categoryIndex = Integer.parseInt(sentence[2]) - 1;
+            int categoryIndex = getCategoryIndex(sentence);
             int todoIndex = Integer.parseInt(sentence[3]) - 1;
             int priority = Integer.parseInt(sentence[4]);
             categories.setTodoPriority(categoryIndex, todoIndex, priority);
@@ -135,13 +172,40 @@ public class UniTasker {
         case "deadline":
             System.out.println(categories.getAllDeadlines());
             break;
+        case "range":
+            try {
+                LocalDate start = LocalDate.parse(sentence[2]);
+                LocalDate end = LocalDate.parse(sentence[3]);
+                calendar.displayRange(start, end);
+            } catch (Exception e) {
+                System.out.println("Error: Use date format yyyy-mm-dd (e.g., list range 2026-03-01 2026-03-07)");
+            }
+            break;
         default:
-            System.out.println("Unknown list command. Use: list category, list todo, or list deadline.");
+            System.out.println("Unknown list command.");
+            break;
+        }
+
+    }
+
+    public static void handleSort(String[] sentence) {
+        String secondCommand = sentence[1];
+        int categoryIndex = getCategoryIndex(sentence);
+
+        switch (secondCommand) {
+        case "deadline":
+            categories.sortDeadlines(categoryIndex);
+            System.out.println("Deadlines in category " + (categoryIndex + 1) + " have been sorted.");
+            break;
+        case "todo":
+            categories.getCategory(categoryIndex).getTodoList().sortByPriority();
+            System.out.println("Todos in category " + (categoryIndex + 1) + " have been sorted by priority.");
+            break;
+        default:
             break;
         }
         saveData();
     }
-
 
     public void run() {
         System.out.println("Welcome to UniTasker");
@@ -179,6 +243,9 @@ public class UniTasker {
             case "priority":
                 handlePriority(sentence);
                 break;
+            case "sort":
+                handleSort(sentence);
+                break;
             default:
                 System.out.println("default echo: " + line);
                 break;
@@ -193,6 +260,11 @@ public class UniTasker {
         } catch (java.io.IOException e) {
             System.out.println("Error: Could not save data to files.");
         }
+    }
+
+    private static int getCategoryIndex(String[] sentence) {
+        int categoryIndex = Integer.parseInt(sentence[2]) - 1;
+        return categoryIndex;
     }
 
     public static void main(String[] args) {
