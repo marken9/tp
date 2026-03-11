@@ -1,6 +1,8 @@
 package seedu.duke.calender;
 
 import seedu.duke.task.Deadline;
+import seedu.duke.task.Task;
+import seedu.duke.task.Timed;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -8,15 +10,17 @@ import java.util.List;
 import java.util.TreeMap;
 
 public class Calendar {
-    private TreeMap<LocalDate, List<Deadline>> schedule;
+    private TreeMap<LocalDate, List<Task>> schedule;
 
     public Calendar() {
         this.schedule = new TreeMap<>();
     }
 
-    public void registerDeadline(Deadline deadline) {
-        LocalDate date = deadline.getBy().toLocalDate();
-        schedule.computeIfAbsent(date, k -> new ArrayList<>()).add(deadline);
+    public void registerTask(Task task) {
+        if (task instanceof Timed) {
+            LocalDate date = ((Timed) task).getDate().toLocalDate();
+            schedule.computeIfAbsent(date, k -> new ArrayList<>()).add(task);
+        }
     }
 
     public void clear() {
@@ -26,15 +30,42 @@ public class Calendar {
     public void displayRange(LocalDate start, LocalDate end) {
         var view = schedule.subMap(start, true, end, true);
         if (view.isEmpty()) {
-            System.out.println("No deadlines found in this range.");
+            System.out.println("No tasks found in this range.");
             return;
         }
 
         for (var entry : view.entrySet()) {
             System.out.println("--- " + entry.getKey() + " ---");
-            for (Deadline d : entry.getValue()) {
-                System.out.println(d);
+            for (Task t : entry.getValue()) {
+                System.out.println(t);
             }
+        }
+    }
+
+    public <T extends Task> void displaySpecificTypeInRange(LocalDate start, LocalDate end, Class<T> taskType) {
+        var view = schedule.subMap(start, true, end, true);
+        boolean foundAny = false;
+
+        for (var entry : view.entrySet()) {
+            StringBuilder dayOutput = new StringBuilder();
+            boolean foundInDay = false;
+
+            for (Task t : entry.getValue()) {
+                // Check if the task is an instance of the class we passed in
+                if (taskType.isInstance(t)) {
+                    if (!foundInDay) {
+                        dayOutput.append("--- ").append(entry.getKey()).append(" ---\n");
+                        foundInDay = true;
+                    }
+                    dayOutput.append(t).append("\n");
+                    foundAny = true;
+                }
+            }
+            System.out.print(dayOutput);
+        }
+
+        if (!foundAny) {
+            System.out.println("No " + taskType.getSimpleName() + "s found in this range.");
         }
     }
 }

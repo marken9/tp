@@ -102,7 +102,7 @@ public class CategoryList {
         for (int i = 0; i < categories.getAmount(); i++) {
             Category cat = categories.getCategory(i);
             for (int j = 0; j < cat.getDeadlineList().getSize(); j++) {
-                calendar.registerDeadline(cat.getDeadlineList().get(j));
+                calendar.registerTask(cat.getDeadlineList().get(j));
             }
         }
     }
@@ -115,4 +115,5 @@ public class CategoryList {
         }
         return result;
     }
+
 }

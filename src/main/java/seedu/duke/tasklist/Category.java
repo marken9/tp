@@ -90,5 +90,4 @@ public class Category {
         result += "Deadlines:" + System.lineSeparator() + deadlineList.toString();
         return result;
     }
-
 }

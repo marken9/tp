@@ -104,15 +104,15 @@ public class UniTasker {
                 int deadlineCatIdx = getCategoryIndex(sentence);
                 String raw = String.join(" ", Arrays.copyOfRange(sentence, 3, sentence.length));
                 String[] parts = raw.split(" /by ");
-                DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
                 java.time.LocalDateTime by = java.time.LocalDateTime.parse(parts[1], inputFormatter);
                 categories.addDeadline(deadlineCatIdx, parts[0], by);
                 Deadline newDeadline = categories.getCategory(deadlineCatIdx).getDeadlineList().getLatest();
                 if (newDeadline != null) {
-                    calendar.registerDeadline(newDeadline);
+                    calendar.registerTask(newDeadline);
                 }
             } catch (java.time.format.DateTimeParseException e) {
-                System.out.println("Error: Use format yyyy-MM-dd HH:mm (e.g., 2026-03-11 18:30)");
+                System.out.println("Error: Use format yyyy-MM-dd HHmm (e.g., 2026-03-11 1830)");
             } catch (Exception e) {
                 System.out.println("Error: Could not add deadline. Check your input format.");
             }
@@ -176,7 +176,14 @@ public class UniTasker {
             try {
                 LocalDate start = LocalDate.parse(sentence[2]);
                 LocalDate end = LocalDate.parse(sentence[3]);
-                calendar.displayRange(start, end);
+
+                if (sentence.length > 4 && sentence[4].equalsIgnoreCase("/deadline")) {
+                    calendar.displaySpecificTypeInRange(start, end, Deadline.class);
+                } else if (sentence.length > 4 && sentence[4].equalsIgnoreCase("/event")) {
+                    //calendar.displaySpecificTypeInRange(start, end, Event.class);
+                } else {
+                    calendar.displayRange(start, end);
+                }
             } catch (Exception e) {
                 System.out.println("Error: Use date format yyyy-mm-dd (e.g., list range 2026-03-01 2026-03-07)");
             }

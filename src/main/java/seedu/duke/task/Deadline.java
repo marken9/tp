@@ -3,7 +3,7 @@ package seedu.duke.task;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Deadline extends Task {
+public class Deadline extends Task implements Timed {
     protected LocalDateTime by;
 
     public Deadline(String description, LocalDateTime by) {
@@ -17,7 +17,7 @@ public class Deadline extends Task {
 
     @Override
     public String toFileFormat() {
-        DateTimeFormatter storageFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter storageFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
         return String.format("D | %d | %s | %s", (isDone ? 1 : 0), description, by.format(storageFormatter));
     }
 
@@ -25,5 +25,10 @@ public class Deadline extends Task {
     public String toString() {
         DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return "[D]" + super.toString() + " (by: " + by.format(displayFormatter) + ")";
+    }
+
+    @Override
+    public LocalDateTime getDate() {
+        return by; // This satisfies the Timed interface
     }
 }
