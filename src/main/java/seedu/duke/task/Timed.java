@@ -1,4 +1,6 @@
 package seedu.duke.task;
+import java.time.LocalDateTime;
 
-public class Timed {
+public interface Timed {
+    LocalDateTime getDate();
 }
