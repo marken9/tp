@@ -15,8 +15,26 @@ public class CategoryList {
         categories.add(new Category(name));
     }
 
+    public int getAmount() {
+        return categories.size();
+    }
+
+    public Category getCategory(int index) {
+        return categories.get(index);
+    }
+
     public void addTodo(int categoryIndex, String description) {
         categories.get(categoryIndex).addTodo(new Todo(description));
+    }
+
+    public String getAllTodos() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== ALL TODOS ===").append(System.lineSeparator());
+        for (Category cat : categories) {
+            sb.append(cat.getName()).append(":").append(System.lineSeparator());
+            sb.append(cat.getTodoList().toString());
+        }
+        return sb.toString();
     }
 
     public void deleteCategory(int index) {
@@ -47,6 +65,29 @@ public class CategoryList {
     public void setTodoPriority(int categoryIndex, int todoIndex, int priority) {
         categories.get(categoryIndex).setTodoPriority(todoIndex, priority);
     }
+
+    public void addDeadline(int categoryIndex, String description, java.time.LocalDateTime by) {
+        categories.get(categoryIndex).addDeadline(new seedu.duke.task.Deadline(description, by));
+    }
+
+    public void deleteDeadline(int categoryIndex, int deadlineIndex) {
+        categories.get(categoryIndex).deleteDeadline(deadlineIndex);
+    }
+
+    public void setDeadlineStatus(int categoryIndex, int deadlineIndex, boolean isDone) {
+        categories.get(categoryIndex).setDeadlineStatus(deadlineIndex, isDone);
+    }
+
+    public String getAllDeadlines() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== ALL DEADLINES ===").append(System.lineSeparator());
+        for (Category cat : categories) {
+            sb.append(cat.getName()).append(":").append(System.lineSeparator());
+            sb.append(cat.getDeadlineList().toString());
+        }
+        return sb.toString();
+    }
+
 
     public String toString() {
         String result = "";

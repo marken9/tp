@@ -1,14 +1,17 @@
 package seedu.duke.tasklist;
 
+import seedu.duke.task.Deadline;
 import seedu.duke.task.Todo;
 
 public class Category {
     private String name;
     private TodoList todoList;
+    private DeadlineList deadlineList;
 
     public Category(String name) {
         this.name = name;
         this.todoList = new TodoList();
+        this.deadlineList = new DeadlineList();
     }
 
     public void setName(String name) {
@@ -51,10 +54,33 @@ public class Category {
         todoList.reorder(fromIndex, toIndex);
     }
 
+    public void addDeadline(Deadline deadline) {
+        deadlineList.add(deadline);
+    }
+
+    public void deleteDeadline(int index) {
+        deadlineList.delete(index);
+    }
+
+    public void setDeadlineStatus(int index, boolean isDone) {
+        if (isDone) {
+            deadlineList.mark(index);
+        } else {
+            deadlineList.unmark(index);
+        }
+    }
+
+    public DeadlineList getDeadlineList() {
+        return deadlineList;
+    }
+
+    @Override
     public String toString() {
         String result = "";
         result += "---" + getName() + "---" + System.lineSeparator();
-        result += todoList.toString();
+        result += "Todos:" + System.lineSeparator() + todoList.toString();
+        result += "Deadlines:" + System.lineSeparator() + deadlineList.toString();
         return result;
     }
+
 }

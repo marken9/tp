@@ -34,5 +34,12 @@ public class Todo extends Task{
         }
         return "[" + getStatusIcon() + "] " + getDescription();
     }
+    public  String toFileFormat(){
+        int statusAsNumber = 0;
+        if (isDone) {
+            statusAsNumber = 1;
+        }
+        return "T | " + statusAsNumber + " | " + description;
+    }
 
 }

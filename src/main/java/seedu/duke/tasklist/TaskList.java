@@ -1,4 +1,5 @@
 package seedu.duke.tasklist;
+
 import java.util.ArrayList;
 
 import seedu.duke.task.Task;
@@ -29,4 +30,9 @@ public abstract class TaskList<T extends Task> {
     public void unmark(int index) {
         tasks.get(index).unmark();
     }
+
+    public int getSize() {
+        return tasks.size();
+    }
 }
+
