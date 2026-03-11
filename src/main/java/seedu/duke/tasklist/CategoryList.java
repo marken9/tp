@@ -2,6 +2,7 @@ package seedu.duke.tasklist;
 
 import java.util.ArrayList;
 
+import seedu.duke.calender.Calendar;
 import seedu.duke.task.Todo;
 
 public class CategoryList {
@@ -74,8 +75,16 @@ public class CategoryList {
         categories.get(categoryIndex).deleteDeadline(deadlineIndex);
     }
 
+    public void deleteAllDeadlines(int categoryIndex) {
+        categories.get(categoryIndex).deleteAllDeadlines();
+    }
+
     public void setDeadlineStatus(int categoryIndex, int deadlineIndex, boolean isDone) {
         categories.get(categoryIndex).setDeadlineStatus(deadlineIndex, isDone);
+    }
+
+    public void sortDeadlines(int categoryIndex) {
+        categories.get(categoryIndex).sortDeadlines();
     }
 
     public String getAllDeadlines() {
@@ -86,6 +95,16 @@ public class CategoryList {
             sb.append(cat.getDeadlineList().toString());
         }
         return sb.toString();
+    }
+
+    public static void refreshCalendar(CategoryList categories, Calendar calendar) {
+        calendar.clear();
+        for (int i = 0; i < categories.getAmount(); i++) {
+            Category cat = categories.getCategory(i);
+            for (int j = 0; j < cat.getDeadlineList().getSize(); j++) {
+                calendar.registerDeadline(cat.getDeadlineList().get(j));
+            }
+        }
     }
 
 
