@@ -1,2 +1,2 @@
-school | D | 1 | Submit Individual Project | 2026-03-25 2359
-school | D | 0 | Exam | 2026-05-04 0900
+school | D | 0 | test paper | 2026-04-05 1900
+personall | D | 0 | test paper 2 | 2026-03-09 2000
