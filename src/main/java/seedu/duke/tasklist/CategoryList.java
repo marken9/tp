@@ -1,5 +1,6 @@
 package seedu.duke.tasklist;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import seedu.duke.calender.Calendar;
@@ -67,6 +68,32 @@ public class CategoryList {
         categories.get(categoryIndex).setTodoPriority(todoIndex, priority);
     }
 
+    public void addEvent(int categoryIndex, String description, LocalDateTime from, LocalDateTime to) {
+        categories.get(categoryIndex).addEvent(new seedu.duke.task.Event(description,from,to));
+    }
+
+    public void deleteEvent(int categoryIndex, int eventIndex) {
+        categories.get(categoryIndex).deleteEvent(eventIndex);
+    }
+
+    public void deleteAllEvents(int categoryIndex) {
+        categories.get(categoryIndex).deleteAllEvents();
+    }
+
+    public void setEventStatus(int categoryIndex, int eventIndex, boolean isDone) {
+        categories.get(categoryIndex).setEventStatus(eventIndex, isDone);
+    }
+
+    public String getAllEvents() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== ALL EVENTS ===").append(System.lineSeparator());
+        for (Category cat : categories) {
+            sb.append(cat.getName()).append(":").append(System.lineSeparator());
+            sb.append(cat.getEventList().toString());
+        }
+        return sb.toString();
+    }
+
     public void addDeadline(int categoryIndex, String description, java.time.LocalDateTime by) {
         categories.get(categoryIndex).addDeadline(new seedu.duke.task.Deadline(description, by));
     }
@@ -116,4 +143,11 @@ public class CategoryList {
         return result;
     }
 
+    public String getEvent(int categoryIndex, int taskIndex) {
+        return categories.get(categoryIndex).getEvent(taskIndex).toString();
+    }
+
+    public String getLatestEvent(int eventCategoryIndex) {
+        return categories.get(eventCategoryIndex).getLatestEvent().toString();
+    }
 }

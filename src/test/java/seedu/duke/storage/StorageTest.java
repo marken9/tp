@@ -13,7 +13,7 @@ public class StorageTest {
 
     @Test
     public void saveAndLoad_deadlines_success() throws Exception {
-        Storage testStorage = new Storage("test_todos.txt", "test_deadlines.txt");
+        Storage testStorage = new Storage("test_todos.txt", "test_deadlines.txt","test_events.txt");
         CategoryList listToSave = new CategoryList();
         listToSave.addCategory("TestCat");
         listToSave.addDeadline(0, "Test Deadline", LocalDateTime.of(2026, 4, 5, 19, 0));

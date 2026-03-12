@@ -1,2 +1,2 @@
-school | T | 0 | Finish CS2113 tutorial
-school | T | 0 | Finish CS2113 tutorial
+school | T | 0 | read
+side-project | T | 0 | presentation
