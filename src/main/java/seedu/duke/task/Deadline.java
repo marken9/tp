@@ -23,7 +23,7 @@ public class Deadline extends Task implements Timed {
 
     @Override
     public String toString() {
-        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
         return "[D]" + super.toString() + " (by: " + by.format(displayFormatter) + ")";
     }
 

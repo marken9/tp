@@ -50,7 +50,6 @@ public class Calendar {
             boolean foundInDay = false;
 
             for (Task t : entry.getValue()) {
-                // Check if the task is an instance of the class we passed in
                 if (taskType.isInstance(t)) {
                     if (!foundInDay) {
                         dayOutput.append("--- ").append(entry.getKey()).append(" ---\n");
@@ -66,5 +65,12 @@ public class Calendar {
         if (!foundAny) {
             System.out.println("No " + taskType.getSimpleName() + "s found in this range.");
         }
+    }
+
+    public int getTaskCountOnDate(LocalDate date) {
+        if (!schedule.containsKey(date)) {
+            return 0;
+        }
+        return schedule.get(date).size();
     }
 }
