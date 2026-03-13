@@ -12,15 +12,23 @@ import seedu.duke.storage.Storage;
 import seedu.duke.task.Deadline;
 import seedu.duke.tasklist.CategoryList;
 
+import seedu.duke.coursestracker.CourseException;
+import seedu.duke.coursestracker.CourseManager;
+import seedu.duke.coursestracker.CourseParser;
+
 public class UniTasker {
     private static CategoryList categories = new CategoryList();
     private static Calendar calendar = new Calendar();
     private static Storage storage = new Storage("todos.txt", "deadlines.txt","events.txt");
+    private static CourseManager courseManager;
+    private static CourseParser courseParser;
 
     public UniTasker() {
         try {
             storage.load(categories);
             refreshCalendar(categories, calendar);
+            courseManager = new CourseManager("courses.txt");
+            courseParser = new CourseParser(courseManager);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -168,7 +176,6 @@ public class UniTasker {
         saveData();
     }
 
-
     public static void handleReorder(String[] sentence) {
         String secondCommand = sentence[1];
         switch (secondCommand) {
@@ -259,6 +266,18 @@ public class UniTasker {
         saveData();
     }
 
+    public static void handleCourse(String line) {
+        try {
+            String courseCommand = line.substring("course".length()).trim();
+            String result = courseParser.parse(courseCommand);
+            System.out.println(result);
+        } catch (CourseException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error: Could not process course command.");
+        }
+    }
+
     public void run() {
         System.out.println("Welcome to UniTasker");
         Scanner in = new Scanner(System.in);
@@ -297,6 +316,9 @@ public class UniTasker {
                 break;
             case "sort":
                 handleSort(sentence);
+                break;
+            case "course":
+                handleCourse(line);
                 break;
             default:
                 System.out.println("default echo: " + line);
