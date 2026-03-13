@@ -16,7 +16,7 @@ public class TodoList extends TaskList<Todo> {
     }
 
     public void sortByPriority() {
-        tasks.sort(Comparator.comparingInt(Todo::getPriority));
+        tasks.sort(Comparator.comparingInt(Todo::getPriority).reversed());
     }
 
     public String toString() {

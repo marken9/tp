@@ -1,2 +1,0 @@
-school | D | 0 | consult | 2026-01-01 1110
-school | D | 0 | consultation | 2027-12-12 1230

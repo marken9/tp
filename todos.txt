@@ -1,2 +1,0 @@
-school | T | 0 | read
-side-project | T | 0 | presentation
