@@ -3,6 +3,7 @@ package seedu.duke;
 import static seedu.duke.tasklist.CategoryList.refreshCalendar;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.time.format.DateTimeFormatter;
@@ -260,8 +261,14 @@ public class UniTasker {
                 } else {
                     calendar.displayRange(start, end);
                 }
-            } catch (Exception e) {
+            } catch (DateTimeParseException e) {
                 System.out.println("Error: Use date format yyyy-mm-dd (e.g., list range 2026-03-01 2026-03-07)");
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("Error: Include start date and end date using the date format yyyy-mm-dd " +
+                        "(e.g., list range 2026-03-01 2026-03-07)");
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: Start date must be earlier than End date " +
+                        "(e.g., list range 2026-03-01 2026-03-07)");
             }
             break;
         default:
