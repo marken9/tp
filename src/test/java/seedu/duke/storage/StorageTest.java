@@ -91,4 +91,26 @@ public class StorageTest {
 
         file.delete();
     }
+    @Test
+    public void load_invalidYear_skipsLine() throws IOException {
+        String dlPath = "invalid_year.txt";
+        File file = new File(dlPath);
+
+        try (FileWriter writer = new FileWriter(file)) {
+            // Line 1: Year 2025 (Should be skipped by DateUtils)
+            writer.write("Old | D | 0 | Old Task | 2025-12-31 2359" + System.lineSeparator());
+            // Line 2: Year 2026 (Should be loaded)
+            writer.write("New | D | 0 | New Task | 2026-01-01 1000" + System.lineSeparator());
+        }
+
+        Storage storage = new Storage("empty.txt", dlPath, "empty.txt");
+        CategoryList list = new CategoryList();
+        storage.load(list);
+
+        // List should only contain the 2026 task
+        assertEquals(1, list.getAmount(), "Should only have 1 category loaded");
+        assertEquals("New Task", list.getCategory(0).getDeadlineList().get(0).getDescription());
+
+        file.delete();
+    }
 }
