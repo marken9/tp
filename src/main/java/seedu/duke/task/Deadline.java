@@ -2,6 +2,7 @@ package seedu.duke.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Logger;
 
 import seedu.duke.exception.IllegalDateException;
 import seedu.duke.util.DateUtils;
@@ -13,11 +14,13 @@ import seedu.duke.util.DateUtils;
  * allow for chronological sorting and calendar integration.
  */
 public class Deadline extends Task implements Timed {
+    private static final Logger logger = Logger.getLogger(Deadline.class.getName());
     protected LocalDateTime by;
 
     public Deadline(String description, LocalDateTime by) {
         super(description);
         this.by = by;
+        logger.fine("Deadline created: " + description + " by " + by);
     }
 
     public static LocalDateTime parseDateTime(String input) throws IllegalDateException {
