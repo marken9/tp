@@ -26,10 +26,17 @@ test {
         showStackTraces true
         showStandardStreams = false
     }
+
+    jvmArgs '-ea'
+
 }
 
 application {
     mainClass.set("seedu.duke.UniTasker")
+
+    run {
+        jvmArgs '-ea'
+    }
 }
 
 shadowJar {

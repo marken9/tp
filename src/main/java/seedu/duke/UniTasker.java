@@ -155,7 +155,7 @@ public class UniTasker {
                 int count = categories.getCategory(deadlineCatIdx).getDeadlineList().getSize();
                 System.out.println(" Now you have " + count + " deadlines in this category.");
                 System.out.println("____________________________________________________________");
-                
+
             } catch (java.time.format.DateTimeParseException e) {
                 System.out.println("Error: " + e.getMessage());
             } catch (Exception e) {
