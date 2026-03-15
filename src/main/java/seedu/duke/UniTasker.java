@@ -362,19 +362,32 @@ public class UniTasker {
     }
 
     public static void handleSort(String[] sentence) {
+        if (sentence.length <= 1) {
+            System.out.println("Unknown sort command: try todo or deadline");
+        }
         String secondCommand = sentence[1];
-        int categoryIndex = getCategoryIndex(sentence);
-
         switch (secondCommand) {
         case "deadline":
+            int categoryIndex = getCategoryIndex(sentence);
             categories.sortDeadlines(categoryIndex);
             System.out.println("Deadlines in category " + (categoryIndex + 1) + " have been sorted.");
             break;
         case "todo":
-            categories.getCategory(categoryIndex).getTodoList().sortByPriority();
-            System.out.println("Todos in category " + (categoryIndex + 1) + " have been sorted by priority.");
+            try {
+                if (sentence.length <= 2) {
+                    throw new UniTaskerException("Insufficient arguments");
+                }
+                int categoryIndex1 = getCategoryIndex(sentence);
+                categories.getCategory(categoryIndex1).getTodoList().sortByPriority();
+                System.out.println("Todos in category " + (categoryIndex1 + 1) + " have been sorted by priority.");
+            } catch (Exception e) {
+                System.out.println("sort todo failed: " + e.getMessage());
+                System.out.println("Correct format: sort todo [catIndex]");
+
+            }
             break;
         default:
+            System.out.println("Unknown sort command: try todo or deadline");
             break;
         }
         saveData();
@@ -465,7 +478,7 @@ public class UniTasker {
         }
     }
 
-    private static int getCategoryIndex(String[] sentence) {
+    private static int getCategoryIndex(String[] sentence) throws IndexOutOfBoundsException, NumberFormatException {
         int categoryIndex = Integer.parseInt(sentence[2]) - 1;
         if (categoryIndex < 0 || categoryIndex >= categories.getAmount()) {
             // Throw a custom exception or return a sentinel value like -1
