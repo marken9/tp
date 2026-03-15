@@ -51,3 +51,9 @@ checkstyle {
 run{
     standardInput = System.in
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'seedu.duke.UniTasker'
+    }
+}
