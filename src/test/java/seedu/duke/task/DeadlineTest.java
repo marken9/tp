@@ -6,8 +6,10 @@ import seedu.duke.tasklist.CategoryList;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DeadlineTest {
 
@@ -53,6 +55,39 @@ public class DeadlineTest {
         categoryList.deleteAllDeadlines(0);
 
         assertEquals(0, categoryList.getCategory(0).getDeadlineList().getSize());
+    }
+    @Test
+    public void parseDateTime_invalidYear_exceptionThrown() {
+        // Verifies that years before 2026 throw the correct exception
+        assertThrows(DateTimeParseException.class, () -> {
+            Deadline.parseDateTime("2025-12-31 2359");
+        });
+    }
+
+    @Test
+    public void parseDateTime_dateOnly_defaultsToLastMinute() {
+        // Verifies your logic of defaulting date-only input to 23:59
+        LocalDateTime result = Deadline.parseDateTime("2026-05-05");
+        assertEquals(23, result.getHour());
+        assertEquals(59, result.getMinute());
+    }
+
+    @Test
+    public void parseDateTime_completelyInvalidString_exceptionThrown() {
+        // Tests garbage input like "tomorrow" or "2026/13/40"
+        assertThrows(DateTimeParseException.class, () -> {
+            Deadline.parseDateTime("not a date");
+        });
+    }
+
+    @Test
+    public void toFileFormat_correctOutput_success() {
+        // Ensures the storage string matches your Storage.java requirements exactly
+        LocalDateTime time = LocalDateTime.of(2026, 12, 1, 18, 0);
+        Deadline deadline = new Deadline("Read book", time);
+        // Assuming your format is "D | 0 | Read book | 2026-12-01 1800"
+        String expected = "D | 0 | Read book | 2026-12-01 1800";
+        assertEquals(expected, deadline.toFileFormat());
     }
 }
 
