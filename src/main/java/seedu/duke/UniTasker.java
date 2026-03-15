@@ -151,7 +151,7 @@ public class UniTasker {
                 categories.addCategory(name);
                 System.out.println("Added category: " + name);
             } catch (Exception e) {
-                System.out.println("add category command failed: " + e.getMessage());
+                System.out.println("add category failed: " + e.getMessage());
                 System.out.println("Correct format: add category [description]");
 
             }
@@ -168,7 +168,7 @@ public class UniTasker {
                 System.out.println("Added todo: " + description);
 
             } catch (Exception e) {
-                System.out.println("add todo command failed: " + e.getMessage());
+                System.out.println("add todo failed: " + e.getMessage());
                 System.out.println("Correct format: add todo [categoryIndex] [description]");
             }
             break;
@@ -235,18 +235,40 @@ public class UniTasker {
     }
 
     public static void handleReorder(String[] sentence) {
+        if (sentence.length <= 1) {
+            System.out.println("Unknown reorder command: try category or todo");
+        }
         String secondCommand = sentence[1];
         switch (secondCommand) {
         case "category":
-            int categoryIndex1 = getCategoryIndex(sentence);
-            int categoryIndex2 = Integer.parseInt(sentence[3]) - 1;
-            categories.reorderCategory(categoryIndex1, categoryIndex2);
+            try {
+                if (sentence.length <= 3) {
+                    throw new UniTaskerException("Insufficient arguments.");
+                }
+                int categoryIndex1 = Integer.parseInt(sentence[2]) - 1;
+                int categoryIndex2 = Integer.parseInt(sentence[3]) - 1;
+                categories.reorderCategory(categoryIndex1, categoryIndex2);
+                System.out.println("Category: " + categories.getCategory(categoryIndex1).getName() + " moved to index " + (categoryIndex2 + 1));
+            } catch (UniTaskerException | NumberFormatException e) {
+                System.out.println("reorder category failed: " + e.getMessage());
+                System.out.println("Correct format: reorder category [index1] [index2]");
+            }
             break;
         case "todo":
-            int categoryIndex = getCategoryIndex(sentence);
-            int todoIndex1 = Integer.parseInt(sentence[3]) - 1;
-            int todoIndex2 = Integer.parseInt(sentence[4]) - 1;
-            categories.reorderTodo(categoryIndex, todoIndex1, todoIndex2);
+            try {
+                if (sentence.length <= 4) {
+                    throw new UniTaskerException("Insufficient arguments.");
+                }
+                int categoryIndex = Integer.parseInt(sentence[2]) - 1;
+                int todoIndex1 = Integer.parseInt(sentence[3]) - 1;
+                int todoIndex2 = Integer.parseInt(sentence[4]) - 1;
+                categories.reorderTodo(categoryIndex, todoIndex1, todoIndex2);
+                System.out.println("Todo: " + categories.getCategory(categoryIndex).getTodo(todoIndex1).getDescription() +
+                        " inside category " + (categoryIndex + 1) + " moved to index " + (todoIndex2 + 1));
+            } catch (UniTaskerException | NumberFormatException e) {
+                System.out.println("reorder todo failed: " + e.getMessage());
+                System.out.println("Correct format: reorder todo [catIndex] [todoIndex1] [todoIndex2]");
+            }
             break;
         default:
             break;

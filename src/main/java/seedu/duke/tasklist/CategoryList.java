@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import seedu.duke.calender.Calendar;
+import seedu.duke.exception.UniTaskerException;
 import seedu.duke.task.Todo;
 
 public class CategoryList {
@@ -55,12 +56,21 @@ public class CategoryList {
         categories.get(categoryIndex).unmarkTodo(todoIndex);
     }
 
-    public void reorderCategory(int categoryIndex1, int categoryIndex2) {
+    public void reorderCategory(int categoryIndex1, int categoryIndex2) throws UniTaskerException {
+        if (categoryIndex1 >= this.getAmount()) {
+            throw new UniTaskerException("First categoryIndex does not exist.");
+        }
+        if (categoryIndex2 >= this.getAmount()) {
+            throw new UniTaskerException("Second categoryIndex does not exist.");
+        }
         Category category = categories.remove(categoryIndex1);
         categories.add(categoryIndex2, category);
     }
 
-    public void reorderTodo(int categoryIndex, int todoIndex1, int todoIndex2) {
+    public void reorderTodo(int categoryIndex, int todoIndex1, int todoIndex2) throws UniTaskerException {
+        if (categoryIndex > this.getAmount()) {
+            throw new UniTaskerException("categoryIndex does not exist.");
+        }
         categories.get(categoryIndex).reorderTodo(todoIndex1, todoIndex2);
     }
 

@@ -2,6 +2,7 @@ package seedu.duke.tasklist;
 
 import java.util.Comparator;
 
+import seedu.duke.exception.UniTaskerException;
 import seedu.duke.task.Todo;
 
 public class TodoList extends TaskList<Todo> {
@@ -10,7 +11,13 @@ public class TodoList extends TaskList<Todo> {
         tasks.get(index).setPriority(priority);
     }
 
-    public void reorder(int fromIndex, int toIndex) {
+    public void reorder(int fromIndex, int toIndex) throws UniTaskerException {
+        if (fromIndex > this.getSize()) {
+            throw new UniTaskerException("First todoIndex does not exist.");
+        }
+        if (toIndex > this.getSize()) {
+            throw new UniTaskerException("Second todoIndex does not exist.");
+        }
         Todo todo = tasks.remove(fromIndex);
         tasks.add(toIndex, todo);
     }
