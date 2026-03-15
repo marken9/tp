@@ -1,5 +1,6 @@
 package seedu.duke.storage;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.duke.tasklist.CategoryList;
@@ -112,5 +113,11 @@ public class StorageTest {
         assertEquals("New Task", list.getCategory(0).getDeadlineList().get(0).getDescription());
 
         file.delete();
+    }
+    @AfterEach
+    void tearDown() {
+        new File("test_todos.txt").delete();
+        new File("test_deadlines.txt").delete();
+        new File("test_events.txt").delete();
     }
 }
