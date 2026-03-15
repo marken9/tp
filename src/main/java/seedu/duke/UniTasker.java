@@ -25,7 +25,7 @@ import seedu.duke.util.DateUtils;
 
 
 public class UniTasker {
-    public static final Logger LOGGER = Logger.getLogger(UniTasker.class.getName());
+    private static final Logger logger = Logger.getLogger(UniTasker.class.getName());
     private static CategoryList categories = new CategoryList();
     private static Calendar calendar = new Calendar();
     private static Storage storage = new Storage("todos.txt", "deadlines.txt", "events.txt");
@@ -171,7 +171,7 @@ public class UniTasker {
                     System.out.println(" Got it. I've added this deadline: " + newDeadline);
                 }
             } catch (IllegalDateException e) {
-                System.out.println("Error: " + e.getMessage());
+                System.out.println("[WARNING] " + e.getMessage());
             } catch (DateTimeParseException e) {
                 System.out.println("Error: Invalid date format.");
             } catch (Exception e) {
@@ -346,7 +346,7 @@ public class UniTasker {
     }
 
     public void run() {
-        LOGGER.info("UniTasker session started.");
+        logger.info("UniTasker session started.");
         System.out.println("Welcome to UniTasker");
         Scanner in = new Scanner(System.in);
         while (true) {
@@ -397,7 +397,7 @@ public class UniTasker {
                     break;
                 }
             } catch (Throwable t) {
-                LOGGER.log(Level.SEVERE, "Internal Error", t);
+                logger.log(Level.SEVERE, "Internal Error", t);
                 System.out.println("Oops! An error occurred, but I'm still running. Try again.");
             }
         }
@@ -413,7 +413,7 @@ public class UniTasker {
             System.out.println("Error: File write failed.");
         } catch (Exception e) {
             // This catches the NullPointerExceptions that are currently killing your JAR
-            LOGGER.log(Level.SEVERE, "Internal error during save", e);
+            logger.log(Level.SEVERE, "Internal error during save", e);
         }
     }
 
@@ -427,6 +427,8 @@ public class UniTasker {
     }
 
     public static void main(String[] args) {
+        seedu.duke.logging.LogConfig.setup();
+        logger.info("UniTasker is launching...");
         new UniTasker().run();
     }
 
