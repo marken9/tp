@@ -1,5 +1,6 @@
 package seedu.duke.tasklist;
 
+import seedu.duke.exception.UniTaskerException;
 import seedu.duke.task.Deadline;
 import seedu.duke.task.Event;
 import seedu.duke.task.Todo;
@@ -53,7 +54,7 @@ public class Category {
         todoList.setPriority(index, priority);
     }
 
-    public void reorderTodo(int fromIndex, int toIndex) {
+    public void reorderTodo(int fromIndex, int toIndex) throws UniTaskerException {
         todoList.reorder(fromIndex, toIndex);
     }
 

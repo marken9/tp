@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import seedu.duke.calender.Calendar;
 import seedu.duke.exception.IllegalDateException;
+import seedu.duke.exception.UniTaskerException;
 import seedu.duke.storage.Storage;
 import seedu.duke.task.Deadline;
 import seedu.duke.task.Event;
@@ -44,31 +45,58 @@ public class UniTasker {
     }
 
     public static void handleMark(String[] sentence, boolean isMark) {
+        if (sentence.length < 4) {
+            System.out.println("Unknown mark/unmark command: try todo, deadline or event");
+            return;
+        }
         try {
             String secondCommand = sentence[1];
-            int categoryIndex = getCategoryIndex(sentence);
-            int taskIndex = Integer.parseInt(sentence[3]) - 1;
             switch (secondCommand) {
             case "todo":
-                if (isMark) {
-                    categories.markTodo(categoryIndex, taskIndex);
-                } else {
-                    categories.unmarkTodo(categoryIndex, taskIndex);
+                try {
+                    int categoryIndex = getCategoryIndex(sentence);
+                    int taskIndex = Integer.parseInt(sentence[3]) - 1;
+                    if (isMark) {
+                        categories.markTodo(categoryIndex, taskIndex);
+                        System.out.println("mark todo successful");
+                    } else {
+                        categories.unmarkTodo(categoryIndex, taskIndex);
+                        System.out.println("unmark todo successful");
+                    }
+                } catch (Exception e) {
+                    if (isMark) {
+                        System.out.println("mark todo failed: " + e.getMessage());
+                    } else {
+                        System.out.println("unmark todo failed: " + e.getMessage());
+                    }
                 }
                 break;
             case "deadline":
-                categories.setDeadlineStatus(categoryIndex, taskIndex, isMark);
+                try {
+                    int categoryIndex = getCategoryIndex(sentence);
+                    int taskIndex = Integer.parseInt(sentence[3]) - 1;
+                    categories.setDeadlineStatus(categoryIndex, taskIndex, isMark);
+                } catch (Exception e) {
+                    //temp
+                }
                 break;
             case "event":
-                categories.setEventStatus(categoryIndex, taskIndex, isMark);
-                if (isMark) {
-                    System.out.println("This task is marked as done:");
-                } else {
-                    System.out.println("This task is marked as not done:");
+                try {
+                    int categoryIndex = getCategoryIndex(sentence);
+                    int taskIndex = Integer.parseInt(sentence[3]) - 1;
+                    categories.setEventStatus(categoryIndex, taskIndex, isMark);
+                    if (isMark) {
+                        System.out.println("This task is marked as done:");
+                    } else {
+                        System.out.println("This task is marked as not done:");
+                    }
+                    System.out.println(categories.getEvent(categoryIndex, taskIndex));
+                } catch (Exception e) {
+                    //temp
                 }
-                System.out.println(categories.getEvent(categoryIndex, taskIndex));
                 break;
             default:
+                System.out.println("Unknown mark/unmark command: Try todo, deadline or event");
                 break;
             }
             saveData();
@@ -134,19 +162,42 @@ public class UniTasker {
     }
 
     public static void handleAdd(String[] sentence) {
+        if (sentence.length <= 1) {
+            System.out.println("Unknown add command: Try category, todo, deadline or event");
+            return;
+        }
         String secondCommand = sentence[1];
         switch (secondCommand) {
         case "category":
-            String[] nameArr = Arrays.copyOfRange(sentence, 2, sentence.length);
-            String name = String.join(" ", nameArr);
-            categories.addCategory(name);
-            System.out.println("Added category: " + name);
+            try {
+                if (sentence.length <= 2) {
+                    throw new UniTaskerException("Empty description.");
+                }
+                String[] nameArr = Arrays.copyOfRange(sentence, 2, sentence.length);
+                String name = String.join(" ", nameArr);
+                categories.addCategory(name);
+                System.out.println("Added category: " + name);
+            } catch (Exception e) {
+                System.out.println("add category failed: " + e.getMessage());
+                System.out.println("Correct format: add category [description]");
+
+            }
             break;
         case "todo":
-            int todoCatIdx = getCategoryIndex(sentence);
-            String[] descriptionArr = Arrays.copyOfRange(sentence, 3, sentence.length);
-            String description = String.join(" ", descriptionArr);
-            categories.addTodo(todoCatIdx, description);
+            try {
+                int todoCatIdx = getCategoryIndex(sentence);
+                if (sentence.length <= 3) {
+                    throw new UniTaskerException("Empty description.");
+                }
+                String[] descriptionArr = Arrays.copyOfRange(sentence, 3, sentence.length);
+                String description = String.join(" ", descriptionArr);
+                categories.addTodo(todoCatIdx, description);
+                System.out.println("Added todo: " + description);
+
+            } catch (Exception e) {
+                System.out.println("add todo failed: " + e.getMessage());
+                System.out.println("Correct format: add todo [categoryIndex] [description]");
+            }
             break;
         case "deadline":
             try {
@@ -203,6 +254,7 @@ public class UniTasker {
             }
             break;
         default:
+            System.out.println("Unknown add command: Try category, todo, deadline or event");
             break;
         }
 
@@ -210,18 +262,42 @@ public class UniTasker {
     }
 
     public static void handleReorder(String[] sentence) {
+        if (sentence.length <= 1) {
+            System.out.println("Unknown reorder command: try category or todo");
+        }
         String secondCommand = sentence[1];
         switch (secondCommand) {
         case "category":
-            int categoryIndex1 = getCategoryIndex(sentence);
-            int categoryIndex2 = Integer.parseInt(sentence[3]) - 1;
-            categories.reorderCategory(categoryIndex1, categoryIndex2);
+            try {
+                if (sentence.length <= 3) {
+                    throw new UniTaskerException("Insufficient arguments.");
+                }
+                int categoryIndex1 = Integer.parseInt(sentence[2]) - 1;
+                int categoryIndex2 = Integer.parseInt(sentence[3]) - 1;
+                categories.reorderCategory(categoryIndex1, categoryIndex2);
+                System.out.println("Category: " + categories.getCategory(categoryIndex1).getName() +
+                        " moved to index " + (categoryIndex2 + 1));
+            } catch (UniTaskerException | NumberFormatException e) {
+                System.out.println("reorder category failed: " + e.getMessage());
+                System.out.println("Correct format: reorder category [index1] [index2]");
+            }
             break;
         case "todo":
-            int categoryIndex = getCategoryIndex(sentence);
-            int todoIndex1 = Integer.parseInt(sentence[3]) - 1;
-            int todoIndex2 = Integer.parseInt(sentence[4]) - 1;
-            categories.reorderTodo(categoryIndex, todoIndex1, todoIndex2);
+            try {
+                if (sentence.length <= 4) {
+                    throw new UniTaskerException("Insufficient arguments.");
+                }
+                int categoryIndex = Integer.parseInt(sentence[2]) - 1;
+                int todoIndex1 = Integer.parseInt(sentence[3]) - 1;
+                int todoIndex2 = Integer.parseInt(sentence[4]) - 1;
+                categories.reorderTodo(categoryIndex, todoIndex1, todoIndex2);
+                System.out.println("Todo: " + 
+                        categories.getCategory(categoryIndex).getTodo(todoIndex1).getDescription() +
+                        " inside category " + (categoryIndex + 1) + " moved to index " + (todoIndex2 + 1));
+            } catch (UniTaskerException | NumberFormatException e) {
+                System.out.println("reorder todo failed: " + e.getMessage());
+                System.out.println("Correct format: reorder todo [catIndex] [todoIndex1] [todoIndex2]");
+            }
             break;
         default:
             break;
@@ -315,19 +391,33 @@ public class UniTasker {
     }
 
     public static void handleSort(String[] sentence) {
+        if (sentence.length <= 1) {
+            System.out.println("Unknown sort command: try todo or deadline");
+            return;
+        }
         String secondCommand = sentence[1];
-        int categoryIndex = getCategoryIndex(sentence);
-
         switch (secondCommand) {
         case "deadline":
+            int categoryIndex = getCategoryIndex(sentence);
             categories.sortDeadlines(categoryIndex);
             System.out.println("Deadlines in category " + (categoryIndex + 1) + " have been sorted.");
             break;
         case "todo":
-            categories.getCategory(categoryIndex).getTodoList().sortByPriority();
-            System.out.println("Todos in category " + (categoryIndex + 1) + " have been sorted by priority.");
+            try {
+                if (sentence.length <= 2) {
+                    throw new UniTaskerException("Insufficient arguments");
+                }
+                int categoryIndex1 = getCategoryIndex(sentence);
+                categories.getCategory(categoryIndex1).getTodoList().sortByPriority();
+                System.out.println("Todos in category " + (categoryIndex1 + 1) + " have been sorted by priority.");
+            } catch (Exception e) {
+                System.out.println("sort todo failed: " + e.getMessage());
+                System.out.println("Correct format: sort todo [catIndex]");
+
+            }
             break;
         default:
+            System.out.println("Unknown sort command: try todo or deadline");
             break;
         }
         saveData();
@@ -363,6 +453,7 @@ public class UniTasker {
                 String commandWord = sentence[0];
                 switch (commandWord) {
                 case "exit":
+                case "bye":
                     System.out.println("Exiting UniTasker.");
                     return;
                 case "add":
@@ -417,7 +508,7 @@ public class UniTasker {
         }
     }
 
-    private static int getCategoryIndex(String[] sentence) {
+    private static int getCategoryIndex(String[] sentence) throws IndexOutOfBoundsException, NumberFormatException {
         int categoryIndex = Integer.parseInt(sentence[2]) - 1;
         if (categoryIndex < 0 || categoryIndex >= categories.getAmount()) {
             // Throw a custom exception or return a sentinel value like -1

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.duke.exception.UniTaskerException;
 import seedu.duke.tasklist.CategoryList;
 
 class DukeTest {
@@ -64,7 +65,11 @@ class DukeTest {
         categoryList.addCategory("School");
         categoryList.addTodo(0, "task 1");
 
-        categoryList.markTodo(0, 0);
+        try {
+            categoryList.markTodo(0, 0);
+        } catch (UniTaskerException e) {
+            //ignore
+        }
 
         assertEquals(true, categoryList.getCategory(0).getTodo(0).getIsDone());
     }
@@ -74,9 +79,12 @@ class DukeTest {
         CategoryList categoryList = new CategoryList();
         categoryList.addCategory("School");
         categoryList.addTodo(0, "task 1");
-        categoryList.markTodo(0, 0);
-
-        categoryList.unmarkTodo(0, 0);
+        try {
+            categoryList.markTodo(0, 0);
+            categoryList.unmarkTodo(0, 0);
+        } catch (UniTaskerException e) {
+            //ignore
+        }
 
         assertEquals(false, categoryList.getCategory(0).getTodo(0).getIsDone());
     }
@@ -87,7 +95,11 @@ class DukeTest {
         categoryList.addCategory("School");
         categoryList.addCategory("Work");
 
-        categoryList.reorderCategory(0, 1);
+        try {
+            categoryList.reorderCategory(0, 1);
+        } catch (UniTaskerException e) {
+            //ignore
+        }
 
         assertEquals("Work", categoryList.getCategory(0).getName());
         assertEquals("School", categoryList.getCategory(1).getName());
@@ -100,7 +112,11 @@ class DukeTest {
         categoryList.addTodo(0, "task 1");
         categoryList.addTodo(0, "task 2");
 
-        categoryList.reorderTodo(0, 0, 1);
+        try {
+            categoryList.reorderTodo(0, 0, 1);
+        } catch (UniTaskerException e) {
+            //ignore
+        }
 
         assertEquals("task 2", categoryList.getCategory(0).getTodo(0).getDescription());
         assertEquals("task 1", categoryList.getCategory(0).getTodo(1).getDescription());

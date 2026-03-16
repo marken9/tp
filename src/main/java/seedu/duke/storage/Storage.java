@@ -4,6 +4,7 @@ package seedu.duke.storage;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
 
+import seedu.duke.exception.UniTaskerException;
 import seedu.duke.util.DateUtils;
 import seedu.duke.exception.IllegalDateException;
 
@@ -118,6 +119,8 @@ public class Storage {
                 }
             } catch (java.io.FileNotFoundException e) {
                 System.out.println("No existing Todo file found.");
+            } catch (UniTaskerException e) {
+                System.out.println("Error during load: " + e.getMessage());
             }
         }
 
