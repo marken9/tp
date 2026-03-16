@@ -49,30 +49,31 @@ public class CategoryList {
     }
 
     public void markTodo(int categoryIndex, int todoIndex) throws UniTaskerException {
-        if (categoryIndex >= this.getAmount()) {
+        if (categoryIndex >= this.getAmount() || categoryIndex < 0) {
             throw new UniTaskerException("categoryIndex does not exist.");
         }
-        if (todoIndex >= categories.get(categoryIndex).getTodoList().getSize()) {
+        int validTodoIndex = categories.get(categoryIndex).getTodoList().getSize();
+        if (todoIndex >= validTodoIndex || todoIndex < 0) {
             throw new UniTaskerException("todoIndex does not exist.");
         }
         categories.get(categoryIndex).markTodo(todoIndex);
     }
 
     public void unmarkTodo(int categoryIndex, int todoIndex) throws UniTaskerException {
-        if (categoryIndex >= this.getAmount()) {
+        if (categoryIndex >= this.getAmount() || categoryIndex < 0) {
             throw new UniTaskerException("categoryIndex does not exist.");
         }
-        if (todoIndex >= categories.get(categoryIndex).getTodoList().getSize()) {
+        if (todoIndex >= categories.get(categoryIndex).getTodoList().getSize() || todoIndex < 0) {
             throw new UniTaskerException("todoIndex does not exist.");
         }
         categories.get(categoryIndex).unmarkTodo(todoIndex);
     }
 
     public void reorderCategory(int categoryIndex1, int categoryIndex2) throws UniTaskerException {
-        if (categoryIndex1 >= this.getAmount()) {
+        if (categoryIndex1 >= this.getAmount() || categoryIndex1 < 0 ) {
             throw new UniTaskerException("First categoryIndex does not exist.");
         }
-        if (categoryIndex2 >= this.getAmount()) {
+        if (categoryIndex2 >= this.getAmount() || categoryIndex2 < 0) {
             throw new UniTaskerException("Second categoryIndex does not exist.");
         }
         Category category = categories.remove(categoryIndex1);
@@ -86,7 +87,13 @@ public class CategoryList {
         categories.get(categoryIndex).reorderTodo(todoIndex1, todoIndex2);
     }
 
-    public void setTodoPriority(int categoryIndex, int todoIndex, int priority) {
+    public void setTodoPriority(int categoryIndex, int todoIndex, int priority) throws UniTaskerException {
+        if (categoryIndex >= this.getAmount() || categoryIndex < 0 ) {
+            throw new UniTaskerException("categoryIndex does not exist.");
+        }
+        if (todoIndex >= categories.get(categoryIndex).getTodoList().getSize() || todoIndex < 0) {
+            throw new UniTaskerException("todoIndex does not exist.");
+        }
         categories.get(categoryIndex).setTodoPriority(todoIndex, priority);
     }
 
