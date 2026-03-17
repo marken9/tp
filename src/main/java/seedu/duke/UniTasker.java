@@ -407,16 +407,11 @@ public class UniTasker {
 
     public static void handleSort(String[] sentence) {
         if (sentence.length <= 1) {
-            System.out.println("Unknown sort command: try todo or deadline");
+            System.out.println("Unknown sort command: try todo");
             return;
         }
         String secondCommand = sentence[1];
         switch (secondCommand) {
-        case "deadline":
-            int categoryIndex = getCategoryIndex(sentence);
-            categories.sortDeadlines(categoryIndex);
-            System.out.println("Deadlines in category " + (categoryIndex + 1) + " have been sorted.");
-            break;
         case "todo":
             try {
                 if (sentence.length <= 2) {
