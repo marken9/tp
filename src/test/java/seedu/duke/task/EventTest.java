@@ -47,7 +47,9 @@ public class EventTest {
         System.setOut(new PrintStream(outContent));
         handleAdd("add event 1 interview /from 2026/01/02 1800 /to 2026/01/02 1900".split(" "));
         assertEquals(
-                "Error: Use format yyyy-MM-dd HHmm (e.g., 2026-03-11 1830) and include a description",
+                "Error: Use format yyyy-MM-dd HHmm (e.g., 2026-03-11 1830) " +
+                        "and follow this format: add event <categoryIndex> <description> " +
+                        "/from <startDateTime> /to <endDateTime>",
                 outContent.toString().trim()
         );
     }
