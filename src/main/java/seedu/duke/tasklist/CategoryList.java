@@ -76,7 +76,7 @@ public class CategoryList {
     }
 
     public void reorderCategory(int categoryIndex1, int categoryIndex2) throws UniTaskerException {
-        if (categoryIndex1 >= this.getAmount() || categoryIndex1 < 0 ) {
+        if (categoryIndex1 >= this.getAmount() || categoryIndex1 < 0) {
             throw new UniTaskerException("First categoryIndex does not exist.");
         }
         if (categoryIndex2 >= this.getAmount() || categoryIndex2 < 0) {
@@ -94,7 +94,7 @@ public class CategoryList {
     }
 
     public void setTodoPriority(int categoryIndex, int todoIndex, int priority) throws UniTaskerException {
-        if (categoryIndex >= this.getAmount() || categoryIndex < 0 ) {
+        if (categoryIndex >= this.getAmount() || categoryIndex < 0) {
             throw new UniTaskerException("categoryIndex does not exist.");
         }
         if (todoIndex >= categories.get(categoryIndex).getTodoList().getSize() || todoIndex < 0) {
@@ -156,7 +156,9 @@ public class CategoryList {
      * @param by            The LocalDateTime of the deadline.
      */
     public void addDeadline(int categoryIndex, String description, LocalDateTime by) {
-        categories.get(categoryIndex).addDeadline(new Deadline(description, by));
+        DeadlineList deadlineList = categories.get(categoryIndex).getDeadlineList();
+        deadlineList.add(new seedu.duke.task.Deadline(description, by));
+        deadlineList.sortByDate();
     }
 
     public void deleteDeadline(int categoryIndex, int deadlineIndex) {
@@ -180,7 +182,9 @@ public class CategoryList {
         sb.append("=== ALL DEADLINES ===").append(System.lineSeparator());
         for (Category cat : categories) {
             sb.append(cat.getName().trim()).append(":").append(System.lineSeparator());
-            sb.append(cat.getDeadlineList().toString());
+            DeadlineList deadlineList = cat.getDeadlineList();
+            deadlineList.sortByDate();
+            sb.append(deadlineList);
         }
         return sb.toString();
     }
