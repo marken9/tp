@@ -104,7 +104,9 @@ public class Category {
     }
 
     public void addDeadline(Deadline deadline) {
+        assert deadline != null : "Deadline cannot be null";
         deadlineList.add(deadline);
+        deadlineList.sortByDate();
     }
 
     public void deleteDeadline(int index) {

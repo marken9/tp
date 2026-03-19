@@ -33,9 +33,9 @@ public class DateUtils {
         }
 
         // CRITICAL CHECK
-        if (parsedDate.getYear() < 2026) {
-            logger.warning("Rejected date " + trimmedInput + " - Year is before 2026.");
-            throw new IllegalDateException("Dates must be in 2026 or later!");
+        if (parsedDate.getYear() < 2026 || parsedDate.getYear() > 2125) {
+            logger.warning("Rejected date " + trimmedInput + " - Year out of allowed range (2026-2125).");
+            throw new IllegalDateException("Dates must be between 2026 and 2099!");
         }
 
         return parsedDate;

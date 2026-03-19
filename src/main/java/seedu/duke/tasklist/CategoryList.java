@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import seedu.duke.calender.Calendar;
+import seedu.duke.task.Deadline;
 import seedu.duke.task.Event;
 import seedu.duke.exception.UniTaskerException;
 import seedu.duke.task.Todo;
@@ -196,10 +197,10 @@ public class CategoryList {
      * @param description   The task description.
      * @param by            The LocalDateTime of the deadline.
      */
-    public void addDeadline(int categoryIndex, String description, LocalDateTime by) {
-        DeadlineList deadlineList = categories.get(categoryIndex).getDeadlineList();
-        deadlineList.add(new seedu.duke.task.Deadline(description, by));
-        deadlineList.sortByDate();
+    public Deadline addDeadline(int categoryIndex, String description, LocalDateTime by) {
+        Deadline newDeadline = new Deadline(description, by);
+        categories.get(categoryIndex).addDeadline(newDeadline);
+        return newDeadline;
     }
 
     public void deleteDeadline(int categoryIndex, int deadlineIndex) {

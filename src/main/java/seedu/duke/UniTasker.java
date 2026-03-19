@@ -246,10 +246,9 @@ public class UniTasker {
 
                 // Parse and validate (Handles 2026 limit and date-only fallback)
                 LocalDateTime by = Deadline.parseDateTime(parts[1]);
-                categories.addDeadline(deadlineCatIdx, parts[0], by);
-                Deadline newDeadline = categories.getCategory(deadlineCatIdx).getDeadlineList().getLatest();
+                Deadline newDeadline = categories.addDeadline(deadlineCatIdx, parts[0], by);
+                refreshCalendar(categories, calendar);
                 if (newDeadline != null) {
-                    calendar.registerTask(newDeadline);
                     System.out.println(DOTTED_LINE);
                     System.out.println(" Got it. I've added this deadline to category: "
                             + categories.getCategory(deadlineCatIdx).getName());
@@ -294,7 +293,7 @@ public class UniTasker {
                 System.out.println(DOTTED_LINE);
 
             } catch (DateTimeParseException | IllegalDateException
-                     | IndexOutOfBoundsException| NumberFormatException e) {
+                     | IndexOutOfBoundsException | NumberFormatException e) {
                 System.out.println("Error: Use format yyyy-MM-dd HHmm (e.g., 2026-03-11 1830) " +
                         "and follow this format: add event <categoryIndex> <description> " +
                         "/from <startDateTime> /to <endDateTime>");
