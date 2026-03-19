@@ -39,5 +39,18 @@ public abstract class TaskList<T extends Task> {
         tasks.removeIf(Task::getIsDone);
     }
 
+    public ArrayList<T> findMatchesList(String input) {
+        ArrayList<T> findMatchList = new ArrayList<T>();
+        String lowerInput = input.toLowerCase();
+
+        for (int i = 0; i < this.getSize(); i += 1) {
+            T task = tasks.get(i);
+            if (task.getDescription().toLowerCase().contains(lowerInput)) {
+                findMatchList.add(task);
+            }
+        }
+        return findMatchList;
+    }
+
 }
 

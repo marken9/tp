@@ -1,5 +1,7 @@
 package seedu.duke.tasklist;
 
+import java.util.ArrayList;
+
 import seedu.duke.calender.Calendar;
 import seedu.duke.exception.UniTaskerException;
 import seedu.duke.task.Deadline;
@@ -133,6 +135,32 @@ public class Category {
         todoList.deleteMarked();
         deadlineList.deleteMarked();
         eventList.deleteMarked();
+    }
+
+    public boolean hasNoTasks() {
+        return todoList.getSize() == 0
+                && deadlineList.getSize() == 0
+                && eventList.getSize() == 0;
+    }
+
+    public Category findMatches(String input) {
+        Category foundCategory = new Category(getName());
+
+        ArrayList<Todo> foundTodos = todoList.findMatchesList(input);
+        ArrayList<Deadline> foundDeadlines = deadlineList.findMatchesList(input);
+        ArrayList<Event> foundEvents = eventList.findMatchesList(input);
+
+        for (int i = 0; i < foundTodos.size(); i += 1) {
+            foundCategory.addTodo(foundTodos.get(i));
+        }
+        for (int i = 0; i < foundDeadlines.size(); i += 1) {
+            foundCategory.addDeadline(foundDeadlines.get(i));
+        }
+        for (int i = 0; i < foundEvents.size(); i += 1) {
+            foundCategory.addEvent(foundEvents.get(i));
+        }
+
+        return foundCategory;
     }
 
     @Override

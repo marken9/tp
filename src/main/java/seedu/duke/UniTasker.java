@@ -604,6 +604,17 @@ public class UniTasker {
         saveData();
     }
 
+    public static void handleFind(String[] sentence) {
+        if (sentence.length <= 1) {
+            System.out.println("Find command failed: missing string input.");
+            return;
+        }
+        String[] split = Arrays.copyOfRange(sentence, 1, sentence.length);
+        String input = String.join(" ", split);
+        System.out.println("Matching tasks found: " + System.lineSeparator());
+        System.out.println(categories.returnFoundTasks(input));
+    }
+
     public static void handleCourse(String line) {
         try {
             String courseCommand = line.substring("course".length()).trim();
@@ -655,6 +666,9 @@ public class UniTasker {
                 break;
             case "sort":
                 handleSort(sentence);
+                break;
+            case "find":
+                handleFind(sentence);
                 break;
             case "course":
                 handleCourse(line);
