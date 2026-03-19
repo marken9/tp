@@ -758,44 +758,6 @@ public class UniTasker {
         endYear = 2030;
         dailyTaskLimit = 8;
 
-//        if (args.length >= 2) {
-//            try {
-//                endYear = Integer.parseInt(args[0]);
-//                dailyTaskLimit = Integer.parseInt(args[1]);
-//            } catch (NumberFormatException e) {
-//                System.out.println("Invalid arguments. Usage: java UniTasker <endYear> <dailyLimit>");
-//                return;
-//            }
-//        } //else if (System.console() == null) {
-//            // Default for CI/no input environment
-//            endYear = LocalDate.now().getYear() + 1;
-//            dailyTaskLimit = 5; // sensible defaults
-//            System.out.println("No input detected. Using default config for CI: Range " + startYear + "-" + endYear);
-//        /*}*/
-//        else {
-//            Scanner setupScanner = new Scanner(System.in);
-//
-//            System.out.println("--- UniTasker Initial Configuration ---");
-//
-//            System.out.print("Enter the maximum year for planning (e.g., 2030): ");
-//            while (!setupScanner.hasNextInt()) {
-//                System.out.println("Please enter a valid year.");
-//                setupScanner.next();
-//            }
-//            endYear = setupScanner.nextInt();
-//
-//            System.out.print("Enter the maximum tasks allowed per day: ");
-//            while (!setupScanner.hasNextInt()) {
-//                System.out.println("Please enter a valid number.");
-//                setupScanner.next();
-//            }
-//            dailyTaskLimit = setupScanner.nextInt();
-//            setupScanner.nextLine();
-//
-//            System.out.println("Configuration complete! Range: " + startYear + "-" + endYear);
-//            System.out.println(DOTTED_LINE);
-        //}
-
         new UniTasker().run();
     }
 
