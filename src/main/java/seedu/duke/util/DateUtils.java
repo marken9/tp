@@ -10,10 +10,10 @@ import java.util.logging.Logger;
 
 public class DateUtils {
     private static final Logger logger = Logger.getLogger(DateUtils.class.getName());
-    private static final DateTimeFormatter FULL_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-    private static final DateTimeFormatter DATE_ONLY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter FULL_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
+    private static final DateTimeFormatter DATE_ONLY_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-    public static LocalDateTime parseDateTime(String input) throws IllegalDateException {
+    public static LocalDateTime parse(String input, boolean isLoading) throws IllegalDateException {
         if (input == null || input.trim().isEmpty()) {
             throw new IllegalDateException("Date input cannot be empty.");
         }
@@ -28,21 +28,45 @@ public class DateUtils {
                 LocalDate date = LocalDate.parse(trimmedInput, DATE_ONLY_FORMATTER);
                 parsedDate = date.atTime(23, 59);
             } catch (DateTimeParseException e2) {
-                throw new IllegalDateException("Invalid format! Use yyyy-MM-dd HHmm or yyyy-MM-dd");
+                throw new IllegalDateException("Invalid format! Use dd-MM-yyyy HHmm or dd-MM-yyyy");
             }
         }
 
-        // CRITICAL CHECK
-        if (parsedDate.getYear() < 2026 || parsedDate.getYear() > 2125) {
-            logger.warning("Rejected date " + trimmedInput + " - Year out of allowed range (2026-2125).");
-            throw new IllegalDateException("Dates must be between 2026 and 2099!");
+        validateYearRange(parsedDate, trimmedInput);
+        if (!isLoading) {
+            validateNotPast(parsedDate);
         }
-
         return parsedDate;
     }
 
+    public static LocalDateTime parseDateTime(String input) throws IllegalDateException {
+        return parse(input, false);
+    }
+
+    public static LocalDateTime parseDateTimeFromFile(String input) throws IllegalDateException {
+        return parse(input, true);
+    }
+
+    private static void validateYearRange(LocalDateTime parsedDate, String originalInput)
+            throws IllegalDateException {
+        int startYear = LocalDate.now().getYear();
+        int endYear = seedu.duke.UniTasker.getEndYear();
+        int taskYear = parsedDate.getYear();
+
+        if (taskYear < startYear || taskYear > endYear) {
+            logger.warning("Rejected date " + originalInput + " - Year out of range ("
+                    + startYear + "-" + endYear + ").");
+            throw new IllegalDateException("Dates must be between " + startYear + " and " + endYear + "!");
+        }
+    }
+
+    private static void validateNotPast(LocalDateTime parsedDate) throws IllegalDateException {
+        if (parsedDate.isBefore(LocalDateTime.now())) {
+            throw new IllegalDateException("Error: Cannot schedule tasks in the past!");
+        }
+    }
+
     public static LocalDate parseLocalDate(String input) throws IllegalDateException {
-        // Reuse the existing logic to ensure consistency
         return parseDateTime(input).toLocalDate();
     }
 }
