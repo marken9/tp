@@ -12,10 +12,10 @@ public class TodoList extends TaskList<Todo> {
     }
 
     public void reorder(int fromIndex, int toIndex) throws UniTaskerException {
-        if (fromIndex > this.getSize()) {
+        if (fromIndex >= this.getSize() || fromIndex < 0) {
             throw new UniTaskerException("First todoIndex does not exist.");
         }
-        if (toIndex > this.getSize()) {
+        if (toIndex >= this.getSize() || toIndex < 0) {
             throw new UniTaskerException("Second todoIndex does not exist.");
         }
         assert(fromIndex >= 0 && fromIndex < tasks.size());

@@ -18,4 +18,6 @@ text-ui-test/EXPECTED-UNIX.TXT
 
 /*.txt
 /unitasker.log
+*.MF
+
 /unitasker.log.lck

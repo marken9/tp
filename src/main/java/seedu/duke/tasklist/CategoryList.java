@@ -90,7 +90,7 @@ public class CategoryList {
     }
 
     public void reorderTodo(int categoryIndex, int todoIndex1, int todoIndex2) throws UniTaskerException {
-        if (categoryIndex > this.getAmount()) {
+        if (categoryIndex >= this.getAmount() || categoryIndex < 0) {
             throw new UniTaskerException("categoryIndex does not exist.");
         }
         categories.get(categoryIndex).reorderTodo(todoIndex1, todoIndex2);
