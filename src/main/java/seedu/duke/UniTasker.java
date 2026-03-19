@@ -794,7 +794,7 @@ public class UniTasker {
 //
 //            System.out.println("Configuration complete! Range: " + startYear + "-" + endYear);
 //            System.out.println(DOTTED_LINE);
-//        }
+        //}
 
         new UniTasker().run();
     }
