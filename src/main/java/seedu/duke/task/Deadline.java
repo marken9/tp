@@ -36,13 +36,13 @@ public class Deadline extends Task implements Timed {
 
     @Override
     public String toFileFormat() {
-        DateTimeFormatter storageFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+        DateTimeFormatter storageFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
         return String.format("D | %d | %s | %s", (isDone ? 1 : 0), description, by.format(storageFormatter));
     }
 
     @Override
     public String toString() {
-        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
         return "[D]" + super.toString() + " (by: " + by.format(displayFormatter) + ")";
     }
 

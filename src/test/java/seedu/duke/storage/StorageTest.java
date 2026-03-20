@@ -1,6 +1,7 @@
 package seedu.duke.storage;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.duke.tasklist.CategoryList;
@@ -58,7 +59,7 @@ public class StorageTest {
 
         try (FileWriter writer = new FileWriter(file)) {
             // Format: Category | Status | Description | Date (Missing time)
-            writer.write("School | D | 0 | Homework | 2026-10-10" + System.lineSeparator());
+            writer.write("School | D | 0 | Homework | 10-10-2026" + System.lineSeparator());
         }
 
         Storage storage = new Storage("empty.txt", dlPath, "empty.txt");
@@ -79,7 +80,7 @@ public class StorageTest {
 
         try (FileWriter writer = new FileWriter(file)) {
             writer.write("ThisIsCorruptedDataWithoutPipes" + System.lineSeparator());
-            writer.write("Work | D | 0 | Valid Task | 2026-12-12 1200" + System.lineSeparator());
+            writer.write("Work | D | 0 | Valid Task | 12-12-2026 1200" + System.lineSeparator());
         }
 
         Storage storage = new Storage("empty.txt", dlPath, "empty.txt");
@@ -99,9 +100,9 @@ public class StorageTest {
 
         try (FileWriter writer = new FileWriter(file)) {
             // Line 1: Year 2025 (Should be skipped by DateUtils)
-            writer.write("Old | D | 0 | Old Task | 2025-12-31 2359" + System.lineSeparator());
+            writer.write("Old | D | 0 | Old Task | 31-12-2025 2359" + System.lineSeparator());
             // Line 2: Year 2026 (Should be loaded)
-            writer.write("New | D | 0 | New Task | 2026-01-01 1000" + System.lineSeparator());
+            writer.write("New | D | 0 | New Task | 01-12-2026 1000" + System.lineSeparator());
         }
 
         Storage storage = new Storage("empty.txt", dlPath, "empty.txt");
@@ -119,5 +120,13 @@ public class StorageTest {
         new File("test_todos.txt").delete();
         new File("test_deadlines.txt").delete();
         new File("test_events.txt").delete();
+    }
+
+    @BeforeEach
+    public void setUp() {
+        // This gives the "0 to 0" error a real range to work with
+        seedu.duke.UniTasker.setStartYear(2024);
+        seedu.duke.UniTasker.setEndYear(2030);
+        seedu.duke.UniTasker.setDailyTaskLimit(8);
     }
 }

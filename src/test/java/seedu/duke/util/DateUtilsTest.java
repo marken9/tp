@@ -3,6 +3,7 @@ package seedu.duke.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import seedu.duke.exception.IllegalDateException;
 import java.time.LocalDateTime;
@@ -12,14 +13,14 @@ public class DateUtilsTest {
 
     @Test
     void parseDateTime_validFullFormat_success() throws IllegalDateException {
-        LocalDateTime result = DateUtils.parseDateTime("2026-05-20 1400");
+        LocalDateTime result = DateUtils.parseDateTime("20-05-2026 1400");
         assertEquals(2026, result.getYear());
         assertEquals(14, result.getHour());
     }
 
     @Test
     void parseDateTime_validDateOnly_defaultsToEndOfDay() throws IllegalDateException {
-        LocalDateTime result = DateUtils.parseDateTime("2026-12-25");
+        LocalDateTime result = DateUtils.parseDateTime("25-12-2026");
         assertEquals(23, result.getHour());
         assertEquals(59, result.getMinute());
     }
@@ -27,19 +28,27 @@ public class DateUtilsTest {
     @Test
     void parseDateTime_yearBefore2026_throwsException() {
         assertThrows(IllegalDateException.class, () -> {
-            DateUtils.parseDateTime("2025-12-31 2359");
+            DateUtils.parseDateTime("31-12-2025 2359");
         });
     }
 
     @Test
     void parseLocalDate_validString_success() throws IllegalDateException {
-        LocalDate result = DateUtils.parseLocalDate("2027-01-01");
+        LocalDate result = DateUtils.parseLocalDate("01-01-2027");
         assertEquals(2027, result.getYear());
     }
 
     @Test
     void parseDateTime_valid2026Date_success() throws IllegalDateException {
-        LocalDateTime date = DateUtils.parseDateTime("2026-03-15 1000");
+        LocalDateTime date = DateUtils.parseDateTime("25-12-2026 1000");
         assertEquals(2026, date.getYear());
+    }
+
+    @BeforeEach
+    public void setUp() {
+        // This gives the "0 to 0" error a real range to work with
+        seedu.duke.UniTasker.setStartYear(2024);
+        seedu.duke.UniTasker.setEndYear(2030);
+        seedu.duke.UniTasker.setDailyTaskLimit(8);
     }
 }

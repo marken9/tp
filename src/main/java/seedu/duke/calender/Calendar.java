@@ -1,6 +1,7 @@
 package seedu.duke.calender;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -21,6 +22,8 @@ import java.util.TreeMap;
 public class Calendar {
 
     private static final Logger logger = Logger.getLogger(Calendar.class.getName());
+
+    private static final DateTimeFormatter UI_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     /**
      * Internal storage mapping a date to a list of tasks occurring on that day.
@@ -69,7 +72,7 @@ public class Calendar {
         }
 
         for (var entry : view.entrySet()) {
-            System.out.println("--- " + entry.getKey() + " ---");
+            System.out.println("--- " + entry.getKey().format(UI_DATE_FORMATTER) + " ---");
             for (Task t : entry.getValue()) {
                 System.out.println(t);
             }
@@ -96,7 +99,7 @@ public class Calendar {
             for (Task t : entry.getValue()) {
                 if (taskType.isInstance(t)) {
                     if (!foundInDay) {
-                        dayOutput.append("--- ").append(entry.getKey()).append(" ---\n");
+                        System.out.println("--- " + entry.getKey().format(UI_DATE_FORMATTER) + " ---");
                         foundInDay = true;
                     }
                     dayOutput.append(t).append("\n");
@@ -111,6 +114,10 @@ public class Calendar {
         }
     }
 
+    /**
+     * Returns the number of tasks on a specific date.
+     * NOTE: This method is primarily used for JUnit testing to verify Calendar state.
+     */
     public int getTaskCountOnDate(LocalDate date) {
         if (!schedule.containsKey(date)) {
             return 0;

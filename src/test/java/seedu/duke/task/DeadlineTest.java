@@ -1,5 +1,6 @@
 package seedu.duke.task;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.duke.exception.IllegalDateException;
@@ -13,14 +14,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DeadlineTest {
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
 
     @Test
     public void addDeadline_success() {
         CategoryList categoryList = new CategoryList();
         categoryList.addCategory("School");
 
-        LocalDateTime time = LocalDateTime.parse("2026-03-12 1830", formatter);
+        LocalDateTime time = LocalDateTime.parse("12-03-2026 1830", formatter);
         categoryList.addDeadline(0, "submit project", time);
 
         assertEquals(1, categoryList.getCategory(0).getDeadlineList().getSize());
@@ -32,8 +33,8 @@ public class DeadlineTest {
         CategoryList categoryList = new CategoryList();
         categoryList.addCategory("School");
 
-        LocalDateTime early = LocalDateTime.parse("2026-03-10 1000", formatter);
-        LocalDateTime late = LocalDateTime.parse("2026-03-20 1000", formatter);
+        LocalDateTime early = LocalDateTime.parse("10-03-2026 1000", formatter);
+        LocalDateTime late = LocalDateTime.parse("20-03-2026 1000", formatter);
 
         categoryList.addDeadline(0, "Late Task", late);
         categoryList.addDeadline(0, "Early Task", early);
@@ -47,7 +48,7 @@ public class DeadlineTest {
     public void deleteAllDeadlines_success() {
         CategoryList categoryList = new CategoryList();
         categoryList.addCategory("Personal");
-        LocalDateTime time = LocalDateTime.parse("2026-03-12 1200", formatter);
+        LocalDateTime time = LocalDateTime.parse("12-03-2026 1200", formatter);
 
         categoryList.addDeadline(0, "task 1", time);
         categoryList.addDeadline(0, "task 2", time);
@@ -68,7 +69,7 @@ public class DeadlineTest {
     @Test
     public void parseDateTime_dateOnly_defaultsToLastMinute() throws IllegalDateException {
         // Verifies your logic of defaulting date-only input to 23:59
-        LocalDateTime result = Deadline.parseDateTime("2026-05-05");
+        LocalDateTime result = Deadline.parseDateTime("05-05-2026");
         assertEquals(23, result.getHour());
         assertEquals(59, result.getMinute());
         assertEquals(2026, result.getYear());
@@ -88,9 +89,18 @@ public class DeadlineTest {
         LocalDateTime time = LocalDateTime.of(2026, 12, 1, 18, 0);
         Deadline deadline = new Deadline("Read book", time);
         // Assuming your format is "D | 0 | Read book | 2026-12-01 1800"
-        String expected = "D | 0 | Read book | 2026-12-01 1800";
+        String expected = "D | 0 | Read book | 01-12-2026 1800";
         assertEquals(expected, deadline.toFileFormat());
     }
+
+    @BeforeEach
+    public void setUp() {
+        // This gives the "0 to 0" error a real range to work with
+        seedu.duke.UniTasker.setStartYear(2024);
+        seedu.duke.UniTasker.setEndYear(2030);
+        seedu.duke.UniTasker.setDailyTaskLimit(8);
+    }
+
 }
 
 

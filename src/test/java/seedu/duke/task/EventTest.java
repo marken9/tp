@@ -1,15 +1,16 @@
 package seedu.duke.task;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import seedu.duke.calender.Calendar;
-import seedu.duke.tasklist.CategoryList;
-
 import static seedu.duke.UniTasker.handleAdd;
 import static seedu.duke.UniTasker.handleDelete;
 import static seedu.duke.UniTasker.handleList;
+
+
+import seedu.duke.calender.Calendar;
+import seedu.duke.tasklist.CategoryList;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -22,16 +23,16 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 
 public class EventTest {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-    private final DateTimeFormatter formatList = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
+    private final DateTimeFormatter formatList = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @Test
     public void addEvent_success() {
         CategoryList categoryList = new CategoryList();
         categoryList.addCategory("School");
 
-        LocalDateTime from = LocalDateTime.parse("2026-01-01 1830", formatter);
-        LocalDateTime to = LocalDateTime.parse("2026-02-02 1830", formatter);
+        LocalDateTime from = LocalDateTime.parse("01-01-2026 1830", formatter);
+        LocalDateTime to = LocalDateTime.parse("02-02-2026 1830", formatter);
         categoryList.addEvent(0, "consultation", from, to);
 
         assertEquals(1, categoryList.getCategory(0).getEventList().getSize());
@@ -45,9 +46,9 @@ public class EventTest {
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
-        handleAdd("add event 1 interview /from 2026/01/02 1800 /to 2026/01/02 1900".split(" "));
+        handleAdd("add event 1 interview /from 02/12/2026 1800 /to 02/12/2026 1900".split(" "));
         assertEquals(
-                "Error: Use format yyyy-MM-dd HHmm (e.g., 2026-03-11 1830) " +
+                "Error: Use format dd-MM-yyyy HHmm (e.g., 11-12-2026 1830) " +
                         "and follow this format: add event <categoryIndex> <description> " +
                         "/from <startDateTime> /to <endDateTime>",
                 outContent.toString().trim()
@@ -59,8 +60,8 @@ public class EventTest {
         CategoryList categoryList = new CategoryList();
         categoryList.addCategory("School");
 
-        LocalDateTime from = LocalDateTime.parse("2026-01-01 1830", formatter);
-        LocalDateTime to = LocalDateTime.parse("2026-02-02 1830", formatter);
+        LocalDateTime from = LocalDateTime.parse("01-01-2026 1830", formatter);
+        LocalDateTime to = LocalDateTime.parse("02-02-2026 1830", formatter);
         categoryList.addEvent(0, "consultation", from, to);
         categoryList.deleteEvent(0, 0);
 
@@ -75,8 +76,8 @@ public class EventTest {
         CategoryList categoryList = new CategoryList();
         categoryList.addCategory("School");
 
-        LocalDateTime from = LocalDateTime.parse("2026-01-01 1830", formatter);
-        LocalDateTime to = LocalDateTime.parse("2026-02-02 1830", formatter);
+        LocalDateTime from = LocalDateTime.parse("01-01-2026 1830", formatter);
+        LocalDateTime to = LocalDateTime.parse("02-02-2026 1830", formatter);
         categoryList.addEvent(0, "consultation", from, to);
         handleDelete("delete event 1 0".split(" "));
         assertEquals(
@@ -92,14 +93,14 @@ public class EventTest {
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
-        LocalDateTime from1 = LocalDateTime.parse("2026-01-01 1830", formatter);
-        LocalDateTime to1 = LocalDateTime.parse("2026-02-02 1830", formatter);
+        LocalDateTime from1 = LocalDateTime.parse("01-11-2026 1830", formatter);
+        LocalDateTime to1 = LocalDateTime.parse("02-12-2026 1830", formatter);
 
-        LocalDateTime from2 = LocalDateTime.parse("2026-01-03 1830", formatter);
-        LocalDateTime to2 = LocalDateTime.parse("2026-02-03 1930", formatter);
+        LocalDateTime from2 = LocalDateTime.parse("03-12-2026 1830", formatter);
+        LocalDateTime to2 = LocalDateTime.parse("03-12-2026 1930", formatter);
 
-        LocalDateTime from3 = LocalDateTime.parse("2026-03-03 1830", formatter);
-        LocalDateTime to3 = LocalDateTime.parse("2026-03-03 1930", formatter);
+        LocalDateTime from3 = LocalDateTime.parse("26-12-2026 1830", formatter);
+        LocalDateTime to3 = LocalDateTime.parse("26-12-2026 1930", formatter);
 
         Calendar calendar = new Calendar();
         categoryList.addEvent(0, "consultation", from1, to1);
@@ -111,18 +112,17 @@ public class EventTest {
         categoryList.addEvent(0, "interview", from3, to3);
         calendar.registerTask(categoryList.getCategory(0).getLatestEvent());
 
-        calendar.displaySpecificTypeInRange(LocalDate.parse("2026-01-01", formatList),
-                LocalDate.parse("2026-02-25", formatList), Event.class);
+        calendar.displaySpecificTypeInRange(LocalDate.parse("01-11-2026", formatList),
+                LocalDate.parse("25-12-2026", formatList), Event.class);
 
-        assertEquals(
-                """
-                        --- 2026-01-01 ---
-                        [E][ ] consultation (from: 2026-01-01 1830 to: 2026-02-02 1830)
-                        --- 2026-01-03 ---
-                        [E][ ] meeting (from: 2026-01-03 1830 to: 2026-02-03 1930)
-                        """,
-                outContent.toString()
-        );
+        String expected = "--- 01-11-2026 ---\n" +
+                "[E][ ] consultation (from: 2026-11-01 1830 to: 2026-12-02 1830)\n" +
+                "--- 03-12-2026 ---\n" +
+                "[E][ ] meeting (from: 2026-12-03 1830 to: 2026-12-03 1930)\n";
+
+        String actual = outContent.toString().replace("\r\n", "\n").replace("\r", "\n");
+
+        assertEquals(expected, actual);
 
     }
 
@@ -133,11 +133,11 @@ public class EventTest {
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
-        LocalDateTime from1 = LocalDateTime.parse("2026-01-01 1830", formatter);
-        LocalDateTime to1 = LocalDateTime.parse("2026-02-02 1830", formatter);
+        LocalDateTime from1 = LocalDateTime.parse("01-11-2026 1830", formatter);
+        LocalDateTime to1 = LocalDateTime.parse("02-12-2026 1830", formatter);
 
-        LocalDateTime from2 = LocalDateTime.parse("2026-01-03 1830", formatter);
-        LocalDateTime to2 = LocalDateTime.parse("2026-02-03 1930", formatter);
+        LocalDateTime from2 = LocalDateTime.parse("03-11-2026 1830", formatter);
+        LocalDateTime to2 = LocalDateTime.parse("03-12-2026 1930", formatter);
 
         Calendar calendar = new Calendar();
         categoryList.addEvent(0, "consultation", from1, to1);
@@ -146,10 +146,10 @@ public class EventTest {
         categoryList.addEvent(0, "meeting", from2, to2);
         calendar.registerTask(categoryList.getCategory(0).getLatestEvent());
 
-        handleList("list range 2026-02-25 2026-01-03 /event".split(" "));
+        handleList("list range 03-12-2026 25-11-2026 /event".split(" "));
 
         assertEquals("Error: Start date must be earlier than End date "
-                        + "(e.g., list range 2026-03-01 2026-03-07)",
+                        + "(e.g., list range 01-11-2026 07-11-2026)",
                 outContent.toString().trim()
         );
 
@@ -218,6 +218,14 @@ public class EventTest {
                 "This recurring event has been deleted:" + System.lineSeparator() +
                 "[RE][Group 1]CS2113 lecture (from: Friday 1600 to: Friday 1800)" + System.lineSeparator() +
                 "____________________________________________________________", outContent.toString().trim());
+    }
+
+    @BeforeEach
+    public void setUp() {
+        // This gives the "0 to 0" error a real range to work with
+        seedu.duke.UniTasker.setStartYear(2024);
+        seedu.duke.UniTasker.setEndYear(2030);
+        seedu.duke.UniTasker.setDailyTaskLimit(8);
     }
 
 }

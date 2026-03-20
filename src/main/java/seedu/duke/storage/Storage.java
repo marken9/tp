@@ -158,7 +158,7 @@ public class Storage {
                     LocalDateTime by;
 
                     try {
-                        by = DateUtils.parseDateTime(dateString);
+                        by = DateUtils.parseDateTimeFromFile(dateString);
                     } catch (IllegalDateException e) {
                         logger.warning( "Skipping line " + lineCount + " - Reason:" + e.getMessage());
                         continue;
@@ -189,7 +189,7 @@ public class Storage {
             logger.info("Attempting to load events from: " + eventFilePath);
             int lineNumber = 0;
             try (java.util.Scanner s = new java.util.Scanner(eventFile)) {
-                DateTimeFormatter storageFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+                DateTimeFormatter storageFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
                 while (s.hasNextLine()) {
                     lineNumber++;
                     String[] parts = s.nextLine().split(" \\| ");

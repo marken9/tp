@@ -52,5 +52,14 @@ public abstract class TaskList<T extends Task> {
         return findMatchList;
     }
 
+
+    public boolean contains(String description) {
+        for (T task : tasks) {
+            if (task.getDescription().equalsIgnoreCase(description.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
