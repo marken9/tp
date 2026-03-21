@@ -32,10 +32,12 @@ public class DateUtils {
             }
         }
 
-        validateYearRange(parsedDate, trimmedInput);
         if (!isLoading) {
-            validateNotPast(parsedDate);
+            validateNotPast(parsedDate,trimmedInput);
         }
+
+        validateYearRange(parsedDate, trimmedInput);
+
         return parsedDate;
     }
 
@@ -60,9 +62,9 @@ public class DateUtils {
         }
     }
 
-    private static void validateNotPast(LocalDateTime parsedDate) throws IllegalDateException {
+    private static void validateNotPast(LocalDateTime parsedDate, String originalInput) throws IllegalDateException {
         if (parsedDate.isBefore(LocalDateTime.now())) {
-            throw new IllegalDateException("Error: Cannot schedule tasks in the past!");
+            throw new IllegalDateException("Cannot schedule tasks in the past! (" + originalInput + ") ");
         }
     }
 
