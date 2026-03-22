@@ -29,20 +29,14 @@ and focus on completing their academic responsibilities.
 
 ## User Stories
 
-| Version | As a ...           | I want to ...                                                     | So that I can ...                                 |
-|---------|--------------------|-------------------------------------------------------------------|---------------------------------------------------|
-| v1.0    | University Student | create categories for each of my courses                          | organise my tasks by module                       |
-| v1.0    | University Student | view a specific category                                          | focus on tasks related to a single course         |
-| v1.0    | University Student | assign priority levels to todos in a category                     | identify important todos easily                   |
-| v1.0    | University Student | sort todos within a category by priority                          | focus on high-priority todos first                |
-| v1.0    | University Student | track all tasks with a due date                                   | keep track of all my deadlines                    |
-| v1.0    | University Student | arrange tasks which occur or are due within a certain time period | prioritise tasks that are due earlier             |
-| v1.0    | University Student | delete all deadlines within a category                            | quickly remove deadlines in a category            | 
-| v1.0    | University Student | have my deadlines sorted by earliest date                         | easily identify earliest due deadline             |
-| v2.0    | University Student | delete all marked tasks                                           | quickly clean up completed work across categories |
-| v2.0    | University Student | search for tasks across all categories                            | quickly find relevant tasks                       |
-| v2.0    | University Student | customize the maximum tasks permitted per day                     | schedule my tasks without burning myself out      |
-| v2.0    | University Student | customize the year of my schedule                                 | plan beyond my acedemic years                     |
+| Version | As a ...           | I want to ...                                 | So that I can ...                                           |
+|---------|--------------------|-----------------------------------------------|-------------------------------------------------------------|
+| v1.0    | University Student | create categories for each of my courses      | organise my tasks by module                                 |
+| v1.0    | University Student | view a specific category                      | focus on tasks related to a single course                   |
+| v1.0    | University Student | assign priority levels to todos in a category | identify important todos easily.                            |
+| v1.0    | University Student | sort todos within a category by priority      | focus on high-priority todos first                          |
+| v2.0    | University Student | delete all marked tasks                       | quickly clean up completed work across categories.          |
+| v2.0    | University Student | search for tasks across all categories        | quickly find relevant tasks                                 |
 
 
 ## Non-Functional Requirements
