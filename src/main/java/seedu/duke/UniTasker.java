@@ -1,13 +1,10 @@
 package seedu.duke;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -57,6 +54,7 @@ public class UniTasker {
 
     private static final int DEFAULT_END_YEAR = 2030;
     private static final int DEFAULT_DAILY_TASK_LIMIT = 8;
+    private static final DateTimeFormatter DATE_ONLY_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
 
     public UniTasker() {
@@ -275,8 +273,16 @@ public class UniTasker {
             break;
         case "event":
             try {
+                if (sentence.length < 9) {
+                    throw new UniTaskerException("Missing or invalid info. " +
+                            "Expected format: add event <categoryIndex> <description> " +
+                            "/from <start date> <start time> /to <end date> <end time>");
+                }
 
                 String raw = String.join(" ", Arrays.copyOfRange(sentence, 3, sentence.length));
+                if (raw.stripLeading().startsWith("/from")){
+                    throw new UniTaskerException("Empty description! Include the event description");
+                }
 
                 if (!raw.contains(" /from ")) {
                     throw new UniTaskerException("Missing '/from' keyword! Use: /from dd-MM-yyyy HHmm");
@@ -331,7 +337,11 @@ public class UniTasker {
                             "/from <day> <time> /to <day> <time>");
                 }
                 String raw = String.join(" ", Arrays.copyOfRange(sentence, 5, sentence.length));
-                if (!raw.contains(" /from ") && !raw.startsWith("/from ")) {
+
+                if (raw.stripLeading().startsWith("/from")){
+                    throw new UniTaskerException("Empty description! Include the event description");
+                }
+                if (!raw.contains(" /from ")) {
                     throw new UniTaskerException("Missing '/from'. " +
                             "Expected format: add recurring 1 weekly event CS2113 lecture " +
                             "/from Friday 1600 /to Friday 1800");
@@ -339,80 +349,85 @@ public class UniTasker {
 
                 String[] eventDetails = raw.split(" /from ");
                 if (!eventDetails[1].contains(" /to ")) {
-                    throw new UniTaskerException("Missing '/to'. " +
+                    throw new UniTaskerException("Missing '/to' or wrong format for '/to'." +
                             "Expected format: add recurring 1 weekly event CS2113 lecture " +
                             "/from Friday 1600 /to Friday 1800");
                 }
                 String[] eventTimeDetails = eventDetails[1].split(" /to ");
 
                 String[] fromComponents = eventTimeDetails[0].split(" ");
-                if (fromComponents.length < 2) {
+                if (fromComponents.length != 2) {
                     throw new UniTaskerException("Missing start day or time after '/from'." +
                             " Expected: /from <day> <time> e.g. /from Friday 1600\n" +
-                            "Ensure that the date format is EEEE HHmm"
-                            + "where EEEE is 'Monday','Tuesday', 'Wednesday', 'Thursday','Friday','Saturday','Sunday'");
+                            "Ensure that the date format is EEEE HHmm" +
+                            " where EEEE is 'Monday','Tuesday', 'Wednesday', 'Thursday','Friday','Saturday','Sunday'");
                 }
                 String fromDayOfWeek = fromComponents[0];
                 String fromTime = fromComponents[1];
 
-                String[] toComponents = eventTimeDetails[1].split(" ");
-                if (toComponents.length < 2) {
-                    throw new UniTaskerException("Missing start day or time after '/from'." +
-                            " Expected: /to <day> <time> e.g. /tp Friday 1800\n" +
-                            "Ensure that the date format is EEEE HHmm"
-                            + "where EEEE is 'Monday','Tuesday', 'Wednesday', 'Thursday','Friday','Saturday','Sunday'");
-                }
+                String[] toComponents = getToComponents(eventTimeDetails);
                 String toDayOfWeek = toComponents[0];
-                String toTime = toComponents[1];
-
-                try {
-                    DayOfWeek.valueOf(fromDayOfWeek.toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    throw new UniTaskerException("Invalid start day '" + fromDayOfWeek + "'. " +
-                            "Ensure that the date format is EEEE HHmm"
-                            + "where EEEE is 'Monday','Tuesday', 'Wednesday', 'Thursday','Friday','Saturday','Sunday'");
+                String toTime = null;
+                if (toComponents.length >= 2) {
+                    toTime = toComponents[1];
                 }
-                try {
-                    DayOfWeek.valueOf(toDayOfWeek.toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    throw new UniTaskerException("Invalid end day '" + toDayOfWeek + "'. " +
-                            "Ensure that the date format is EEEE HHmm"
-                            + "where EEEE is 'Monday','Tuesday', 'Wednesday', 'Thursday','Friday','Saturday','Sunday'");
+
+                DateUtils.parseRecurringDayFrom(fromDayOfWeek);
+                DateUtils.parseRecurringDayTo(toDayOfWeek);
+
+                if (!fromDayOfWeek.equals(toDayOfWeek)){
+                    throw new UniTaskerException("Recurring events must start and end on the same day " +
+                            "(e.g., add recurring 1 weekly event CS2113 lecture /from Friday 1600 /to Friday 1800)");
                 }
 
                 LocalDate today = LocalDate.now();
+                LocalDateTime from = DateUtils.parseRecurringTimeFrom(today, fromDayOfWeek, fromTime);
+                LocalDateTime to = DateUtils.parseRecurringTimeTo(today, toDayOfWeek, toTime);
 
-                LocalDate dateFrom;
-                LocalDate dateTo;
-                LocalDateTime from;
-                LocalDateTime to;
-
-                try {
-                    dateFrom = today.with(TemporalAdjusters.nextOrSame(
-                            DayOfWeek.valueOf(fromDayOfWeek.toUpperCase())));
-                    from = LocalDateTime.of(dateFrom,
-                            LocalTime.parse(fromTime, DateTimeFormatter.ofPattern("HHmm")));
-                } catch (DateTimeParseException e) {
-                    throw new UniTaskerException("Invalid start time '" + fromTime + "'. " +
-                            "Use 4-digit format e.g. 1600");
-                }
-                try {
-                    dateTo = today.with(TemporalAdjusters.nextOrSame(
-                            DayOfWeek.valueOf(toDayOfWeek.toUpperCase())));
-                    to = LocalDateTime.of(dateTo, LocalTime.parse(
-                            toTime, DateTimeFormatter.ofPattern("HHmm")));
-                } catch (DateTimeParseException e) {
-                    throw new UniTaskerException("Invalid end time '" + toTime + "'. " +
-                            "Use 4-digit format e.g. 1800");
-                }
                 if (!from.isBefore(to)) {
                     throw new UniTaskerException("Start date and time must be earlier than End date and time " +
                             "(e.g., add recurring 1 weekly event CS2113 lecture /from Friday 1600 /to Friday 1800)");
                 }
 
-                categories.addRecurringWeeklyEvent(eventCategoryIndex, eventDetails[0], from, to, calendar);
+                if (sentence[sentence.length-2].equals("/month")){
+                    try {
+                        int month = Integer.parseInt(sentence[sentence.length-1]);
+                        if (month <= 0) {
+                            throw new UniTaskerException("Invalid number use a positive integer larger than 0");
+                        }
+                        LocalDateTime endDate = from.plusMonths(month);
+                        if (endDate.getYear() > UniTasker.getEndYear()) {
+                            throw new UniTaskerException("End date exceeds the allowed year limit of "
+                                    + UniTasker.getEndYear());
+                        }
+                        categories.addRecurringWeeklyEvent(eventCategoryIndex, eventDetails[0],
+                                from, to, calendar, null, month);
+                    } catch (NumberFormatException e) {
+                        throw new UniTaskerException("Invalid number use a positive integer larger than 0");
+                    }
+
+                } else if (sentence[sentence.length-2].equals("/date")) {
+                    try {
+                        LocalDateTime date = DateUtils.parse(sentence[sentence.length-1],false);
+                        categories.addRecurringWeeklyEvent(eventCategoryIndex, eventDetails[0],
+                                from, to, calendar,date,0);
+                    } catch (IllegalDateException e) {
+                        throw new UniTaskerException("Date is invalid, " +
+                                "follow format /date dd-MM-yyyy and keep date within limit");
+                    }
+                } else {
+                    LocalDateTime defaultEnd = from.plusMonths(1);
+                    if (defaultEnd.getYear() > UniTasker.getEndYear()) {
+                        throw new UniTaskerException("End date exceeds the allowed year limit of "
+                                + UniTasker.getEndYear());
+                    }
+                    categories.addRecurringWeeklyEvent(eventCategoryIndex, eventDetails[0],
+                            from, to, calendar,null,0);
+                }
                 EventUi.printRecurringEventAdded(categories.getLatestEvent(eventCategoryIndex));
 
+            } catch (IllegalDateException e) {
+                ErrorUi.printError(e.getMessage());
             } catch (UniTaskerException e) {
                 ErrorUi.printError(e.getMessage());
             } catch (Exception e) {
@@ -425,6 +440,17 @@ public class UniTasker {
         }
 
         saveData();
+    }
+
+    private static String[] getToComponents(String[] eventTimeDetails) throws UniTaskerException {
+        String[] toComponents = eventTimeDetails[1].trim().split("\\s+", 3);
+        if (toComponents.length < 2) {
+            throw new UniTaskerException("Missing start day or time after '/to'." +
+                    " Expected: /to <day> <time> e.g. /to Friday 1800\n" +
+                    "Ensure that the date format is EEEE HHmm" +
+                    " where EEEE is 'Monday','Tuesday', 'Wednesday', 'Thursday','Friday','Saturday','Sunday'");
+        }
+        return toComponents;
     }
 
     public static void handleReorder(String[] sentence) {

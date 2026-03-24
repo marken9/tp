@@ -38,10 +38,17 @@ public class EventList extends TaskList<Event> {
         return tasks.get(tasks.size() - 1);
     }
 
-    public void addRecurringWeeklyEvent(Event event, Calendar calendar) {
+    public void addRecurringWeeklyEvent(Event event, Calendar calendar, LocalDateTime date,int months) {
         assert (calendar != null): "There must be an instance of calendar";
         assert (event != null) : "Event must exist";
-        LocalDateTime boundaryDateTime = event.getFrom().plusMonths(1);
+        LocalDateTime boundaryDateTime = null;
+        if (date == null && months == 0) {
+            boundaryDateTime = event.getFrom().plusMonths(1);
+        } else if (months == 0) {
+            boundaryDateTime = date;
+        } else {
+            boundaryDateTime = event.getFrom().plusMonths(months);
+        }
         LocalDateTime currentFromDateTime = event.getFrom();
         LocalDateTime currentToDateTime = event.getTo();
         int recurringGroupId = event.getRecurringGroupId();

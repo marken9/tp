@@ -1,5 +1,6 @@
 package seedu.duke.tasklist;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import seedu.duke.calender.Calendar;
@@ -66,10 +67,10 @@ public class Category {
         eventList.add(event);
     }
 
-    public void addRecurringWeeklyEvent(Event event, Calendar calendar) {
+    public void addRecurringWeeklyEvent(Event event, Calendar calendar, LocalDateTime date, int months) {
         assert (event != null) : "Event must not be null";
         assert (calendar != null) : "Calendar must not be null";
-        eventList.addRecurringWeeklyEvent(event, calendar);
+        eventList.addRecurringWeeklyEvent(event, calendar,date,months);
     }
 
     public void deleteEvent(int index) {

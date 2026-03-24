@@ -177,7 +177,8 @@ public class EventTest {
         LocalDateTime to = LocalDateTime.of(dateTo, LocalTime.parse(
                 toTime, DateTimeFormatter.ofPattern("HHmm")));
 
-        categoryList.addRecurringWeeklyEvent(0, "CS2113 lecture", from, to, new Calendar());
+        categoryList.addRecurringWeeklyEvent(0, "CS2113 lecture", from, to,
+                new Calendar(), null, 0);
         assertEquals(true, categoryList.getLatestEvent(0).getIsRecurring());
     }
 
@@ -206,7 +207,8 @@ public class EventTest {
         LocalDateTime to = LocalDateTime.of(dateTo, LocalTime.parse(
                 toTime, DateTimeFormatter.ofPattern("HHmm")));
 
-        categoryList.addRecurringWeeklyEvent(0, "CS2113 lecture", from, to, new Calendar());
+        categoryList.addRecurringWeeklyEvent(0, "CS2113 lecture", from, to,
+                new Calendar(), null, 0);
         int groupIndex = 1;
         Event eventToDelete = categoryList.findRecurringEventToDelete(0, groupIndex);
         categoryList.deleteRecurringEvent(0, groupIndex);
