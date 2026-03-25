@@ -29,34 +29,3 @@ Available commands:
 Try 'help' to see detailed command information.
 Try 'help <topic>' for help on a specific mode (e.g., 'help task', 'help deadline')
 ____________________________________________________________
-Welcome to UniTasker - All-in-One Task & Course Management
-
-4 FEATURE MODES:
-  1. Task Management    - Manage todos with priority & organization
-  2. Deadline Manager   - Track assignments with auto-sorted dates
-  3. Event Manager      - Schedule events and recurring meetings
-  4. Course Tracker     - Manage courses and assessment grades
-
-____________________________________________________________
-Current Year Range: 2026 to 2030
-Current Daily Task Limit: 8
-
-GET STARTED:
-  Type 'help' to see all available commands
-  Type 'help <mode>' for specific help (e.g., 'help task')
-
-CHANGE SETTINGS:
-  - Use 'limit task [number]' to update daily workload.
-  - Use 'limit year [number]' to extend the calendar range.
-____________________________________________________________
-James Gosling
-____________________________________________________________
-Unknown command: 'James'
-
-Available commands:
-  add, delete, list, mark, unmark, reorder, sort,
-  priority, find, course, limit, help, exit
-
-Try 'help' to see detailed command information.
-Try 'help <topic>' for help on a specific mode (e.g., 'help task', 'help deadline')
-____________________________________________________________
