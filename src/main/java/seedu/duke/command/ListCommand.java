@@ -35,21 +35,27 @@ public class ListCommand implements Command {
         case "todo":
             CategoryUi.printList(container.getCategories().getAllTodos());
             break;
+        //@@author WenJunYu5984
         case "deadline":
             CategoryUi.printList(container.getCategories().getAllDeadlines());
             break;
+        //@@author sushmiithaa
         case "event":
             GeneralUi.printWithBorder(null, container.getCategories().getAllEvents());
             break;
+        //@@author WenJunYu5984
         case "range":
             handleListRange(container);
             break;
+        //@@author sushmiithaa
         case "recurring":
             GeneralUi.printWithBorder(null, container.getCategories().getAllRecurringEvents());
             break;
+        //@@author WenJunYu5984
         case "limit":
             LimitUi.printCurrentLimits(container.getStartYear(), container.getEndYear(), container.getDailyTaskLimit());
             break;
+        //@@author
         default:
             ErrorUi.printUnknownCommand("list", "category, todo, deadline, event, range, recurring or limit");
             break;
@@ -76,6 +82,7 @@ public class ListCommand implements Command {
         }
     }
 
+    //@@author WenJunYu5984
     private void handleListRange(AppContainer container) {
         try {
             LocalDate start = DateUtils.parseLocalDate(sentence[2]);
@@ -106,4 +113,5 @@ public class ListCommand implements Command {
             ErrorUi.printError(e.getMessage());
         }
     }
+    //@@author
 }
