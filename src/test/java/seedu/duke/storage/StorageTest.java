@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StorageTest {
 
@@ -35,6 +36,75 @@ public class StorageTest {
         new File("test_todos.txt").delete();
         new File("test_deadlines.txt").delete();
         new File("test_events.txt").delete();
+    }
+
+    @Test
+    public void saveAndLoad_todos_success() throws Exception {
+        Storage storage = new Storage("st_todos.txt", "st_deadlines.txt", "st_events.txt");
+        CategoryList list = new CategoryList();
+        list.addCategory("Personal");
+        list.addTodo(0, "Buy groceries");
+
+        storage.save(list);
+
+        CategoryList loaded = new CategoryList();
+        storage.load(loaded);
+
+        assertEquals(1, loaded.getAmount());
+        assertEquals("Buy groceries", loaded.getCategory(0).getTodoList().get(0).getDescription());
+    }
+
+    @Test
+    public void saveAndLoad_events_success() throws Exception {
+        Storage storage = new Storage("st_todos.txt", "st_deadlines.txt", "st_events.txt");
+        CategoryList list = new CategoryList();
+        list.addCategory("Work");
+        LocalDateTime from = LocalDateTime.of(2026, 6, 15, 9, 0);
+        LocalDateTime to   = LocalDateTime.of(2026, 6, 15, 10, 0);
+        list.addEvent(0, "Standup", from, to);
+
+        storage.save(list);
+
+        CategoryList loaded = new CategoryList();
+        storage.load(loaded);
+
+        assertEquals("Standup", loaded.getCategory(0).getEventList().get(0).getDescription());
+    }
+
+    @Test
+    public void saveAndLoad_markedDeadline_preservesDoneStatus() throws Exception {
+        Storage storage = new Storage("st_todos.txt", "st_deadlines.txt", "st_events.txt");
+        CategoryList list = new CategoryList();
+        list.addCategory("Fitness");
+        list.addDeadline(0, "Morning run", LocalDateTime.of(2026, 5, 1, 7, 0));
+        list.setDeadlineStatus(0, 0, true);
+
+        storage.save(list);
+
+        CategoryList loaded = new CategoryList();
+        storage.load(loaded);
+
+        assertTrue(loaded.getCategory(0).getDeadlineList().get(0).getIsDone(),
+                "Marked deadline should still be done after reload");
+    }
+
+    @Test
+    public void saveAndLoad_multipleCategories_allRestored() throws Exception {
+        Storage storage = new Storage("st_todos.txt", "st_deadlines.txt", "st_events.txt");
+        CategoryList list = new CategoryList();
+        list.addCategory("Alpha");
+        list.addCategory("Beta");
+        list.addDeadline(0, "Alpha task", LocalDateTime.of(2026, 3, 1, 10, 0));
+        list.addDeadline(1, "Beta task",  LocalDateTime.of(2026, 4, 1, 10, 0));
+
+        storage.save(list);
+
+        CategoryList loaded = new CategoryList();
+        storage.load(loaded);
+
+        assertEquals(2, loaded.getAmount());
+        assertEquals("Alpha task", loaded.getCategory(0).getDeadlineList().get(0).getDescription());
+        assertEquals("Beta task",  loaded.getCategory(1).getDeadlineList().get(0).getDescription());
     }
 
     @Test
@@ -115,6 +185,70 @@ public class StorageTest {
 
         file.delete();
     }
+
+    @Test
+    public void load_deadlineFileWithOnlyCorruptedLines_emptyListResult() throws IOException {
+        String dlPath = "only_corrupt.txt";
+        try (FileWriter w = new FileWriter(dlPath)) {
+            w.write("garbage" + System.lineSeparator());
+            w.write("also|bad" + System.lineSeparator());
+        }
+
+        Storage storage = new Storage("empty.txt", dlPath, "empty.txt");
+        CategoryList list = new CategoryList();
+        storage.load(list);
+
+        assertEquals(0, list.getAmount(), "No valid categories should be created from corrupt lines");
+        new File(dlPath).delete();
+    }
+
+    @Test
+    public void load_eventFileMissingToDate_skipsLine() throws IOException {
+        String evPath = "bad_event.txt";
+        try (FileWriter w = new FileWriter(evPath)) {
+            // Only 5 parts instead of the required 6
+            w.write("Work | E | 0 | Missing end date | 01-06-2026 0900" + System.lineSeparator());
+            // Valid line follows
+            w.write("Work | E | 0 | Full event | 01-06-2026 0900 | 01-06-2026 1000" + System.lineSeparator());
+        }
+
+        Storage storage = new Storage("empty.txt", "empty.txt", evPath);
+        CategoryList list = new CategoryList();
+        storage.load(list);
+
+        // Only the valid event line should be loaded
+        assertEquals(1, list.getCategory(0).getEventList().getSize());
+        new File(evPath).delete();
+    }
+
+    @Test
+    public void load_emptyFiles_leaveListUnchanged() throws IOException {
+        new File("empty.txt").createNewFile(); // ensure truly empty files exist
+
+        Storage storage = new Storage("empty.txt", "empty.txt", "empty.txt");
+        CategoryList list = new CategoryList();
+        storage.load(list);
+
+        assertEquals(0, list.getAmount());
+    }
+
+    @Test
+    public void load_todoFileWithMarkedTask_preservesDoneStatus() throws IOException {
+        String todoPath = "marked_todo.txt";
+        try (FileWriter w = new FileWriter(todoPath)) {
+            w.write("Home | C" + System.lineSeparator());
+            w.write("Home | T | 1 | 2 | Water plants" + System.lineSeparator());
+        }
+
+        Storage storage = new Storage(todoPath, "empty.txt", "empty.txt");
+        CategoryList list = new CategoryList();
+        storage.load(list);
+
+        assertTrue(list.getCategory(0).getTodoList().get(0).getIsDone(),
+                "Todo marked as done in file should be loaded as done");
+        new File(todoPath).delete();
+    }
+
     @AfterEach
     void tearDown() {
         new File("test_todos.txt").delete();
