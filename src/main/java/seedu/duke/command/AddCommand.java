@@ -99,6 +99,7 @@ public class AddCommand implements Command {
         }
     }
 
+    //@@author WenJunYu5984
     private void handleAddDeadline(AppContainer container) {
         try {
             int deadlineCatIdx = CommandSupport.getCategoryIndex(container, sentence);
@@ -138,6 +139,7 @@ public class AddCommand implements Command {
         }
     }
 
+    //@@author
     private void handleAddEvent(AppContainer container) {
         try {
             if (sentence.length < 9) {
