@@ -7,18 +7,6 @@ Welcome to UniTasker - All-in-One Task & Course Management
   4. Course Tracker     - Manage courses and assessment grades
 
 ____________________________________________________________
-Current Year Range: 2026 to 2030
-Current Daily Task Limit: 8
-
-GET STARTED:
-  Type 'help' to see all available commands
-  Type 'help <mode>' for specific help (e.g., 'help task')
-
-CHANGE SETTINGS:
-  - Use 'limit task [number]' to update daily workload.
-  - Use 'limit year [number]' to extend the calendar range.
-____________________________________________________________
-James Gosling
 ____________________________________________________________
 Unknown command: 'James'
 
