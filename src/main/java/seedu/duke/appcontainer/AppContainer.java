@@ -54,10 +54,6 @@ public class AppContainer {
         return startYear;
     }
 
-    public void setStartYear(int startYear) {
-        this.startYear = startYear;
-    }
-
     public int getEndYear() {
         return endYear;
     }
