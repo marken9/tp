@@ -38,6 +38,9 @@ import seedu.duke.ui.TaskUi;
 import seedu.duke.util.DateUtils;
 import seedu.duke.util.TaskValidator;
 
+import seedu.duke.appcontainer.AppContainer;
+import seedu.duke.command.*;
+
 
 public class UniTasker {
 
@@ -701,62 +704,30 @@ public class UniTasker {
 
     public void run(boolean isTestMode) {
         logger.info("UniTasker session started.");
-
         GeneralUi.printWelcome(startYear, endYear, dailyTaskLimit, isTestMode);
 
+        AppContainer container = new AppContainer(
+                categories, calendar, storage, courseParser,
+                dailyTaskLimit, startYear, endYear
+        );
+
+        CommandParser parser = new CommandParser();
         Scanner in = new Scanner(System.in);
+
         while (true) {
-            if (!in.hasNextLine()) {  // Check if input is available
+            if (!in.hasNextLine()) {
                 break;
             }
-            String line;
-            line = in.nextLine();
-            String[] sentence = line.split(" ");
-            String commandWord = sentence[0];
-            switch (commandWord) {
-            case "exit":
+
+            String line = in.nextLine();
+            Command command = parser.parse(line);
+
+            if (command instanceof ExitCommand) {
                 GeneralUi.printMessage("Exiting UniTasker.");
                 return;
-            case "add":
-                handleAdd(sentence);
-                break;
-            case "delete":
-                handleDelete(sentence);
-                break;
-            case "list":
-                handleList(sentence);
-                break;
-            case "mark":
-                handleMark(sentence, true);
-                break;
-            case "unmark":
-                handleMark(sentence, false);
-                break;
-            case "reorder":
-                handleReorder(sentence);
-                break;
-            case "priority":
-                handlePriority(sentence);
-                break;
-            case "sort":
-                handleSort(sentence);
-                break;
-            case "find":
-                handleFind(sentence);
-                break;
-            case "course":
-                handleCourse(line);
-                break;
-            case "limit":
-                handleLimit(sentence);
-                break;
-            case "help":
-                handleHelp(sentence);
-                break;
-            default:
-                ErrorUi.printUnknownCommandHint(sentence[0]);
-                break;
             }
+
+            command.execute(container);
         }
         in.close();
     }
