@@ -225,7 +225,7 @@ public class AddCommand implements Command {
             }
 
             String[] eventDetails = raw.split(" /from ");
-            if (!eventDetails[1].contains(" /to ")) {
+            if (!(eventDetails[1].contains(" /to "))) {
                 throw new UniTaskerException("Missing '/to' or wrong format for '/to'. "
                         + "Expected format: add recurring 1 weekly event CS2113 lecture "
                         + "/from Friday 1600 /to Friday 1800");
@@ -311,7 +311,7 @@ public class AddCommand implements Command {
 
     private String[] getToComponents(String[] eventTimeDetails) throws UniTaskerException {
         String[] toComponents = eventTimeDetails[1].split(" ");
-        if (toComponents.length != 2) {
+        if (toComponents.length < 2) {
             throw new UniTaskerException("Missing end day or time after '/to'. "
                     + "Expected: /to <day> <time> e.g. /to Friday 1800");
         }
