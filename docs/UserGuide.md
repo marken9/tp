@@ -2,14 +2,19 @@
 
 ## Introduction
 
-{Give a product intro}
+UniTasker is a desktop app for managing tasks and courses, optimized for use via a
+Command Line Interface (CLI).
 
 ## Quick Start
 
 {Give steps to get started quickly}
 
 1. Ensure that you have Java 17 or above installed.
-1. Down the latest version of `Duke` from [here](http://link.to/duke).
+2. Down the latest version of `UniTasker` from [here](http://link.to/duke).
+3. Copy the file to the folder you want to use as the home folder for your UniTasker
+4. Open a command terminal, `cd` into the folder you put the jar file in, and
+use the `java -jar UniTasker.jar` command to run the application
+5. Type a command in the command box and press Enter to execute it.
 
 ## Features 
 
@@ -33,7 +38,8 @@ Example of usage:
 
 **Q**: How do I transfer my data to another computer? 
 
-**A**: {your answer here}
+**A**: Copy all the .txt files inside the folder with UniTasker and paste in the same folder where UniTasker.jar
+is located in the other computer.
 
 ## Command Summary
 
