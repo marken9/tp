@@ -71,6 +71,16 @@ public class CategoryList {
         categories.get(categoryIndex).deleteTodo(todoIndex);
     }
 
+    /**
+     * Marks a specific todo as completed within a given category.
+     *
+     * <p>This method validates the provided category and todo indices before
+     * delegating the marking operation to the corresponding {@code Category}.</p>
+     *
+     * @param categoryIndex The index of the category containing the todo.
+     * @param todoIndex The index of the todo to be marked.
+     * @throws UniTaskerException If the categoryIndex or todoIndex is invalid.
+     */
     public void markTodo(int categoryIndex, int todoIndex) throws UniTaskerException {
         if (categoryIndex >= this.getAmount() || categoryIndex < 0) {
             throw new UniTaskerException("categoryIndex does not exist.");
@@ -81,7 +91,16 @@ public class CategoryList {
         }
         categories.get(categoryIndex).markTodo(todoIndex);
     }
-
+    /**
+     * Marks a specific todo as not completed within a given category.
+     *
+     * <p>This method validates the provided indices before delegating
+     * the unmark operation to the corresponding {@code Category}.</p>
+     *
+     * @param categoryIndex The index of the category containing the todo.
+     * @param todoIndex The index of the todo to be unmarked.
+     * @throws UniTaskerException If the categoryIndex or todoIndex is invalid.
+     */
     public void unmarkTodo(int categoryIndex, int todoIndex) throws UniTaskerException {
         if (categoryIndex >= this.getAmount() || categoryIndex < 0) {
             throw new UniTaskerException("categoryIndex does not exist.");
@@ -91,7 +110,16 @@ public class CategoryList {
         }
         categories.get(categoryIndex).unmarkTodo(todoIndex);
     }
-
+    /**
+     * Reorders categories by moving a category from one index to another.
+     *
+     * <p>This method removes the category at {@code fromCategoryIndex}
+     * and inserts it at {@code toCategoryIndex}, shifting other categories accordingly.</p>
+     *
+     * @param fromCategoryIndex The original index of the category.
+     * @param toCategoryIndex The target index to move the category to.
+     * @throws UniTaskerException If either index is invalid.
+     */
     public void reorderCategory(int fromCategoryIndex, int toCategoryIndex) throws UniTaskerException {
         if (fromCategoryIndex >= this.getAmount() || fromCategoryIndex < 0) {
             throw new UniTaskerException("First categoryIndex does not exist.");
@@ -102,7 +130,17 @@ public class CategoryList {
         Category category = categories.remove(fromCategoryIndex);
         categories.add(toCategoryIndex, category);
     }
-
+    /**
+     * Reorders todos within a specific category.
+     *
+     * <p>This method delegates the reordering logic to the corresponding {@code Category},
+     * moving a todo from one index to another within the same category.</p>
+     *
+     * @param categoryIndex The index of the category containing the todos.
+     * @param fromTodoIndex The original index of the todo.
+     * @param toTodoIndex The target index to move the todo to.
+     * @throws UniTaskerException If any of the indexes entered are invalid.
+     */
     public void reorderTodo(int categoryIndex, int fromTodoIndex, int toTodoIndex) throws UniTaskerException {
         if (categoryIndex >= this.getAmount() || categoryIndex < 0) {
             throw new UniTaskerException("categoryIndex does not exist.");
@@ -110,6 +148,17 @@ public class CategoryList {
         categories.get(categoryIndex).reorderTodo(fromTodoIndex, toTodoIndex);
     }
 
+    /**
+     * Sets the priority level of a specific todo within a category.
+     *
+     * <p>This method validates the provided indices before delegating
+     * the priority update to the corresponding {@code Category}.</p>
+     *
+     * @param categoryIndex The index of the category containing the todo.
+     * @param todoIndex The index of the todo whose priority is to be updated.
+     * @param priority The priority level to assign to the todo.
+     * @throws UniTaskerException If the categoryIndex or todoIndex is invalid.
+     */
     public void setTodoPriority(int categoryIndex, int todoIndex, int priority) throws UniTaskerException {
         if (categoryIndex >= this.getAmount() || categoryIndex < 0) {
             throw new UniTaskerException("categoryIndex does not exist.");
@@ -377,13 +426,28 @@ public class CategoryList {
         }
         logger.info("Delete recurring event group at : " + categoryIndex + " " + groupIndex);
     }
-
+    /**
+     * Deletes all tasks that have been marked as completed across all categories.
+     *
+     * <p>This method iterates through every category in the {@code CategoryList}
+     * and removes all tasks (todos, deadlines, and events) that are marked as done.
+     * It provides a convenient way for users to perform bulk deletion of completed tasks.</p>
+     */
     public void deleteMarkedTasks() {
         for (int i = 0; i < categories.size(); i += 1) {
             categories.get(i).deleteMarkedTasks();
         }
     }
-
+    /**
+     * Returns a new {@code CategoryList} containing tasks that match the given input substring.
+     *
+     * <p>This method searches through all categories and retrieves tasks whose descriptions
+     * contain the specified input substring. Matching tasks are grouped under their respective
+     * categories. Categories with no matching tasks are excluded from the result.</p>
+     *
+     * @param input The substring to search for within task descriptions.
+     * @return A {@code CategoryList} containing only categories with matching tasks.
+     */
     public CategoryList returnFoundTasks(String input) {
         CategoryList foundTasks = new CategoryList();
         for (int i = 0; i < this.getAmount(); i += 1) {

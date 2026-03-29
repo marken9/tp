@@ -27,6 +27,7 @@ Contribution: [RepoSense Link](https://nus-cs2113-ay2526-s2.github.io/tp-dashboa
 General contributions:
 - Commands related to todos and categories
 - Command class refactoring
+- Add saving of todos inside the storage class
 
 **Test Coverage Contributions**
 - Integration testing for commands related to categories and todos
@@ -36,7 +37,6 @@ General contributions:
 - AppContainer component
 - Reorder todo sequence diagram
 - Command component with class diagram
-
 
 **User Guide Contributions**
 - Todo specific commands (reorder, priority, sort)
