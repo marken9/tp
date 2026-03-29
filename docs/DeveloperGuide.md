@@ -21,8 +21,6 @@ This section describes the design and implementation of the key components of Un
 
 The **Architecture Diagram** given above explains the high-level design of the App
 
-Given below is a quick overview of the main components and how they interact with each other.
-
 **Main components of the architecture**
 
 UniTasker is in charge of the app launch and shut down
@@ -30,10 +28,10 @@ UniTasker is in charge of the app launch and shut down
 - At shut down, it shuts down the other components.
 
 The bulk of the app's work is done by the following components:
-- Command: 
-- UI:
-- AppContainer:
-- Storage:
+- Command: Responsible for executing user instructions correctly
+- UI: Responsible for displaying messages to the user.
+- AppContainer: Acts as a central container for sharing application data.
+- Storage: Responsible for saving and loading data from local files.
 
 **How the architecture components interact with each other:**
 
@@ -65,8 +63,25 @@ The `AppContainer` component,
 
 **Command component**
 
+![CommandClassDiagram](/docs/pictures/CommandClassDiagram.png)
 
+The `Command` component handles the execution of user commands. Each supported command is represented by a separate command class implementing the common `Command` interface.
 
+The component consists of:
+- `CommandParser`, which maps raw user input to a concrete command object
+- `Command`, which defines the common `execute(AppContainer container)` method
+- Concrete command classes such as `AddCommand`, `DeleteCommand`, and so on.
+- `CommandSupport`, which provides shared helper methods such as data saving and category index retrieval
+
+How the `Command` component works:
+
+1. User input is received by `UniTasker`
+2. Input is passed to `CommandParser`
+3. `CommandParser` returns the appropriate `Command` object
+4. `execute(container)` is called
+5. Command updates the model via `AppContainer`
+6. Changes are saved via `Storage`
+7. Output messages are displayed via `UI`
 
 ## Implementation
 
@@ -74,7 +89,7 @@ The `AppContainer` component,
 
 The figure below illustrates the relationship between Deadline class and the following classes: Task, Timed, Calendar, DateUtils, DeadlineList, TaskList. 
 
-![Deadline Class Diagram](pictures/deadlineClassDiagram.png)
+![Deadline Class Diagram](docs/pictures/deadlineClassDiagram.png)
 *<div align="center"> Figure x - Deadline Class Diagram </div>*
 
 
@@ -105,7 +120,7 @@ Example: `Add deadline 1 Homework /by 31-12-2025 1800` or `Add event 1 Homework 
 
 **Note: The command in the diagram has been generalised as a date since DateUtils validates dates only**
 
-![DateUtils Sequence Diagram](pictures/DateUtilsSequence.png)
+![DateUtils Sequence Diagram](docs/pictures/DateUtilsSequence.png)
 *<div align="center"> Figure x - DateUtils: parse() Sequence Diagram </div>*
 
 **Parsing Flow Summary:**
@@ -131,7 +146,7 @@ TaskValidator ensures that there is a unique occurrence of a given task with no 
 
 Before any task (Todo, Deadline, Event) is added to the system, the AddCommand invokes three sequential validation passes via TaskValidator. These checks ensure that no Task have the same name, workload per day does not exceed set limit and there is no overlap in events. The diagram below shows the full interaction.
 
-![TaskValidator Sequence Diagram](pictures/TaskValidatorSequence.png)
+![TaskValidator Sequence Diagram](docs/pictures/TaskValidatorSequence.png)
 *<div align="center"> Figure x - Task Validator Sequence Diagram </div>*
 
 **Parsing Flow Summary**
@@ -199,11 +214,14 @@ and focus on completing their academic responsibilities.
 
 ## Non-Functional Requirements
 
-{Give non-functional requirements}
+1. Should work on any mainstream OS as long as it has Java `17` or above installed.
+2. Should be able to hold up to 500 tasks/courses without a noticeable reduction in performance
+3. A user with above average typing speed for regular English text 
+can accomplish most of the tasks faster using commands than using the mouse.
 
 ## Glossary
 
-* *glossary item* - Definition
+* *Mainstream OS* - Windows, Linux, Unix, MacOS
 
 ## Instructions for manual testing
 
