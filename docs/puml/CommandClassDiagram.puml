@@ -1,0 +1,40 @@
+@startuml
+
+package ":Command" {
+
+interface ":Command" as Command {
+    + execute(container: AppContainer)
+}
+
+class ":CommandParser" as CommandParser {
+    + parse(line: String): Command
+}
+
+class ":CommandSupport" as CommandSupport {
+    {static} + saveData(container: AppContainer)
+    {static} + getCategoryIndex(container: AppContainer, sentence: String[]): int
+}
+
+class ":XYZCommand" as XYZCommand {
+}
+
+}
+
+class ":AppContainer" as AppContainer
+
+class ":UniTasker" as UniTasker
+class ":UI" as UI
+class ":Storage" as Storage
+
+UniTasker ..> CommandParser
+
+CommandParser ..> Command : returns
+Command <|.. XYZCommand
+
+XYZCommand ..> CommandSupport
+Command .right.> AppContainer : execute(container)
+
+XYZCommand .right.> UI
+CommandSupport .right.> Storage
+
+@enduml

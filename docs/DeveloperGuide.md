@@ -30,10 +30,10 @@ UniTasker is in charge of the app launch and shut down
 - At shut down, it shuts down the other components.
 
 The bulk of the app's work is done by the following components:
-- Command: 
-- UI:
-- AppContainer:
-- Storage:
+- Command: Responsible for executing user instructions correctly
+- UI: Responsible for displaying messages to the user.
+- AppContainer: Acts as a central container for sharing application data.
+- Storage: Responsible for saving and loading data from local files.
 
 **How the architecture components interact with each other:**
 
@@ -65,8 +65,25 @@ The `AppContainer` component,
 
 **Command component**
 
+![CommandClassDiagram](/docs/pictures/CommandClassDiagram.png)
 
+The `Command` component handles the execution of user commands. Each supported command is represented by a separate command class implementing the common `Command` interface.
 
+The component consists of:
+- `CommandParser`, which maps raw user input to a concrete command object
+- `Command`, which defines the common `execute(AppContainer container)` method
+- Concrete command classes such as `AddCommand`, `DeleteCommand`, and so on.
+- `CommandSupport`, which provides shared helper methods such as data saving and category index retrieval
+
+How the `Command` component works:
+
+1. User input is received by `UniTasker`
+2. Input is passed to `CommandParser`
+3. `CommandParser` returns the appropriate `Command` object
+4. `execute(container)` is called
+5. Command updates the model via `AppContainer`
+6. Changes are saved via `Storage`
+7. Output messages are displayed via `UI`
 
 ## Implementation
 
