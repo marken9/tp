@@ -16,6 +16,7 @@ public class Category {
     private EventList eventList;
 
     public Category(String name) {
+        assert name != null && !name.trim().isEmpty() : "Category name cannot be null or empty";
         this.name = name;
         this.todoList = new TodoList();
         this.deadlineList = new DeadlineList();
@@ -23,6 +24,7 @@ public class Category {
     }
 
     public void setName(String name) {
+        assert name != null && !name.trim().isEmpty() : "Category name cannot be null or empty";
         this.name = name;
     }
 

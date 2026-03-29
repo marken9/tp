@@ -38,8 +38,12 @@ The bulk of the app's work is done by the following components:
 ![ReorderCommand](/docs/pictures/ReorderTodoSequenceDiagram.png)
 
 1. User enters command in terminal
-2. xx
-3. xx
+2. UniTasker reads the input and passes it to CommandParser
+3. CommandParser identifies the command type and creates a corresponding Command object
+4. The Command object calls its execute() method with the AppContainer instance
+5. The Command modifies the appropriate data structures within AppContainer (categories, tasks, calendar)
+6. The Command calls Storage to persist changes to disk
+7. UI components display the result of the operation to the user
 
 **AppContainer component**
 
@@ -98,6 +102,8 @@ The figure below illustrates the relationship between Deadline class and the fol
 - DateUtils hold 3 DateTimeFormatter constants which gives users the ability to store deadlines and events in different formats.
 - DeadlineList extends the generic TaskList<T>, inheriting add/delete/mark/contains operations.
 - Calendar uses a TreeMap<LocalDate, List<Task>> to enable efficient range queries without iterating the entire task list.
+- Java assertions are used throughout the codebase to validate preconditions and invariants, such as ensuring task descriptions and category names are non-empty.
+- The CategoryList acts as a central task management hub, interfacing with multiple specialized task lists (TodoList, DeadlineList, EventList) to maintain separation of concerns.
 
 ### Feature: Task Validation ###
 

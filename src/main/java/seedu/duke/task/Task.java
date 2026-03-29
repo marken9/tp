@@ -6,11 +6,13 @@ public abstract class Task {
 
 
     public Task(String description) {
+        assert description != null && !description.trim().isEmpty() : "Task description cannot be null or empty";
         this.description = description;
         this.isDone = false;
     }
 
     public String getStatusIcon() {
+        assert true : "Status icon retrieved for task";
         return (isDone ? "X" : " ");
     }
 

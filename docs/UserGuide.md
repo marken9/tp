@@ -99,6 +99,10 @@ Format: `add event [categoryIndex] [description] /from [start] /to [end]`
 
 - `categoryIndex`: Integer value corresponding to the category
 - `description`: Description of the event
+- `/from`: Keyword indicating event start time
+- `/to`: Keyword indicating event end time
+- `start` and `end`: Format `dd-MM-yyyy HHmm`
+- `description`: Description of the event
 - `/from`: Start date and time
 - `/to`: End date and time
 
