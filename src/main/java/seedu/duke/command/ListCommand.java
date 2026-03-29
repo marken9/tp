@@ -34,15 +34,15 @@ public class ListCommand implements Command {
             handleListCategory(container);
             break;
         case "todo":
-            CategoryUi.printList(container.getCategories().getAllTodos());
+            CategoryUi.printList(container.categories().getAllTodos());
             break;
         //@@author WenJunYu5984
         case "deadline":
-            CategoryUi.printList(container.getCategories().getAllDeadlines());
+            CategoryUi.printList(container.categories().getAllDeadlines());
             break;
         //@@author sushmiithaa
         case "event":
-            GeneralUi.printWithBorder(null, container.getCategories().getAllEvents());
+            GeneralUi.printWithBorder(null, container.categories().getAllEvents());
             break;
         //@@author WenJunYu5984
         case "range":
@@ -50,7 +50,7 @@ public class ListCommand implements Command {
             break;
         //@@author sushmiithaa
         case "recurring":
-            GeneralUi.printWithBorder(null, container.getCategories().getAllRecurringEvents());
+            GeneralUi.printWithBorder(null, container.categories().getAllRecurringEvents());
             break;
         //@@author WenJunYu5984
         case "limit":
@@ -68,12 +68,12 @@ public class ListCommand implements Command {
         int sentenceLength = sentence.length;
         switch (sentenceLength) {
         case 2:
-            CategoryUi.printList(container.getCategories().toString());
+            CategoryUi.printList(container.categories().toString());
             break;
         case 3:
             try {
                 int catIndex = CommandSupport.getCategoryIndex(container, sentence);
-                CategoryUi.printList(container.getCategories().getCategory(catIndex).toString());
+                CategoryUi.printList(container.categories().getCategory(catIndex).toString());
             } catch (Exception e) {
                 ErrorUi.printCommandFailed("list category [index]", e.getMessage(), null);
             }
@@ -99,11 +99,11 @@ public class ListCommand implements Command {
             }
 
             if (sentence.length > 4 && sentence[4].equalsIgnoreCase("/deadline")) {
-                container.getCalendar().displaySpecificTypeInRange(start, end, Deadline.class);
+                container.calendar().displaySpecificTypeInRange(start, end, Deadline.class);
             } else if (sentence.length > 4 && sentence[4].equalsIgnoreCase("/event")) {
-                container.getCalendar().displaySpecificTypeInRange(start, end, Event.class);
+                container.calendar().displaySpecificTypeInRange(start, end, Event.class);
             } else {
-                container.getCalendar().displayRange(start, end);
+                container.calendar().displayRange(start, end);
             }
         } catch (DateTimeParseException e) {
             ErrorUi.printRangeDateFormatError();

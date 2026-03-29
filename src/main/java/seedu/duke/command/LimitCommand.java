@@ -4,6 +4,16 @@ import seedu.duke.appcontainer.AppContainer;
 import seedu.duke.ui.ErrorUi;
 import seedu.duke.ui.LimitUi;
 
+/**
+ * Command that updates a configurable application limit.
+ *
+ * <p>Handles two limit types:
+ * task — sets the maximum number of daily tasks (minimum 1)</li>
+ * year — sets the end year (must not precede the configured start year)</li>
+ *
+ * <p>Expected token layout: {@code limit <type> <value>}
+ */
+
 //@@author WenJunYu5984
 public class LimitCommand implements Command {
     private final String[] sentence;
