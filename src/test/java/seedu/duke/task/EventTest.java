@@ -147,9 +147,8 @@ public class EventTest {
 
         categoryList.addRecurringWeeklyEvent(0, "CS2113 lecture", from, to,
                 new Calendar(), null, 0);
-        int groupIndex = 1;
-        Event eventToDelete = categoryList.findRecurringEventToDelete(0, groupIndex);
-        categoryList.deleteRecurringEvent(0, groupIndex);
+        Event eventToDelete = categoryList.getEvent(0,0);
+        categoryList.deleteRecurringEvent(0, eventToDelete.getRecurringGroupId());
         System.out.println("____________________________________________________________");
         System.out.println("This recurring event has been deleted:");
         System.out.println(eventToDelete.toStringRecurringList());
@@ -157,7 +156,7 @@ public class EventTest {
 
         assertEquals("____________________________________________________________" + System.lineSeparator() +
                 "This recurring event has been deleted:" + System.lineSeparator() +
-                "[RE][Group 1]CS2113 lecture (from: Friday 1600 to: Friday 1800)" + System.lineSeparator() +
+                "[RE]CS2113 lecture (from: Friday 1600 to: Friday 1800)" + System.lineSeparator() +
                 "____________________________________________________________", outContent.toString().trim());
     }
 

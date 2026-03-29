@@ -75,7 +75,7 @@ public class MarkCommand implements Command {
             int categoryIndex = CommandSupport.getCategoryIndex(container, sentence);
             int taskIndex = Integer.parseInt(sentence[3]) - 1;
             container.getCategories().setEventStatus(categoryIndex, taskIndex, isMark);
-            TaskUi.printStatusChanged(container.getCategories().getEvent(categoryIndex, taskIndex), isMark);
+            TaskUi.printStatusChanged(container.getCategories().getEvent(categoryIndex, taskIndex).toString(), isMark);
         } catch (Exception e) {
             ErrorUi.printError(e.getMessage());
         }

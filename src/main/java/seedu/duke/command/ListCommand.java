@@ -57,7 +57,8 @@ public class ListCommand implements Command {
             break;
         //@@author
         default:
-            ErrorUi.printUnknownCommand("list", "category, todo, deadline, event, range, recurring or limit");
+            ErrorUi.printUnknownCommand("list", "category, todo, deadline, event, " +
+                    "range, recurring or limit");
             break;
         }
     }

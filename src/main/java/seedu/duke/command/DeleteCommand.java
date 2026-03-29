@@ -1,14 +1,16 @@
 package seedu.duke.command;
 
 import seedu.duke.appcontainer.AppContainer;
-import seedu.duke.exception.UniTaskerException;
 import seedu.duke.task.Event;
 import seedu.duke.ui.CategoryUi;
 import seedu.duke.ui.DeadlineUi;
 import seedu.duke.ui.ErrorUi;
 import seedu.duke.ui.EventUi;
 import seedu.duke.ui.TaskUi;
+import seedu.duke.ui.GeneralUi;
 
+import seedu.duke.tasklist.EventReference;
+import java.util.List;
 import static seedu.duke.tasklist.CategoryList.refreshCalendar;
 
 public class DeleteCommand implements Command {
@@ -68,24 +70,31 @@ public class DeleteCommand implements Command {
                     DeadlineUi.printItemDeleted("event", null, categoryIndex);
                 } else {
                     int eventIndex = Integer.parseInt(sentence[3]) - 1;
-                    container.getCategories().deleteEvent(categoryIndex, eventIndex);
-                    DeadlineUi.printItemDeleted("event", eventIndex, categoryIndex);
+                    Event eventToDelete = container.getCategories().getEvent(categoryIndex,eventIndex);
+                    if (!(eventToDelete.getIsRecurring())) {
+                        container.getCategories().deleteEvent(categoryIndex, eventIndex);
+                        EventUi.printNormalEventDeleted(eventToDelete);
+                    } else {
+                        GeneralUi.printBordered("To delete recurring event as a whole group " +
+                                "use list recurring and delete recurring");
+                    }
                 }
                 break;
             case "recurring":
-                int groupIndex = Integer.parseInt(sentence[3]);
-                Event eventToDelete = container.getCategories().findRecurringEventToDelete(categoryIndex, groupIndex);
-                if (eventToDelete == null) {
-                    throw new UniTaskerException("Choose a positive integer that represents" +
-                            " the group number that belongs to the category");
-                }
-                container.getCategories().deleteRecurringEvent(categoryIndex, groupIndex);
-                EventUi.printRecurringEventDeleted(eventToDelete);
+                int uiIndex = Integer.parseInt(sentence[3]);
+                List<EventReference> displayMap = container.getCategories().getActiveDisplayMap();
+                EventReference eventReference  = displayMap.get(uiIndex-1);
+                Event event = container.getCategories().getEvent(eventReference.categoryIndex,
+                        eventReference.eventIndex);
+
+                container.getCategories().deleteRecurringEvent(categoryIndex, event.getRecurringGroupId());
+                EventUi.printRecurringEventDeleted(event);
                 break;
             //@@author
             default:
                 ErrorUi.printUnknownCommand("delete",
-                        "category/todo/deadline/event [index] or delete recurring [category index] [group number]");
+                        "category/todo/deadline/event [index] or " +
+                                "delete recurring [category index] [index number]");
                 break;
             }
 

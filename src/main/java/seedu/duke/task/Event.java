@@ -60,7 +60,7 @@ public class Event extends Task implements Timed {
         DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
         String fromFormatted = from.format(displayFormatter);
         String toFormatted = to.format(displayFormatter);
-        return (isRecurring ? "[RE]" + "[Group " + recurringGroupId + "]" : "[E]") + super.toString()
+        return (isRecurring ? "[RE]" : "[E]") + super.toString()
                 + " (from: " + fromFormatted + " to: " + toFormatted + ")";
     }
 
@@ -72,8 +72,7 @@ public class Event extends Task implements Timed {
         DateTimeFormatter displayFormatterTime = DateTimeFormatter.ofPattern("EEEE HHmm");
         String fromFormatted = from.format(displayFormatterTime);
         String toFormatted = to.format(displayFormatterTime);
-
-        return "[RE][Group " + recurringGroupId + "]" + super.toString()
+        return "[RE]" + super.toString()
                 + " (from: " + fromFormatted + " to: " + toFormatted + ")";
     }
 
@@ -86,7 +85,7 @@ public class Event extends Task implements Timed {
         String fromFormatted = from.format(displayFormatterTime);
         String toFormatted = to.format(displayFormatterTime);
 
-        return "[RE][Group " + recurringGroupId + "]" + description
+        return "[RE]" + description
                 + " (from: " + fromFormatted + " to: " + toFormatted + ")";
     }
 
