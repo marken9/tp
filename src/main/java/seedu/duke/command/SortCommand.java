@@ -7,6 +7,10 @@ import seedu.duke.ui.TaskUi;
 
 //@@author marken9
 public class SortCommand implements Command {
+    public static final int SORT_MIN_LENGTH = 2;
+    public static final int INDEX_OF_TASKTYPE = 1;
+    public static final int SORT_TODO_MIN_LENGTH = 3;
+    
     private final String[] sentence;
 
     public SortCommand(String[] sentence) {
@@ -15,16 +19,16 @@ public class SortCommand implements Command {
 
     @Override
     public void execute(AppContainer container) {
-        if (sentence.length <= 1) {
+        if (sentence.length < SORT_MIN_LENGTH) {
             ErrorUi.printUnknownCommand("sort", "todo");
             return;
         }
 
-        String secondCommand = sentence[1];
+        String secondCommand = sentence[INDEX_OF_TASKTYPE];
         switch (secondCommand) {
         case "todo":
             try {
-                if (sentence.length <= 2) {
+                if (sentence.length < SORT_TODO_MIN_LENGTH) {
                     throw new UniTaskerException("Insufficient arguments");
                 }
                 int categoryIndex = CommandSupport.getCategoryIndex(container, sentence);

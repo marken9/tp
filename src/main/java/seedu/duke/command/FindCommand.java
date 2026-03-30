@@ -8,6 +8,7 @@ import seedu.duke.ui.TaskUi;
 public class FindCommand implements Command {
     public static final int FIND_MIN_LENGTH = 2;
     public static final int INDEX_OF_FIND_INFO = 1;
+
     private final String[] sentence;
 
     public FindCommand(String[] sentence) {

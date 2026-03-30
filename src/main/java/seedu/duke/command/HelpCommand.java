@@ -7,6 +7,7 @@ import seedu.duke.ui.CommandHelp;
 public class HelpCommand implements Command {
     public static final int HELP_MIN_LENGTH = 1;
     public static final int INDEX_OF_HELPTOPIC = 1;
+
     private final String[] sentence;
 
     public HelpCommand(String[] sentence) {
