@@ -1,0 +1,28 @@
+@startuml UI
+
+skinparam classAttributeIconSize 0
+skinparam CircledCharacterFontSize 0
+skinparam CircledCharacterRadius 0
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+
+class GeneralUi
+class ErrorUi
+class CategoryUi
+class DeadlineUi
+class EventUi
+class TaskUi
+class LimitUi
+class CommandHelp
+
+ErrorUi    ..> GeneralUi : <<uses>>
+CategoryUi ..> GeneralUi : <<uses>>
+DeadlineUi ..> GeneralUi : <<uses>>
+EventUi    ..> GeneralUi : <<uses>>
+TaskUi     ..> GeneralUi : <<uses>>
+LimitUi    ..> GeneralUi : <<uses>>
+
+@enduml

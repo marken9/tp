@@ -1,0 +1,44 @@
+@startuml Storage
+
+skinparam classAttributeIconSize 0
+skinparam CircledCharacterFontSize 0
+skinparam CircledCharacterRadius 0
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+
+
+
+class Storage {
+    - SETTINGS_FILE : String {static}
+    - logger : Logger {static}
+    - todoFilePath : String
+    - deadlineFilePath : String
+    - eventFilePath : String
+    --
+    + Storage(todoPath : String, deadlinePath : String, eventPath : String)
+    + save(categoryList : CategoryList) : void
+    + load(categoryList : CategoryList) : void
+    + loadSettings() : void {static}
+    + saveSettings() : void {static}
+    - loadTodos(categoryList : CategoryList, todoFile : File) : void
+    - loadDeadlines(categoryList : CategoryList, deadlineFile : File) : void
+    - loadEvents(categoryList : CategoryList, eventFile : File) : void
+    - ensureCategoryExists(categoryList : CategoryList, catName : String) : void
+    - categoryExists(list : CategoryList, name : String) : boolean
+    - getCategoryIndex(list : CategoryList, name : String) : int
+}
+
+
+class CategoryList
+
+
+class ErrorUi
+
+
+Storage ..> CategoryList : <<uses>>
+Storage ..> ErrorUi     : <<uses>>
+
+@enduml
