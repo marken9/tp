@@ -15,6 +15,17 @@ import seedu.duke.util.DateUtils;
 import seedu.duke.exception.IllegalDateException;
 
 public class ListCommand implements Command {
+    public static final int LIST_MIN_LENGTH = 2;
+    public static final int LIST_WITH_INDEX_LENGTH = 3;
+    public static final int LIST_RANGE_MIN_LENGTH = 4;
+
+    public static final int INDEX_OF_LIST_TYPE = 1;
+    public static final int INDEX_OF_LIST_RANGE_TASKTYPE = 4;
+    public static final int INDEX_OF_LIST_RANGE_STARTTIME = 2;
+    public static final int INDEX_OF_LIST_RANGE_ENDTIME = 3;
+    public static final int INDEX_OF_ADDITIONAL_INFO = 2;
+
+
     private final String[] sentence;
 
     public ListCommand(String[] sentence) {
@@ -23,13 +34,13 @@ public class ListCommand implements Command {
 
     @Override
     public void execute(AppContainer container) {
-        if (sentence.length < 2) {
+        if (sentence.length < LIST_MIN_LENGTH) {
             ErrorUi.printUnknownCommand("list", "category, todo, deadline, event, range, " +
                     "recurring, occurrence or limit");
             return;
         }
 
-        String secondCommand = sentence[1];
+        String secondCommand = sentence[INDEX_OF_LIST_TYPE];
         switch (secondCommand) {
         //@@author marken9
         case "category":
@@ -44,8 +55,10 @@ public class ListCommand implements Command {
             break;
         //@@author sushmiithaa
         case "event":
-            boolean showAll = (sentence.length > 2 && sentence[2].equalsIgnoreCase("/all"));
-            boolean showNormalEventsOnly = (sentence.length > 2 && sentence[2].equalsIgnoreCase("/normal"));
+            boolean showAll = (sentence.length > LIST_MIN_LENGTH
+                    && sentence[INDEX_OF_ADDITIONAL_INFO].equalsIgnoreCase("/all"));
+            boolean showNormalEventsOnly = (sentence.length > LIST_MIN_LENGTH
+                    && sentence[INDEX_OF_ADDITIONAL_INFO].equalsIgnoreCase("/normal"));
             GeneralUi.printWithBorder(null, container.categories().getAllEvents(showAll,showNormalEventsOnly));
             break;
         //@@author WenJunYu5984
@@ -63,7 +76,7 @@ public class ListCommand implements Command {
                 if (!currentView.equals("EVENT")){
                     throw new UniTaskerException("Please use: list event first before list occurrence");
                 }
-                int recurringUiIdx = Integer.parseInt(sentence[3]);
+                int recurringUiIdx = Integer.parseInt(sentence[LIST_WITH_INDEX_LENGTH]);
                 String allRecurringEventsWithinGroup = container.categories()
                         .getOccurrencesOfRecurringEvent(catIdx, recurringUiIdx);
                 GeneralUi.printWithBorder(null, allRecurringEventsWithinGroup);
@@ -89,10 +102,10 @@ public class ListCommand implements Command {
     private void handleListCategory(AppContainer container) {
         int sentenceLength = sentence.length;
         switch (sentenceLength) {
-        case 2:
+        case LIST_MIN_LENGTH:
             CategoryUi.printList(container.categories().toString());
             break;
-        case 3:
+        case LIST_WITH_INDEX_LENGTH:
             try {
                 int catIndex = CommandSupport.getCategoryIndex(container, sentence);
                 CategoryUi.printList(container.categories().getCategory(catIndex).toString());
@@ -109,8 +122,8 @@ public class ListCommand implements Command {
     //@@author WenJunYu5984
     private void handleListRange(AppContainer container) {
         try {
-            LocalDate start = DateUtils.parseLocalDate(sentence[2]);
-            LocalDate end = DateUtils.parseLocalDate(sentence[3]);
+            LocalDate start = DateUtils.parseLocalDate(sentence[INDEX_OF_LIST_RANGE_STARTTIME]);
+            LocalDate end = DateUtils.parseLocalDate(sentence[INDEX_OF_LIST_RANGE_ENDTIME]);
 
             if (start.getYear() < container.getStartYear() || end.getYear() > container.getEndYear()) {
                 ErrorUi.printRangeOutOfBounds(container.getStartYear(), container.getEndYear());
@@ -120,9 +133,11 @@ public class ListCommand implements Command {
                 throw new IllegalArgumentException("Start date must be earlier than End date");
             }
 
-            if (sentence.length > 4 && sentence[4].equalsIgnoreCase("/deadline")) {
+            if (sentence.length > LIST_RANGE_MIN_LENGTH
+                    && sentence[INDEX_OF_LIST_RANGE_TASKTYPE].equalsIgnoreCase("/deadline")) {
                 container.calendar().displaySpecificTypeInRange(start, end, Deadline.class);
-            } else if (sentence.length > 4 && sentence[4].equalsIgnoreCase("/event")) {
+            } else if (sentence.length > LIST_RANGE_MIN_LENGTH
+                    && sentence[INDEX_OF_LIST_RANGE_TASKTYPE].equalsIgnoreCase("/event")) {
                 container.calendar().displaySpecificTypeInRange(start, end, Event.class);
             } else {
                 container.calendar().displayRange(start, end);

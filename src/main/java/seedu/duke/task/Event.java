@@ -9,6 +9,7 @@ public class Event extends Task implements Timed {
 
     private static final DateTimeFormatter STORAGE_FORMATTER =
             DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
+    private static final DateTimeFormatter RECURRING_GROUP_FORMATTER = DateTimeFormatter.ofPattern("EEEE HHmm");
 
     protected LocalDateTime from;
     protected LocalDateTime to;
@@ -57,7 +58,7 @@ public class Event extends Task implements Timed {
         assert (from != null && to!=null): "There must be a start date time and end date time";
         assert (description != null && !description.isEmpty()): "There must be a description for the events";
 
-        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
+        DateTimeFormatter displayFormatter = STORAGE_FORMATTER;
         String fromFormatted = from.format(displayFormatter);
         String toFormatted = to.format(displayFormatter);
         return (isRecurring ? "[RE]" : "[E]") + super.toString()
@@ -65,27 +66,26 @@ public class Event extends Task implements Timed {
     }
 
     public String toStringRecurring() {
-        assert (from != null && to!=null): "There must be a start date time and end date time";
-        assert (description != null && !description.isEmpty()): "There must be a description for the events";
-        assert (isRecurring): "Event to be printed must be recurring";
-
-        DateTimeFormatter displayFormatterTime = DateTimeFormatter.ofPattern("EEEE HHmm");
-        String fromFormatted = from.format(displayFormatterTime);
-        String toFormatted = to.format(displayFormatterTime);
-        return "[RE]" + super.toString()
-                + " (from: " + fromFormatted + " to: " + toFormatted + ")";
+        return recurringEventString(false);
     }
 
     public String toStringRecurringList() {
+        return recurringEventString(true);
+    }
+
+    private String recurringEventString(boolean isList) {
         assert (from != null && to!=null): "There must be a start date time and end date time";
         assert (description != null && !description.isEmpty()): "There must be a description for the events";
         assert (isRecurring): "Event to be printed must be recurring";
 
-        DateTimeFormatter displayFormatterTime = DateTimeFormatter.ofPattern("EEEE HHmm");
+        DateTimeFormatter displayFormatterTime = RECURRING_GROUP_FORMATTER;
         String fromFormatted = from.format(displayFormatterTime);
         String toFormatted = to.format(displayFormatterTime);
-
-        return "[RE]" + description
+        if (isList){
+            return "[RE]" + description
+                    + " (from: " + fromFormatted + " to: " + toFormatted + ")";
+        }
+        return "[RE]" + super.toString()
                 + " (from: " + fromFormatted + " to: " + toFormatted + ")";
     }
 

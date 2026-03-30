@@ -3,13 +3,15 @@ package seedu.duke.task;
 import java.util.logging.Logger;
 
 public class Todo extends Task {
+    public static final int MIN_PRIORITY = 0;
+    
     private static final Logger logger = Logger.getLogger(Todo.class.getName());
     protected int priority;
 
 
     public Todo(String description) {
         super(description);
-        this.priority = 0;
+        this.priority = MIN_PRIORITY;
         logger.info("Created Todo: " + description);
     }
 
@@ -36,7 +38,7 @@ public class Todo extends Task {
     }
 
     public String toString() {
-        if (priority > 0) {
+        if (priority > MIN_PRIORITY) {
             return "[" + getStatusIcon() + "]" + "[" + drawPriority(getPriority()) + "] " + getDescription();
         }
         return "[" + getStatusIcon() + "] " + getDescription();

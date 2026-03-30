@@ -16,6 +16,9 @@ import seedu.duke.ui.ErrorUi;
 
 //@@author WenJunYu5984
 public final class CommandSupport {
+    public static final int INDEX_OF_CATEGORY = 2;
+    public static final int CATEGORY_INDEX_LOWER_LIMIT = 0;
+
     private static final Logger logger = Logger.getLogger(CommandSupport.class.getName());
 
     private CommandSupport() {}
@@ -59,9 +62,9 @@ public final class CommandSupport {
      *                                   range of existing categories
      */
     public static int getCategoryIndex(AppContainer container, String[] sentence) {
-        int categoryIndex = Integer.parseInt(sentence[2]) - 1;
-        if (categoryIndex < 0 || categoryIndex >= container.categories().getAmount()) {
-            throw new IndexOutOfBoundsException("Category " + sentence[2] + " does not exist.");
+        int categoryIndex = Integer.parseInt(sentence[INDEX_OF_CATEGORY]) - 1;
+        if (categoryIndex < CATEGORY_INDEX_LOWER_LIMIT || categoryIndex >= container.categories().getAmount()) {
+            throw new IndexOutOfBoundsException("Category " + sentence[INDEX_OF_CATEGORY] + " does not exist.");
         }
         return categoryIndex;
     }

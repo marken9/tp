@@ -5,6 +5,8 @@ import seedu.duke.task.Event;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 public class EventList extends TaskList<Event> {
 
@@ -14,9 +16,17 @@ public class EventList extends TaskList<Event> {
 
     public String toString() {
         String result = "";
+        Set<Integer> printedGroups = new HashSet<>();
         for (int i = 0; i < tasks.size(); i++) {
-            assert tasks.get(i) != null : "Event must exist";
-            result = result + (i + 1) + ". " + (tasks.get(i).toString()) + System.lineSeparator();
+            Event event = tasks.get(i);
+            assert event != null : "Event must exist";
+            if (event.getIsRecurring() && !printedGroups.contains(event.getRecurringGroupId())) {
+                result = result + (i+1) + ". " + (event.toStringRecurring()) + System.lineSeparator();
+                printedGroups.add(event.getRecurringGroupId());
+            } else if (!event.getIsRecurring()) {
+                result = result + (i+1) + ". " + (event.toString()) + System.lineSeparator();
+
+            }
         }
         return result;
     }

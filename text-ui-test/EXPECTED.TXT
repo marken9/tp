@@ -6,8 +6,12 @@ Welcome to UniTasker - All-in-One Task & Course Management
   3. Event Manager      - Schedule events and recurring meetings
   4. Course Tracker     - Manage courses and assessment grades
 
-____________________________________________________________
-____________________________________________________________
+______________________________________________________________________
+======================== REMINDERS =========================
+No pending deadlines/events for today
+============================================================
+______________________________________________________________________
+______________________________________________________________________
 Unknown command: 'James'
 
 Available commands:
@@ -16,4 +20,4 @@ Available commands:
 
 Try 'help' to see detailed command information.
 Try 'help <topic>' for help on a specific mode (e.g., 'help task', 'help deadline')
-____________________________________________________________
+______________________________________________________________________

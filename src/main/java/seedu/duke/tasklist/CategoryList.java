@@ -1,31 +1,44 @@
 package seedu.duke.tasklist;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
+
 import java.util.logging.Logger;
 
 import seedu.duke.calender.Calendar;
 import seedu.duke.task.Deadline;
 import seedu.duke.task.Event;
-import seedu.duke.exception.UniTaskerException;
+import seedu.duke.task.Task;
 import seedu.duke.task.Todo;
 
+import seedu.duke.exception.UniTaskerException;
+
 public class CategoryList {
+    public static final String DOTTED_LINE = "-------------------------------------------------------------------";
+    public static final String EQUALSIGN_LINE = "===============================================================" +
+            "=======";
+    public static final int INDEX_LOWER_LIMIT = 0;
+    public static final int GROUP_ID_FOR_NON_RECURRING = -1;
+
     private static final Logger logger = Logger.getLogger(CategoryList.class.getName());
 
     private ArrayList<Category> categories;
     private int recurringGroupId = 0;
-    private List<EventReference> activeDisplayMap = new ArrayList<>();
+    private Map<Integer, List<EventReference>> activeDisplayMap;
     private String currentView = "NO_VIEW";
 
     public CategoryList() {
         categories = new ArrayList<>();
     }
 
-    public List<EventReference> getActiveDisplayMap() {
+    public Map<Integer, List<EventReference>> getActiveDisplayMap() {
         return activeDisplayMap;
     }
 
@@ -45,17 +58,14 @@ public class CategoryList {
         return currentView;
     }
 
-    public void setCurrentView(String view) {
-        this.currentView = view;
-    }
-
     public void addTodo(int categoryIndex, String description) {
         categories.get(categoryIndex).addTodo(new Todo(description));
     }
 
     public String getAllTodos() {
         StringBuilder sb = new StringBuilder();
-        sb.append("=== ALL TODOS ===").append(System.lineSeparator());
+        sb.append("ALL TODOS").append(System.lineSeparator());
+        sb.append(DOTTED_LINE).append(System.lineSeparator());
         for (Category cat : categories) {
             sb.append(cat.getName()).append(":").append(System.lineSeparator());
             sb.append(cat.getTodoList().toString());
@@ -82,11 +92,11 @@ public class CategoryList {
      * @throws UniTaskerException If the categoryIndex or todoIndex is invalid.
      */
     public void markTodo(int categoryIndex, int todoIndex) throws UniTaskerException {
-        if (categoryIndex >= this.getAmount() || categoryIndex < 0) {
+        if (categoryIndex >= this.getAmount() || categoryIndex < INDEX_LOWER_LIMIT) {
             throw new UniTaskerException("categoryIndex does not exist.");
         }
         int validTodoIndex = categories.get(categoryIndex).getTodoList().getSize();
-        if (todoIndex >= validTodoIndex || todoIndex < 0) {
+        if (todoIndex >= validTodoIndex || todoIndex < INDEX_LOWER_LIMIT) {
             throw new UniTaskerException("todoIndex does not exist.");
         }
         categories.get(categoryIndex).markTodo(todoIndex);
@@ -102,10 +112,10 @@ public class CategoryList {
      * @throws UniTaskerException If the categoryIndex or todoIndex is invalid.
      */
     public void unmarkTodo(int categoryIndex, int todoIndex) throws UniTaskerException {
-        if (categoryIndex >= this.getAmount() || categoryIndex < 0) {
+        if (categoryIndex >= this.getAmount() || categoryIndex < INDEX_LOWER_LIMIT) {
             throw new UniTaskerException("categoryIndex does not exist.");
         }
-        if (todoIndex >= categories.get(categoryIndex).getTodoList().getSize() || todoIndex < 0) {
+        if (todoIndex >= categories.get(categoryIndex).getTodoList().getSize() || todoIndex < INDEX_LOWER_LIMIT) {
             throw new UniTaskerException("todoIndex does not exist.");
         }
         categories.get(categoryIndex).unmarkTodo(todoIndex);
@@ -121,10 +131,10 @@ public class CategoryList {
      * @throws UniTaskerException If either index is invalid.
      */
     public void reorderCategory(int fromCategoryIndex, int toCategoryIndex) throws UniTaskerException {
-        if (fromCategoryIndex >= this.getAmount() || fromCategoryIndex < 0) {
+        if (fromCategoryIndex >= this.getAmount() || fromCategoryIndex < INDEX_LOWER_LIMIT) {
             throw new UniTaskerException("First categoryIndex does not exist.");
         }
-        if (toCategoryIndex >= this.getAmount() || toCategoryIndex < 0) {
+        if (toCategoryIndex >= this.getAmount() || toCategoryIndex < INDEX_LOWER_LIMIT) {
             throw new UniTaskerException("Second categoryIndex does not exist.");
         }
         Category category = categories.remove(fromCategoryIndex);
@@ -142,7 +152,7 @@ public class CategoryList {
      * @throws UniTaskerException If any of the indexes entered are invalid.
      */
     public void reorderTodo(int categoryIndex, int fromTodoIndex, int toTodoIndex) throws UniTaskerException {
-        if (categoryIndex >= this.getAmount() || categoryIndex < 0) {
+        if (categoryIndex >= this.getAmount() || categoryIndex < INDEX_LOWER_LIMIT) {
             throw new UniTaskerException("categoryIndex does not exist.");
         }
         categories.get(categoryIndex).reorderTodo(fromTodoIndex, toTodoIndex);
@@ -160,21 +170,17 @@ public class CategoryList {
      * @throws UniTaskerException If the categoryIndex or todoIndex is invalid.
      */
     public void setTodoPriority(int categoryIndex, int todoIndex, int priority) throws UniTaskerException {
-        if (categoryIndex >= this.getAmount() || categoryIndex < 0) {
+        if (categoryIndex >= this.getAmount() || categoryIndex < INDEX_LOWER_LIMIT) {
             throw new UniTaskerException("categoryIndex does not exist.");
         }
-        if (todoIndex >= categories.get(categoryIndex).getTodoList().getSize() || todoIndex < 0) {
+        if (todoIndex >= categories.get(categoryIndex).getTodoList().getSize() || todoIndex < INDEX_LOWER_LIMIT) {
             throw new UniTaskerException("todoIndex does not exist.");
         }
         categories.get(categoryIndex).setTodoPriority(todoIndex, priority);
     }
 
     public void addEvent(int categoryIndex, String description, LocalDateTime from, LocalDateTime to) {
-        assert (description != null && !description.isEmpty()) : "Event description should not be empty";
-        assert (from != null && to != null) : "Start date and time and end date and time should not be null";
-        assert from.isBefore(to) || from.isEqual(to) : "The start date time must be before the end date time";
-
-        categories.get(categoryIndex).addEvent(new Event(description, from, to, false, -1));
+        categories.get(categoryIndex).addEvent(createEvent(description, from, to, false, GROUP_ID_FOR_NON_RECURRING));
         logger.info("Add event: " + description + " from " + from + " to " + to);
 
     }
@@ -182,33 +188,49 @@ public class CategoryList {
     public void addRecurringWeeklyEventFile(int categoryIndex, String description,
             LocalDateTime from, LocalDateTime to, int recurringGroupIndex) {
         assert (recurringGroupIndex > 0) : "Recurring Group Id must be greater than 0";
-        assert (description != null && !description.isEmpty()) : "Event description should not be empty";
-        assert (from != null && to != null) : "Start date and time and end date and time should not be null";
-        assert from.isBefore(to) || from.isEqual(to) : "The start date time must be before the end date time";
-
-
-        categories.get(categoryIndex).addEvent(new Event(description,
-                from, to, true, recurringGroupIndex));
-        if (recurringGroupIndex > recurringGroupId) {
-            recurringGroupId = recurringGroupIndex;
-        }
-        logger.info("Add recurring event from file : " + description + " from " + from + " to " + to +
-                " recurringGroupId " + recurringGroupIndex);
+        addRecurring(categoryIndex, description, from, to, recurringGroupIndex,
+                null,null, 0, true);
 
     }
 
     public void addRecurringWeeklyEvent(int categoryIndex, String description, LocalDateTime from,
             LocalDateTime to, Calendar calendar, LocalDateTime date, int months) {
+        assert (calendar != null) : "Calendar should exist";
+        recurringGroupId += 1;
+        addRecurring(categoryIndex, description, from, to, recurringGroupId,
+                calendar,date, months, false);
+    }
+
+    private void addRecurring(int categoryIndex, String description, LocalDateTime from, LocalDateTime to,
+            int groupId, Calendar calendar, LocalDateTime date, int months, boolean isFromFile) {
+
+        Event event = createEvent(description, from, to, true, groupId);
+
+        if (isFromFile) {
+            categories.get(categoryIndex).addEvent(event);
+            if (groupId > recurringGroupId) {
+                recurringGroupId = groupId;
+            }
+        } else {
+            categories.get(categoryIndex).addRecurringWeeklyEvent(
+                    event, calendar, date, months
+            );
+        }
+        logger.info((isFromFile ? "Add recurring event from file: " : "Add recurring event: ")
+                + description + " from " + from + " to " + to
+                + " recurringGroupId " + groupId);
+    }
+
+    private void eventAssertions(String description, LocalDateTime from, LocalDateTime to) {
         assert (description != null && !description.isEmpty()) : "Event description should not be empty";
         assert (from != null && to != null) : "Start date and time and end date and time should not be null";
         assert from.isBefore(to) || from.isEqual(to) : "The start date time must be before the end date time";
-        assert (calendar != null) : "Calendar should exist";
+    }
 
-        recurringGroupId += 1;
-        categories.get(categoryIndex).addRecurringWeeklyEvent(new Event(description,
-                from, to, true, recurringGroupId), calendar, date, months);
-        logger.info("Add recurring event : " + description + " from " + from + " to " + to +
-                " recurringGroupId " + recurringGroupId);
+    private Event createEvent(String description, LocalDateTime from,
+                              LocalDateTime to, boolean isRecurring, int groupId) {
+        eventAssertions(description, from, to);
+        return new Event(description, from, to, isRecurring, groupId);
     }
 
     public void deleteEvent(int categoryIndex, int eventIndex) {
@@ -228,82 +250,109 @@ public class CategoryList {
 
     public String getAllEvents(boolean isExpanded,boolean isNormalEventOnly) {
         StringBuilder sb = new StringBuilder();
-        sb.append(isExpanded ? "=== ALL OCCURRENCES ===" : isNormalEventOnly ?
-                "=== ALL NON-RECURRING EVENTS ===" : "=== ALL EVENTS ===").append(System.lineSeparator());
-        List<EventReference> newMap = new ArrayList<>();
+        sb.append(isExpanded ? "ALL OCCURRENCES" : isNormalEventOnly ?
+                "ALL NON-RECURRING EVENTS" : "ALL EVENTS").append(System.lineSeparator());
+        sb.append(DOTTED_LINE).append(System.lineSeparator());
+        Map<Integer, List<EventReference>> newMap = new HashMap<>();
         Set<Integer> printedGroups = new HashSet<>();
 
         for (int categoryIndex = 0; categoryIndex < categories.size(); categoryIndex++) {
             Category cat = categories.get(categoryIndex);
-            sb.append(cat.getName()).append(":").append(System.lineSeparator());
+            sb.append("[" + (categoryIndex + 1) + "]").append(cat.getName()).append(":").append(System.lineSeparator());
             EventList eventList = cat.getEventList();
             eventList.sortByDate();
-
+            List<EventReference> categoryMap = new ArrayList<>();
+            int uiIndex = 0;
             for (int eventIndex = 0; eventIndex < eventList.getSize(); eventIndex++) {
                 Event event = eventList.get(eventIndex);
-                if (isNormalEventOnly) {
-                    if (!(event.getIsRecurring())) {
-                        sb.append(newMap.size() + 1).append(". ")
-                                .append(event.toString()).append(System.lineSeparator());
-                        newMap.add(new EventReference(categoryIndex, eventIndex));
-                    }
-                } else {
-                    if (event.getIsRecurring()) {
-                        int groupId = event.getRecurringGroupId();
-                        if (isExpanded || !printedGroups.contains(groupId)) {
-                            sb.append(newMap.size() + 1).append(". ")
-                                    .append(isExpanded ? event.toString() : event.toStringRecurring())
-                                    .append(System.lineSeparator());
-                            newMap.add(new EventReference(categoryIndex, eventIndex));
-                            printedGroups.add(groupId);
-                        }
-                    } else {
-                        sb.append(newMap.size() + 1).append(". ")
-                                .append(event.toString()).append(System.lineSeparator());
-                        newMap.add(new EventReference(categoryIndex, eventIndex));
-                    }
+                if (shouldDisplayEvent(event, isExpanded, isNormalEventOnly, printedGroups)) {
+                    displayEvent(sb, event, categoryMap, categoryIndex, eventIndex, isExpanded,uiIndex);
+                    updatePrintedGroups(event, printedGroups);
+                    uiIndex++;
                 }
             }
+            newMap.put(categoryIndex, categoryMap);
         }
         this.activeDisplayMap = newMap;
         this.currentView = isExpanded ? "EVENT_EXPANDED" : isNormalEventOnly ? "NORMAL_EVENT_ONLY" : "EVENT";
         return sb.toString();
+    }
 
+    private void displayEvent(StringBuilder sb, Event event, List<EventReference> map,
+                              int categoryIndex, int eventIndex, boolean isExpanded,int uiIndex) {
+
+        sb.append(uiIndex+1).append(". ")
+                .append(event.getIsRecurring() && !isExpanded ? event.toStringRecurring() : event.toString())
+                .append(System.lineSeparator());
+
+        map.add(new EventReference(categoryIndex, eventIndex));
+    }
+
+    private void updatePrintedGroups(Event event, Set<Integer> printedGroups) {
+        if (event.getIsRecurring()) {
+            printedGroups.add(event.getRecurringGroupId());
+        }
     }
 
     public String getAllRecurringEvents() {
-        ArrayList<Integer> existingGroups = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
-        int uiIndex = 1;
-        List<EventReference> newMap = new ArrayList<>();
+        Map<Integer, List<EventReference>> newMap = new HashMap<>();
         Set<Integer> printedGroups = new HashSet<>();
-        sb.append("=== ALL RECURRING EVENTS ===").append(System.lineSeparator());
+        sb.append("ALL RECURRING EVENTS").append(System.lineSeparator());
+        sb.append(DOTTED_LINE).append(System.lineSeparator());
 
         for (int categoryIndex = 0; categoryIndex < categories.size(); categoryIndex++) {
             Category cat = categories.get(categoryIndex);
-            sb.append(cat.getName()).append(":").append(System.lineSeparator());
+            sb.append("[" + (categoryIndex + 1) + "]").append(cat.getName()).append(":").append(System.lineSeparator());
             EventList eventList = cat.getEventList();
             eventList.sortByDay();
+
+            List<EventReference> categoryMap = new ArrayList<>();
+            int uiIndex = 0;
             for (int eventIndex = 0; eventIndex < eventList.getSize(); eventIndex++) {
                 Event event = eventList.get(eventIndex);
                 if (event.getIsRecurring()) {
                     int groupId = event.getRecurringGroupId();
                     if (!printedGroups.contains(groupId)) {
-                        sb.append(newMap.size() + 1).append(". ")
+                        sb.append(uiIndex + 1).append(". ")
                                 .append(event.toStringRecurring()).append(System.lineSeparator());
-                        newMap.add(new EventReference(categoryIndex, eventIndex));
+                        categoryMap.add(new EventReference(categoryIndex, eventIndex));
                         printedGroups.add(groupId);
+                        uiIndex++;
                     }
                 }
             }
+            newMap.put(categoryIndex, categoryMap);
         }
         this.activeDisplayMap = newMap;
         this.currentView = "RECURRING_OVERVIEW";
         return sb.toString();
     }
 
+    private boolean shouldDisplayEvent(Event event, boolean isExpanded,
+                                       boolean isNormalEventOnly, Set<Integer> printedGroups) {
+        if (isNormalEventOnly) {
+            return !event.getIsRecurring();
+        }
+
+        if (event.getIsRecurring()) {
+            int groupId = event.getRecurringGroupId();
+            return isExpanded || !printedGroups.contains(groupId);
+        }
+        return true;
+    }
+
+
+
     public String getOccurrencesOfRecurringEvent(int categoryIndex, int groupUiIndex) throws UniTaskerException {
-        EventReference ref = activeDisplayMap.get(groupUiIndex - 1);
+
+        List<EventReference> categoryMap = activeDisplayMap.get(categoryIndex);
+
+        if (categoryMap == null || groupUiIndex - 1 >= categoryMap.size()) {
+            throw new UniTaskerException("Invalid index");
+        }
+
+        EventReference ref = categoryMap.get(groupUiIndex - 1);
         Event template = categories.get(ref.categoryIndex).getEvent(ref.eventIndex);
         if (!template.getIsRecurring()){
             throw new UniTaskerException("This is not a recurring event, list occurrence or " +
@@ -312,18 +361,23 @@ public class CategoryList {
         int targetGroupId = template.getRecurringGroupId();
 
         StringBuilder sb = new StringBuilder();
-        sb.append("=== OCCURRENCES FOR: ").append(template.getDescription()).append(" ===\n");
+        sb.append("OCCURRENCES FOR: ").append(template.getDescription()).append("\n");
+        sb.append(DOTTED_LINE).append(System.lineSeparator());
 
-        List<EventReference> newMap = new ArrayList<>();
+        List<EventReference> newCategoryMap = new ArrayList<>();
         EventList eventList = categories.get(categoryIndex).getEventList();
 
+        int uiIndex = 0;
         for (int i = 0; i < eventList.getSize(); i++) {
             Event e = eventList.get(i);
             if (e.getIsRecurring() && e.getRecurringGroupId() == targetGroupId) {
-                sb.append(newMap.size() + 1).append(". ").append(e.toString()).append(System.lineSeparator());
-                newMap.add(new EventReference(categoryIndex, i));
+                sb.append(uiIndex + 1).append(". ").append(e.toString()).append(System.lineSeparator());
+                newCategoryMap.add(new EventReference(categoryIndex, i));
+                uiIndex++;
             }
         }
+        Map<Integer, List<EventReference>> newMap = new HashMap<>();
+        newMap.put(categoryIndex, newCategoryMap);
 
         this.activeDisplayMap = newMap;
         this.currentView = "OCCURRENCE_VIEW";
@@ -362,7 +416,8 @@ public class CategoryList {
 
     public String getAllDeadlines() {
         StringBuilder sb = new StringBuilder();
-        sb.append("=== ALL DEADLINES ===").append(System.lineSeparator());
+        sb.append("ALL DEADLINES").append(System.lineSeparator());
+        sb.append(DOTTED_LINE).append(System.lineSeparator());
         for (Category cat : categories) {
             sb.append(cat.getName().trim()).append(":").append(System.lineSeparator());
             DeadlineList deadlineList = cat.getDeadlineList();
@@ -402,9 +457,11 @@ public class CategoryList {
 
     public String toString() {
         String result = "";
+        result += EQUALSIGN_LINE + System.lineSeparator();
         for (int i = 0; i < categories.size(); i += 1) {
             result += "[" + (i + 1) + "]" + categories.get(i).toString() + System.lineSeparator();
         }
+        result += EQUALSIGN_LINE;
         return result;
     }
 
@@ -458,4 +515,35 @@ public class CategoryList {
         }
         return foundTasks;
     }
+
+    public Map<String, List<Task>> findTasksForTheDay(LocalDate today) {
+        Map<String, List<Task>> reminders = new HashMap<>();
+        for (Category category : categories) {
+            EventList eventList = category.getEventList();
+            DeadlineList deadlineList = category.getDeadlineList();
+            addMatchedTask(today, category, eventList, reminders);
+            addMatchedTask(today, category, deadlineList, reminders);
+        }
+        return reminders;
+    }
+
+    private void addMatchedTask(LocalDate today, Category category, TaskList taskList,
+            Map<String, List<Task>> reminders) {
+        for (int i = 0; i < taskList.getSize(); i++) {
+            Task task = taskList.get(i);
+            if (!task.getIsDone() && isTaskOnDate(task, today)) {
+                reminders.computeIfAbsent(category.getName(), k -> new ArrayList<>()).add(task);
+            }
+        }
+    }
+
+    private boolean isTaskOnDate(Task task, LocalDate today) {
+        if (task instanceof Event) {
+            return ((Event) task).getFrom().toLocalDate().equals(today);
+        } else if (task instanceof Deadline) {
+            return ((Deadline) task).getBy().toLocalDate().equals(today);
+        }
+        return false;
+    }
+
 }

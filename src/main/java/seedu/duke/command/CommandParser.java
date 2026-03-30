@@ -1,9 +1,12 @@
 package seedu.duke.command;
 
 public class CommandParser {
+
+    public static final int INDEX_OF_COMMANDTYPE = 0;
+
     public Command parse(String line) {
         String[] sentence = line.split(" ");
-        String commandWord = sentence[0];
+        String commandWord = sentence[INDEX_OF_COMMANDTYPE];
 
         switch (commandWord) {
         case "add":
@@ -30,6 +33,8 @@ public class CommandParser {
             return new LimitCommand(sentence);
         case "help":
             return new HelpCommand(sentence);
+        case "reminder":
+            return new ReminderCommand();
         case "exit":
             return new ExitCommand();
         default:

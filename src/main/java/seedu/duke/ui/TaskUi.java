@@ -3,6 +3,7 @@ package seedu.duke.ui;
 import seedu.duke.tasklist.CategoryList;
 
 public class TaskUi {
+    public static final int INDEX_LOWER_LIMIT = 0;
 
     public static void printTaskAction(String action, String type, String description) {
         GeneralUi.printBordered(action + " " + type + ": " + description);
@@ -39,7 +40,7 @@ public class TaskUi {
     }
 
     public static void printReordered(String type, String name, int categoryIndex, int newIndex) {
-        if (categoryIndex < 0) {
+        if (categoryIndex < INDEX_LOWER_LIMIT) {
             GeneralUi.printBordered(type + ": " + name + " moved to index " + newIndex);
         } else {
             GeneralUi.printBordered(type + ": " + name + " inside category " + categoryIndex

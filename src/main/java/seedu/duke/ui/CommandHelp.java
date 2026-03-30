@@ -25,6 +25,7 @@ public class CommandHelp {
                 "  limit task <num>      - Set daily task limit (default: 8)\n" +
                 "  limit year <num>      - Set end year for dates (default: 2030)\n" +
                 "  list limit            - Show current limits\n" +
+                "  reminder              - Show all pending tasks for the day\n" +
                 "  exit                  - Quit UniTasker\n" +
                 "\n" +
                 "GETTING HELP:\n" +
@@ -135,11 +136,15 @@ public class CommandHelp {
                 "DELETE:\n" +
                 "  delete event <cat_idx> <idx>\n" +
                 "  delete event <cat_idx> all\n" +
-                "  delete recurring <cat_idx> <group_num>\n" +
+                "  delete recurring <cat_idx> <id>\n" +
+                "  delete occurrence <cat_idx> <id>\n" +
                 "\n" +
                 "LIST:\n" +
-                "  list event                   - List all events\n" +
-                "  list recurring               - List recurring events\n" +
+                "  list event                     - List events with recurring events collapsed to one group\n" +
+                "  list event /all                - List all events\n" +
+                "  list event /normal             - List only non-recurring events\n" +
+                "  list recurring                 - List recurring events\n" +
+                "  list occurrence <cat_idx> <id> - List occurrence of recurring event group\n" +
                 "  list range <start> <end> [/event]\n" +
                 DOTTED_LINE;
     }
@@ -234,7 +239,10 @@ public class CommandHelp {
                 "  delete event <cat_idx> all\n" +
                 "\n" +
                 "RECURRING:\n" +
-                "  delete recurring <cat_idx> <group_num>\n" +
+                "  delete recurring <cat_idx> <idx>\n" +
+                "\n" +
+                "OCCURRENCE:\n" +
+                "  delete occurrence <cat_idx> <idx>\n" +
                 "\n" +
                 "COURSES:\n" +
                 "  course delete <code>\n" +
@@ -262,8 +270,11 @@ public class CommandHelp {
                 "  list deadline                - List all deadlines\n" +
                 "\n" +
                 "EVENTS:\n" +
-                "  list event                   - List all events\n" +
-                "  list recurring               - List recurring events\n" +
+                "  list event                     - List events with recurring events collapsed to one group\n" +
+                "  list event /all                - List all events\n" +
+                "  list event /normal             - List only non-recurring events\n" +
+                "  list recurring                 - List recurring events\n" +
+                "  list occurrence <cat_idx> <id> - List occurrence of recurring event group\n" +
                 "\n" +
                 "DATE RANGES (all types):\n" +
                 "  list range <start> <end>           - All tasks in range\n" +

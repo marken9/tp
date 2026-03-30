@@ -16,6 +16,10 @@ import seedu.duke.ui.LimitUi;
 
 //@@author WenJunYu5984
 public class LimitCommand implements Command {
+    public static final int LIMIT_MIN_LENGTH = 3;
+    public static final int INDEX_OF_TYPE = 1;
+    public static final int INDEX_OF_NEWVALUE = 2;
+
     private final String[] sentence;
 
     public LimitCommand(String[] sentence) {
@@ -25,13 +29,13 @@ public class LimitCommand implements Command {
     @Override
     public void execute(AppContainer container) {
         try {
-            if (sentence.length < 3) {
+            if (sentence.length < LIMIT_MIN_LENGTH) {
                 ErrorUi.printLimitFormatError();
                 return;
             }
 
-            String type = sentence[1].toLowerCase();
-            int newValue = Integer.parseInt(sentence[2]);
+            String type = sentence[INDEX_OF_TYPE].toLowerCase();
+            int newValue = Integer.parseInt(sentence[INDEX_OF_NEWVALUE]);
 
             switch (type) {
             case "task":

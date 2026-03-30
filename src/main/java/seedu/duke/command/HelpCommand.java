@@ -5,6 +5,9 @@ import seedu.duke.ui.CommandHelp;
 
 //@@author benguy6
 public class HelpCommand implements Command {
+    public static final int HELP_MIN_LENGTH = 1;
+    public static final int INDEX_OF_HELPTOPIC = 1;
+
     private final String[] sentence;
 
     public HelpCommand(String[] sentence) {
@@ -13,10 +16,10 @@ public class HelpCommand implements Command {
 
     @Override
     public void execute(AppContainer container) {
-        if (sentence.length == 1) {
+        if (sentence.length == HELP_MIN_LENGTH) {
             System.out.println(CommandHelp.getHelp(null));
         } else {
-            String topic = sentence[1];
+            String topic = sentence[INDEX_OF_HELPTOPIC];
             System.out.println(CommandHelp.getHelp(topic));
         }
     }

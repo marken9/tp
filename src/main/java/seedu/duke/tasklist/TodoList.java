@@ -6,16 +6,17 @@ import seedu.duke.exception.UniTaskerException;
 import seedu.duke.task.Todo;
 
 public class TodoList extends TaskList<Todo> {
+    public static final int INDEX_LOWER_LIMIT = 0;
 
     public void setPriority(int index, int priority) {
         tasks.get(index).setPriority(priority);
     }
 
     public void reorder(int fromIndex, int toIndex) throws UniTaskerException {
-        if (fromIndex >= this.getSize() || fromIndex < 0) {
+        if (fromIndex >= this.getSize() || fromIndex < INDEX_LOWER_LIMIT) {
             throw new UniTaskerException("First todoIndex does not exist.");
         }
-        if (toIndex >= this.getSize() || toIndex < 0) {
+        if (toIndex >= this.getSize() || toIndex < INDEX_LOWER_LIMIT) {
             throw new UniTaskerException("Second todoIndex does not exist.");
         }
         assert(fromIndex >= 0 && fromIndex < tasks.size());

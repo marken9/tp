@@ -20,12 +20,11 @@ import seedu.duke.ui.ErrorUi;
 import seedu.duke.ui.GeneralUi;
 import seedu.duke.ui.LimitUi;
 
-
-import seedu.duke.appcontainer.AppContainer;
 import seedu.duke.command.Command;
 import seedu.duke.command.CommandParser;
 import seedu.duke.command.ExitCommand;
 
+import seedu.duke.appcontainer.AppContainer;
 
 public class UniTasker {
 
@@ -63,6 +62,7 @@ public class UniTasker {
                 categories, calendar, storage, courseParser
         );
 
+        GeneralUi.printReminders(container.categories().findTasksForTheDay(LocalDate.now()));
         CommandParser parser = new CommandParser();
         Scanner in = new Scanner(System.in);
 

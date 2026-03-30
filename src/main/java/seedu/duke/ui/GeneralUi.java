@@ -1,7 +1,13 @@
 package seedu.duke.ui;
 
+import seedu.duke.task.Task;
+
+import java.util.List;
+import java.util.Map;
+
 public class GeneralUi {
-    public static final String DOTTED_LINE = "____________________________________________________________";
+    public static final String DOTTED_LINE = "______________________________________________________________________";
+    public static final String EQUALSIGN_LINE = "============================================================";
 
     public static void printDottedLine() {
         System.out.println(DOTTED_LINE);
@@ -41,6 +47,22 @@ public class GeneralUi {
         printDottedLine();
         System.out.println(message);
         printDottedLine();
+    }
+
+    public static void printReminders(Map<String, List<Task>> reminders) {
+        System.out.println("======================== REMINDERS =========================");
+        if (reminders.isEmpty()) {
+            System.out.println("No pending deadlines/events for today");
+        }
+        for (String cat : reminders.keySet()) {
+            System.out.println("CATEGORY:" + cat);
+            for (Task task : reminders.get(cat)) {
+                System.out.println(task.toString());
+            }
+        }
+        System.out.println(EQUALSIGN_LINE);
+        printDottedLine();
+
     }
 
     public static void printWarning(String message) {
