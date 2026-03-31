@@ -17,7 +17,7 @@ This section describes the design and implementation of the key components of Un
 
 ### Architecture
 
-![MainArchitecture](/docs/pictures/MainArchitecture.png)
+![MainArchitecture](docs/pictures/MainArchitecture.png)
 
 The **Architecture Diagram** given above explains the high-level design of the App
 
