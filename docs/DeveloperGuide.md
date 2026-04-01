@@ -192,7 +192,6 @@ The `Deadline` class consists of the following members:
 - `getBy()` – returns the raw deadline date/time 
 - `getDate()` – satisfies the Timed interface by delegating to getBy(), enabling calendar and sorting integrations
 - `toFileFormat()` – serialises the task into pipe-delimited storage format (D, done, description, datetime)
-
 - `toString()` – produces a human-readable representation prefixed with [D]
 
 The `Deadline` class,
