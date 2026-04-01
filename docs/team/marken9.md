@@ -8,11 +8,15 @@ UniTasker is a desktop application used to keep track of tasks and courses.
 
 **New Features**
 
+- Add support for marking multiple tasks in a single command
+  - Justification: The user does not have to call the mark command multiple times 
+  - Highlight: The command supports partial success by marking all valid task indexes
+  while skipping and reporting any invalid indexes
 - Add ability to delete all marked tasks
   - Justification: The user can quickly remove all tasks that have been marked 
-as completed without deleting them one by one
+  as completed without deleting them one by one
   - Highlight: Supports deletion across todos, deadlines, and events, 
-providing consistent behavior for all task types
+  providing consistent behavior for all task types
 - Add ability to find tasks with the same substring
   - Justification: The user can find certain tasks quickly instead of scrolling through the list
   - Highlight: Searches across all categories, including todos, deadlines, and events
@@ -41,6 +45,7 @@ categories and their associated tasks.
 
 **User Guide Contributions**
 - Todo specific commands (reorder, priority, sort)
+- General commands like add, mark.
 
 **Review/Mentoring Contributions**
 - Reviewed PRs and provided feedback

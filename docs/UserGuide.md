@@ -178,28 +178,32 @@ Examples:
 
 ---
 ### Mark Command: `mark`
-Mark an existing task in the category.
+Mark existing task(s) in a category.
 
-Format: `mark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`
+Format: `mark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]...`
 
 - TASKTYPE : `todo`, `deadline`, `event`
 - CATEGORYINDEX: Integer value up to number of categories added
-- TASKINDEX: Integer value up to number of tasks in the category
+- TASKINDEX: One or more integer values corresponding to tasks in the category
 
-Example: `mark todo 1 1`
+**Examples:**
+- `mark todo 1 1`
+- `mark todo 1 1 2 3 4`
 
-*Note*: *For marking events use index from `list event /all`*
+  *Note*: *For marking events use index from `list event /all`*
 
 ### Unmark Command: `unmark`
-Unmark an existing task in the category. 
+Unmark existing task(s) in a category. 
 
-Format: `unmark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`
+Format: `unmark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]...`
 
-- TASKTYPE : `todo`, `deadline`, `event`,
+- TASKTYPE : `todo`, `deadline`, `event`
 - CATEGORYINDEX: Integer value up to number of categories added
-- TASKINDEX: Integer value up to number of tasks in the category
+- TASKINDEX: One or more integer values corresponding to tasks in the category
 
-Example: `unmark deadline 1 1`
+**Examples:**
+- `unmark deadline 1 1`
+- `unmark deadline 1 1 2 3 4`
 
 *Note*: *For unmarking events use index from `list event /all`*
 
