@@ -184,7 +184,8 @@ public class CategoryList {
     }
 
     public void addEvent(int categoryIndex, String description, LocalDateTime from, LocalDateTime to) {
-        categories.get(categoryIndex).addEvent(createEvent(description, from, to, false, GROUP_ID_FOR_NON_RECURRING));
+        categories.get(categoryIndex).addEvent(createEvent(description, from, to,
+                false, GROUP_ID_FOR_NON_RECURRING));
         logger.info("Add event: " + description + " from " + from + " to " + to);
 
     }
@@ -201,8 +202,7 @@ public class CategoryList {
             LocalDateTime to, Calendar calendar, LocalDateTime date, int months) {
         assert (calendar != null) : "Calendar should exist";
         recurringGroupId += 1;
-        addRecurring(categoryIndex, description, from, to, recurringGroupId,
-                calendar,date, months, false);
+        addRecurring(categoryIndex, description, from, to, recurringGroupId, calendar, date, months, false);
     }
 
     private void addRecurring(int categoryIndex, String description, LocalDateTime from, LocalDateTime to,
@@ -216,9 +216,7 @@ public class CategoryList {
                 recurringGroupId = groupId;
             }
         } else {
-            categories.get(categoryIndex).addRecurringWeeklyEvent(
-                    event, calendar, date, months
-            );
+            categories.get(categoryIndex).addRecurringWeeklyEvent(event, calendar, date, months);
         }
         logger.info((isFromFile ? "Add recurring event from file: " : "Add recurring event: ")
                 + description + " from " + from + " to " + to
@@ -231,8 +229,8 @@ public class CategoryList {
         assert from.isBefore(to) || from.isEqual(to) : "The start date time must be before the end date time";
     }
 
-    private Event createEvent(String description, LocalDateTime from,
-                              LocalDateTime to, boolean isRecurring, int groupId) {
+    private Event createEvent(String description, LocalDateTime from, LocalDateTime to,
+            boolean isRecurring, int groupId) {
         eventAssertions(description, from, to);
         return new Event(description, from, to, isRecurring, groupId);
     }
@@ -252,10 +250,10 @@ public class CategoryList {
         categories.get(categoryIndex).setEventStatus(eventIndex, isDone);
     }
 
-    public String getAllEvents(boolean isExpanded,boolean isNormalEventOnly) {
+    public String getAllEvents(boolean isExpanded, boolean isNormalEventOnly) {
         StringBuilder sb = new StringBuilder();
-        sb.append(isExpanded ? "ALL OCCURRENCES" : isNormalEventOnly ?
-                "ALL NON-RECURRING EVENTS" : "ALL EVENTS").append(System.lineSeparator());
+        sb.append(isExpanded ? "ALL OCCURRENCES" : isNormalEventOnly ? "ALL NON-RECURRING EVENTS" : "ALL EVENTS")
+                .append(System.lineSeparator());
         sb.append(DOTTED_LINE).append(System.lineSeparator());
         Map<Integer, List<EventReference>> newMap = new HashMap<>();
         Set<Integer> printedGroups = new HashSet<>();
@@ -283,10 +281,10 @@ public class CategoryList {
     }
 
     private void displayEvent(StringBuilder sb, Event event, List<EventReference> map,
-                              int categoryIndex, int eventIndex, boolean isExpanded,int uiIndex) {
+            int categoryIndex, int eventIndex, boolean isExpanded, int uiIndex) {
 
         sb.append(uiIndex+1).append(". ")
-                .append(event.getIsRecurring() && !isExpanded ? event.toStringRecurring() : event.toString())
+                .append((event.getIsRecurring() && !isExpanded) ? event.toStringRecurringList() : event.toString())
                 .append(System.lineSeparator());
 
         map.add(new EventReference(categoryIndex, eventIndex));
@@ -319,7 +317,7 @@ public class CategoryList {
                     int groupId = event.getRecurringGroupId();
                     if (!printedGroups.contains(groupId)) {
                         sb.append(uiIndex + 1).append(". ")
-                                .append(event.toStringRecurring()).append(System.lineSeparator());
+                                .append(event.toStringRecurringList()).append(System.lineSeparator());
                         categoryMap.add(new EventReference(categoryIndex, eventIndex));
                         printedGroups.add(groupId);
                         uiIndex++;
