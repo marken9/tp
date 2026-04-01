@@ -5,9 +5,6 @@ skinparam roundcorner 10
 
 title Add Event / Recurring Event
 
-actor User
-participant ":UniTasker" as UT
-participant ":CommandParser" as CP
 participant ":AddCommand" as AC
 participant ":CategoryList" as CL
 participant ":Category" as CAT
@@ -15,28 +12,28 @@ participant ":EventList" as EL
 participant ":EventUI" as UI
 participant ":Calendar" as CAL
 
-User -> UT : add event
-activate UT
-
-UT -> CP : parse(line)
-activate CP
-CP -> AC : new AddCommand(sentence)
+ -> AC : add event
 activate AC
-CP --> UT : Command
-deactivate CP
 
-UT -> AC : execute()
-'activate AC
 
-alt Normal Event
-    AC -> AC : validate input and parse date/time
-
-    alt invalid input / format
-        AC -> UT : show error message
-        UT -> User : show error message
-    else else
+alt Normal event
+    note right of AC
+        validation and parsing has been omitted from this sequence diagram
+    end note
         AC -> CL : addEvent(categoryIndex, desc, from, to)
         activate CL
+        CL -> CL : createEvent(categoryIndex, desc, from, to,false,-1)
+        activate CL
+        CL --> CL : Event
+        deactivate CL
+        CL -> CAT : addEvent(Event)
+        activate CAT
+        CAT -> EL : add(Event)
+        activate EL
+        EL --> CAT
+        deactivate EL
+        CAT --> CL
+        deactivate CAT
         CL --> AC
 
         AC -> CL : getLatestEvent()
@@ -51,23 +48,15 @@ alt Normal Event
         AC -> UI : printEventAdded(event,desc,totalEvents)
         activate UI
         UI --> AC : show added event
+        AC -->[ : show added event
         deactivate UI
-        AC --> UT : show added event
-        UT --> User : show added event
-    end
 
 else Recurring Event
-    AC -> AC : validate input + parse recurring details
 
-    alt invalid input / format
-        AC -> UT : show error message
-    else else
         AC -> CL : addRecurringWeeklyEvent(eventCategoryIndex, desc, from, to,calendar, endDate, months)
         activate CL
 
         CL -> CL : increment recurringGroupId
-        CL -> CL : create base Event (with groupId)
-
         note right of CL
         recurringGroupId is incremented once
         and reused for all occurrences
@@ -101,12 +90,9 @@ else Recurring Event
         activate UI
         UI --> AC : show added recurring event
         deactivate UI
-        AC --> UT : show added recurring event
-        UT --> User : show added recurring event
+        AC -->[ : show added recurring event
         deactivate AC
     end
 
-deactivate AC
-deactivate UT
-
 @enduml
+

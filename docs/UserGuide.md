@@ -132,48 +132,91 @@ add recurring 1 weekly event CS2113 lecture /from Friday 1600 /to Friday 1800
 ### Delete Command: `delete`
 Delete an existing item on the list. `delete` can be used to delete the following: `category`, `todo`, `deadline`, `event`, `recurring`
 
-Format:
+#### Delete Category: `delete category`
 
-delete `category` index or,
+Format: `delete category [CATEGORYINDEX]`
 
-delete [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]
+Example: `delete category 1`
 
-- TASKTYPE : `todo`, `deadline`, `event`, `recurring`
+#### Delete Task (Todos and Deadlines): `delete [TASKTYPE]`
+
+Format: `delete [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`
+
+- TASKTYPE : `todo`, `deadline`, `
 - CATEGORYINDEX: Integer value up to number of categories added
-- TASKINDEX: What the task is about
-
-*Note*: Use `delete deadline/event categoryIndex all` to delete all deadlines/events in specific category
+- TASKINDEX: Integer value up to number of tasks in the category
 
 Examples:
 
 `delete deadline 1 1`
 `delete deadline 1 all`
 
+*Note*: *Use `delete todo/deadline categoryIndex all` to delete all todos/deadlines in specific category*
+
+
+
+#### Delete Events `delete [EVENTTYPE]`
+
+Format: `delete [EVENTTYPE] [CATEGORYINDEX] [UIINDEX]`
+
+- EVENTTYPE : `event`, `recurring`,`occurrence`
+- CATEGORYINDEX: Integer value up to number of categories added
+- TASKINDEX: follow the UI index for its respective list type:
+  - `delete occurrence [CATEGORYINDEX] [UIINDEX]` → `list occurrence [CATEGORYINDEX] [UIINDEX]`
+  - `delete recurring [CATEGORYINDEX] [UIINDEX]` → `list recurring`
+  - `delete event [CATEGORYINDEX] [UIINDEX]` → `list event` or `list event /all` or `list event /normal`
+
+Examples:
+
+`delete occurrence 1 1`
+`delete recurring 1 1`
+`delete event 1 all`
+
+*Note*:
+- *Use `delete event categoryIndex all` to delete all events in specific category*
+- *For deleting events always use its respective list views first before using its delete operations to match the index to delete*
+
 ---
+### Mark Command: `mark`
+Mark an existing task in the category.
 
-### Mark/Unmark Command: `mark` `unmark`
-Mark an existing item on the list. 
+Format: `mark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`
 
-- `mark` can be used to mark the following: `category`, `todo`, `deadline`, `event`, `recurring`
+- TASKTYPE : `todo`, `deadline`, `event`
+- CATEGORYINDEX: Integer value up to number of categories added
+- TASKINDEX: Integer value up to number of tasks in the category
 
-Unmark an existing item on the list. 
+Example: `mark todo 1 1`
 
-- `unmark` can be used to unmark the following: `category`, `todo`, `deadline`, `event`, `recurring`
+*Note*: *For marking events use index from `list event /all`*
+
+### Unmark Command: `unmark`
+Unmark an existing task in the category. 
+
+Format: `unmark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`
+
+- TASKTYPE : `todo`, `deadline`, `event`,
+- CATEGORYINDEX: Integer value up to number of categories added
+- TASKINDEX: Integer value up to number of tasks in the category
+
+Example: `unmark deadline 1 1`
+
+*Note*: *For unmarking events use index from `list event /all`*
 
 ---
 
 ### List Command: `list`
+Displays a list of tasks. 
 
-Creates a list of task. 
 - `list` can be used to crate a list on the following: `category`, `todo`, `deadline`, `event`, `recurring`, `range`
 
 List out all tasks based on key word
 
-Format:
+Format :
 
 list [KEYWORD] [CATEGORYINDEX] [START] [END] [TASKTYPE]
 
-- KEYWORD: `category`,`todo`,`deadline`,`event`,`range`,`recurring`, `limit` 
+- KEYWORD: `category`,`todo`,`deadline`,`range`,`limit`
 - CATEGORYINDEX: Integer value up to number of categories added
 - START: Start date
 - END: End date
@@ -193,6 +236,45 @@ Examples:
 - *CategoryIndex is not needed for limit*
 - *Start and End are only applicable for Deadline and Event*
 - *Add tasktype after end if you want to see only deadline or event*
+
+#### List Event: `list event`
+Format: list [KEYWORD] [TYPE]
+
+- KEYWORD: `event`
+- TYPE: `/normal`, `/all`
+
+Examples:
+
+`list event /normal` `list event /all` `list event`
+
+*Note*:
+
+- *Type is optional*
+- *Unknown type will be ignored*
+
+#### List Recurring: `list recurring`
+Format : list [KEYWORD]
+
+- KEYWORD: `recurring`
+
+Examples:
+
+`list recurring`
+
+*Note*: *Anything after 'recurring' will be ignored*
+
+#### List Occurrence: `list occurrence`
+Format: list [KEYWORD] [CATEGORYINDEX] [UIINDEX]
+
+- KEYWORD: `occurrence`
+- CATEGORYINDEX: Integer value up to number of categories added
+- UIINDEX: Positive integer displayed in `list event` or `list event /all`
+
+Examples:
+
+`list occurrence 1 1`
+
+*Note*: *Must use `list event` or `list event /all` before using this list command*
 
 ---
 
@@ -279,6 +361,23 @@ Example:
 
 ---
 
+### Reminder Command: `reminder`
+Shows the pending tasks (deadlines and events) for the day
+
+Format:
+
+limit [KEYWORD]
+
+- KEYWORD: `reminder`
+
+Example:
+
+`reminder`
+
+*Note*: *Anything after 'reminder' will be ignored*
+
+---
+
 ## FAQ
 
 **Q**: How do I transfer my data to another computer? 
@@ -288,17 +387,18 @@ is located in the other computer.
 
 ## Command Summary
 
-| Action      | Format, Examples                                                                               | 
-|-------------|------------------------------------------------------------------------------------------------|
-| help        | `help`                                                                                         |
-| add         | `add category [DESC]`, `add todo [CATEGORYINDEX] [DESC]`,                                      |
-| delete      | `delete [KEYWORD] [CATEGORYINDEX] [TASKINDEX]`, `delete [KEYWORD] [CATEGORYINDEX] all`         |
-| list        | `add [keyword]`                                                                                |
-| mark/unmark | `add [keyword]`                                                                                |
-| reorder     | `reorder category [FROMINDEX] [TOINDEX]`, `reorder todo [CATEGORYINDEX] [FROMINDEX] [TOINDEX]` |
-| priority    | `priority todo [CATEGORYINDEX] [TODOINDEX] [PRIORITYVALUE]`                                    |
-| sort        | `sort todo [CATEGORYINDEX]`                                                                    |
-| find        | `find [SUBSTRING]`                                                                             |
-| limit       | `limit [keyword]`                                                                              |
-| course      | `add [keyword]`                                                                                |
+| Action      | Format, Examples                                                                                                             | 
+|-------------|------------------------------------------------------------------------------------------------------------------------------|
+| help        | `help`                                                                                                                       |
+| add         | `add category [DESC]`, `add todo [CATEGORYINDEX] [DESC]`, <br/> `add todo [categoryIndex] [description] /p [priorityValue]`, |
+| delete      | `delete [KEYWORD] [CATEGORYINDEX] [TASKINDEX]`, `delete [KEYWORD] [CATEGORYINDEX] all`                                       |
+| list        | `list [keyword] [CATEGORYINDEX] [TASKINDEX]`                                                                                 |
+| mark/unmark | `mark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`, `unmark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`                               |
+| reorder     | `reorder category [FROMINDEX] [TOINDEX]`, `reorder todo [CATEGORYINDEX] [FROMINDEX] [TOINDEX]`                               |
+| priority    | `priority todo [CATEGORYINDEX] [TODOINDEX] [PRIORITYVALUE]`                                                                  |
+| sort        | `sort todo [CATEGORYINDEX]`                                                                                                  |
+| find        | `find [SUBSTRING]`                                                                                                           |
+| limit       | `limit [keyword]`                                                                                                            |
+| reminder    | `reminder`                                                                                                                   |
+| course      | `add [keyword]`                                                                                                              |
 

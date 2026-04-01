@@ -1,0 +1,49 @@
+@startuml
+
+class CourseManager {
+    - courseList : CourseList
+    - courseStorage : CourseStorage
+    + addCourse(courseCode : String) : String
+    + deleteCourse(courseCode : String) : String
+    + listCourses() : String
+    + viewCourse(courseCode : String) : String
+    + addAssessment(courseCode : String, name : String, weightage : double, maxScore : double) : String
+    + recordScore(courseCode : String, name : String, score : double) : String
+    + deleteAssessment(courseCode : String, name : String) : String
+}
+
+class CourseList {
+    - courses : ArrayList<Course>
+    + add(course : Course) : void
+    + remove(courseCode : String) : boolean
+    + get(courseCode : String) : Course
+    + contains(courseCode : String) : boolean
+    + getAll() : ArrayList<Course>
+    + size() : int
+}
+
+class Course {
+    - courseCode : String
+    - assessments : ArrayList<Assessment>
+    + addAssessment(assessment : Assessment) : void
+    + removeAssessment(name : String) : boolean
+    + getAssessment(name : String) : Assessment
+    + getTotalWeightage() : double
+    + getTotalWeightedScore() : double
+}
+
+class Assessment {
+    - name : String
+    - weightage : double
+    - scoreObtained : double
+    - maxScore : double
+    + recordScore(score : double) : void
+    + getWeightedScore() : double
+    + isGraded() : boolean
+}
+
+CourseManager --> CourseList
+CourseList --> "0..*" Course
+Course --> "0..*" Assessment
+
+@enduml

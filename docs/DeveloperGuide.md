@@ -48,7 +48,7 @@ The bulk of the app's work is done by the following components:
 The `AppContainer` consists of the following:
 
 - `CategoryList categories` – stores all categories and their associated tasks (todos, deadlines, events)
-- `Calendar calendar` – Manages the mapping of dates to tasks with date information (deadlines and events) ???
+- `Calendar calendar` – Manages the mapping of dates to tasks with date information (deadlines and events)
 - `Storage storage` – handles saving and loading of data from local files
 - `CourseParser courseParser` – processes and handles course-related commands
 
@@ -120,6 +120,98 @@ The figure below illustrates the relationship between Deadline class and the fol
 
 ![Deadline Class Diagram](pictures/deadlineClassDiagram.png)
 
+### Event commands
+Event commands include adding non-recurring events,
+deleting events based on the index seen in the user interface of the list and
+adding recurring events for a user-specified interval (number of months or stop date).
+####  Add Event Command
+1. User enters either:
+   - `add event <categoryIndex> <description> /from <startDateTime> /to <endDateTime>`
+   - `add recurring <categoryIndex> weekly event <description> /from <day> <time> /to <day> <time> /(date or month) <dateOrMonth>`
+2. Input is parsed and `AddEventCommand` is created.
+3. `AddEventCommand` calls `CategoryList` functions to add events.
+4. If non-recurring:
+   - `EventList` `add(Event)` is called
+5. If recurring:
+   - `EventList` `addRecurringWeeklyEvent(addRecurringWeeklyEvent(event, calendar, date, months)` is called to generate and group weekly events.
+6. Event(s) are stored in EventList, persisted by Storage, and reflected in the Calendar
+
+**Sequence Diagram for Add Event**
+![AddEvent Sequence Diagram](pictures/AddRecurringNonRecurringEvent.png)
+
+####  Delete Event Command
+**Problem**
+- Index shown in UI is not the same as index of event to delete since the main list shows
+  the collapsed view of the recurring events (gap between UI and data)
+- Each category has its own set of indexes
+- Deleting a specific recurring event from a group requires viewing all recurring event from a group
+
+**Design**
+- `EventReference (int categoryIndex, int eventIndex)` class:  stores the category index and `eventList` ArrayList index
+- `Map<Integer,List<EventReference>>`: map where key is the categoryIndex and value is the `EventReference` objects
+  based on the current list view
+
+
+Example:
+
+    `list event /all`
+
+| categoryIndex | uiIndex | EventReference (categoryIndex, eventIndex) |   Description   |
+|:-------------:|:-------:|:------------------------------------------:|:---------------:|
+|       0       |    1    |                   (0,0)                    |  consultation   |
+|       0       |    2    |                   (0,1)                    | CS2113 tutorial |
+|       0       |    3    |                   (0,2)                    |     meeting     |
+|       0       |    4    |                   (0,3)                    | CS2113 lecture  |
+|       0       |    5    |                   (0,4)                    | CS2113 tutorial |
+|       0       |    6    |                   (0,5)                    | CS2113 lecture  |
+|       1       |    1    |                   (1,0)                    |   yoga lesson   |
+|       1       |    2    |                   (1,1)                    |   yoga lesson   |
+
+
+    `list event`
+
+| categoryIndex | uiIndex | EventReference (categoryIndex, eventIndex) |   Description   |
+|:-------------:|:-------:|:------------------------------------------:|:---------------:|
+|       0       |    1    |                   (0,0)                    |  consultation   |
+|       0       |    2    |                   (0,1)                    | CS2113 tutorial |
+|       0       |    3    |                   (0,2)                    |     meeting     |
+|       0       |    4    |                   (0,3)                    | CS2113 lecture  |
+|       1       |    1    |                   (1,0)                    |   yoga lesson   |
+
+
+    `list recurring`
+
+| categoryIndex | uiIndex | EventReference (categoryIndex, eventIndex) |   Description   |
+|:-------------:|:-------:|:------------------------------------------:|:---------------:|
+|       0       |    1    |                   (0,1)                    | CS2113 tutorial |
+|       0       |    2    |                   (0,3)                    | CS2113 lecture  |
+|       1       |    1    |                   (1,0)                    |   yoga lesson   |
+
+
+
+**Workflow for Delete Event command**
+
+1. User types `delete event <categoryIndex> <uiIndex>` which is parsed by `CommandParser` class to
+   create a `DeleteCommand` object
+2. In `DeleteCommand` under 'event' uiIndex is parsed and used as an index in the list of `EventReference` objects to
+   get the particular `EventReference` object
+3. Event is then deleted using `EventReference.categoryIndex` and `EventReference.eventIndex` if it is non-recurring. If it is recurring it will prompt user to use `list occurrence`
+4. Changes are updated in `Storage` class and `Calendar` object
+
+
+**Sequence Diagram for `list event` command**
+
+![ListEvent Sequence Diagram](pictures/ListEvent.png)
+
+**Sequence Diagram for `delete event <categoryIndex> <uiIndex>` command**
+
+Note:
+- `list event` must be called before `delete event <categoryIndex> <uiIndex>` to populate the map correctly
+- `delete occurrence <categoryIndex> <uiIndex>` and `delete recurring <categoryIndex> <uiIndex>` works the same
+  except for deleting multiple events at once (all events in recurring group) for `delete recurring <categoryIndex> <uiIndex>`
+
+![DeleteEvent Sequence Diagram](pictures/Delete_Event_Update.png)
+
 
 **Key Design Considerations**
 
@@ -186,90 +278,71 @@ Before any task (Todo, Deadline, Event) is added to the system, the AddCommand i
 - Otherwise, check for any overlap in timing with existing events
 - If yes throw an OverlapEventException, otherwise all validators have been passed and task is added successfully
 
-### Event commands
-Event commands include adding non-recurring events, 
-deleting events based on the index seen in the user interface of the list and 
-adding recurring events for a user-specified interval (number of months or stop date).
-####  Add Event Command
-1. User types `add event <categoryIndex> <description> from <startDateTime> to <endDateTime>` or `add recurring <categoryIndex> weekly event  <description> /from <day> <time> /to <day> <time> /(date or month) <dateOrMonth>` which is parsed by the CommandParser class to create an AddEventCommand object
-2. In `AddEventCommand`, the parameters are validated and used to create an Event object
-3. For non-recurring events, the `Event` is passed to `CategoryList` then to `Category`, which delegates to `EventList` to store the event under the correct category
-and if the command is a recurring event, the `addRecurringWeeklyEvent` method in the `EventList` class is called
-4. For recurring events, `addRecurringWeeklyEvent` in `EventList` is called, which generates multiple `Event` objects at weekly intervals based on the start time and duration in months, and groups them as a recurring event
-5. The event(s) are then stored in `EventList` are persisted in the `Storage` class, and the `Calendar` object is updated accordingly
 
-**Sequence Diagram for Add Event**
-![AddEvent Sequence Diagram](pictures/AddEvent.png)
-*<div align="center"> Figure x - Add Event Command Sequence Diagram </div>*
 
-####  Delete Event Command
-**Problem**
-- Index shown in UI is not the same as index of event to delete since the main list shows 
-the collapsed view of the recurring events (gap between UI and data)
-- Each category has its own set of indexes
-- Deleting a specific recurring event from a group requires viewing all recurring event from a group
+### Feature: Course Tracker
 
-**Design**
-- `EventReference (int categoryIndex, int eventIndex)` class:  stores the category index and `eventList` ArrayList index
-- `Map<Integer,List<EventReference>>`: map where key is the categoryIndex and value is the `EventReference` objects 
-based on the current list view
-    
+The Course Tracker feature allows students to manage their courses and track their assessment scores and weightages.
+
+**Course Class Diagram**
+
+The figure below illustrates the relationship between CourseManager, CourseList, Course, and Assessment classes.
+
+![Course Class Diagram](pictures/CourseClassDiagram.png)
+
+**Key Design Considerations**
+
+- `CourseManager` acts as the main controller for all course-related operations
+- `CourseList` maintains a list of all courses and provides methods to add, remove, and retrieve courses
+- `Course` stores course-specific information including courseCode and a list of assessments
+- `Assessment` represents individual assessment components with weightage and score tracking
+- The structure follows separation of concerns: each class has distinct responsibilities
+- CourseStorage handles persistence of course data to disk
+
+**Course Management Operations**
+
+#### Add Course
+- User enters: `course add <courseCode>`
+- `CourseParser` creates a CourseCommand with the add operation
+- `CourseManager.addCourse()` creates a new Course object and adds it to CourseList
+- Result is stored via `CourseStorage` and displayed to the user via `CourseUi`
+
+#### Delete Course
+- User enters: `course delete <courseCode>`
+- `CourseManager.deleteCourse()` removes the course from CourseList
+- Associated assessments are also removed
+- Changes are persisted to storage
+
+#### List Courses
+- User enters: `course list`
+- `CourseManager.listCourses()` retrieves all courses from CourseList
+- `CourseUi` displays each course with its assessments and current weighted score
+
+#### View Course Details
+- User enters: `course view <courseCode>`
+- `CourseManager.viewCourse()` retrieves the specific course
+- Displays course code and all assessments with their weightages and scores
+
+#### Assessment Management
+- **Add Assessment**: `course assessment add <courseCode> <name> <weightage> <maxScore>`
+  - Creates an Assessment object and adds it to the target Course
+  - Validates that total weightage does not exceed 100%
   
-Example:
+- **Record Score**: `course assessment record <courseCode> <name> <score>`
+  - Updates the scoreObtained field for the specified assessment
+  - Calculates weighted score based on weightage and max score
+  
+- **Delete Assessment**: `course assessment delete <courseCode> <name>`
+  - Removes the assessment from the Course
+  - Recalculates total weightage and weighted score
 
-    `list event /all`
+**Assessment Score Calculation**
 
-  | categoryIndex | uiIndex | EventReference (categoryIndex, eventIndex) |   Description   |
-  |:-------------:|:-------:|:------------------------------------------:|:---------------:|
-  |       0       |    1    |                   (0,0)                    |  consultation   |
-  |       0       |    2    |                   (0,1)                    | CS2113 tutorial |
-  |       0       |    3    |                   (0,2)                    |     meeting     |
-  |       0       |    4    |                   (0,3)                    | CS2113 lecture  |
-  |       0       |    5    |                   (0,4)                    | CS2113 tutorial |
-  |       0       |    6    |                   (0,5)                    | CS2113 lecture  |
-  |       1       |    1    |                   (1,0)                    |   yoga lesson   |
-  |       1       |    2    |                   (1,1)                    |   yoga lesson   |
+The weighted score for each assessment is calculated as:
+- `weightedScore = (scoreObtained / maxScore) * weightage`
 
-    `list event`
-  | categoryIndex | uiIndex | EventReference (categoryIndex, eventIndex) |   Description   |
-  |:-------------:|:-------:|:------------------------------------------:|:---------------:|
-  |       0       |    1    |                   (0,0)                    |  consultation   |
-  |       0       |    2    |                   (0,1)                    | CS2113 tutorial |
-  |       0       |    3    |                   (0,2)                    |     meeting     |
-  |       0       |    4    |                   (0,3)                    | CS2113 lecture  |
-  |       1       |    1    |                   (1,0)                    |   yoga lesson   |
-
-    `list recurring`
- | categoryIndex | uiIndex | EventReference (categoryIndex, eventIndex) |   Description   |
- |:-------------:|:-------:|:------------------------------------------:|:---------------:|
- |       0       |    1    |                   (0,1)                    | CS2113 tutorial |
- |       0       |    2    |                   (0,3)                    | CS2113 lecture  |
- |       1       |    1    |                   (1,0)                    |   yoga lesson   |
-
-**Workflow for Delete Event command**
-
-1. User types `delete event <categoryIndex> <uiIndex>` which is parsed by `CommandParser` class to 
-create a `DeleteCommand` object
-2. In `DeleteCommand` under 'event' uiIndex is parsed and used as an index in the list of `EventReference` objects to 
-get the particular `EventReference` object
-3. Event is then deleted using `EventReference.categoryIndex` and `EventReference.eventIndex` if it is non-recurring. If it is recurring it will prompt user to use `list occurrence`
-4. Changes are updated in `Storage` class and `Calendar` object
-
-
-**Sequence Diagram for `list event` command**
-
-![ListEvent Sequence Diagram](pictures/ListEvent.png)
-*<div align="center"> Figure x - List Event Command Sequence Diagram </div>*
-
-**Sequence Diagram for `delete event <categoryIndex> <uiIndex>` command**
-
-Note: 
-- `list event` must be called before `delete event <categoryIndex> <uiIndex>` to populate the map correctly
-- `delete occurrence <categoryIndex> <uiIndex>` and `delete recurring <categoryIndex> <uiIndex>` works the same 
-except for deleting multiple events at once (all events in recurring group) for `delete recurring <categoryIndex> <uiIndex>`
-
-![DeleteEvent Sequence Diagram](pictures/DeleteEvent.png)
-*<div align="center"> Figure x - Delete Event Command Sequence Diagram </div>*
+The total weighted score for a course is:
+- `totalWeightedScore = sum of all assessment weightedScores`
 
 ## Product scope
 

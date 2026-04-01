@@ -1,0 +1,50 @@
+@startuml
+
+actor User
+
+participant ":UniTasker" as UniTasker
+participant ":Command" as Command
+participant ":CourseParser" as CourseParser
+participant ":CourseManager" as CourseManager
+participant ":CourseStorage" as CourseStorage
+participant ":CourseUi" as CourseUi
+
+User -> UniTasker : "course add CS2113"
+activate UniTasker
+
+UniTasker -> Command : parse(line)
+activate Command
+
+Command -> Command : execute(container)
+
+Command -> CourseParser : parse(courseCommand)
+activate CourseParser
+
+CourseParser -> CourseParser : handleAddCourse(args)
+
+CourseParser -> CourseManager : addCourse(courseCode)
+activate CourseManager
+
+CourseManager -> CourseStorage : save(courseList)
+activate CourseStorage
+CourseStorage --> CourseManager :
+deactivate CourseStorage
+
+CourseManager --> CourseParser :
+deactivate CourseManager
+
+CourseParser --> Command :
+deactivate CourseParser
+
+Command -> CourseUi : printCourseResult(result)
+activate CourseUi
+CourseUi --> Command :
+deactivate CourseUi
+
+Command --> UniTasker :
+deactivate Command
+
+UniTasker --> User :
+deactivate UniTasker
+
+@enduml
