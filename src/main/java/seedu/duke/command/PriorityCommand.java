@@ -7,7 +7,8 @@ import seedu.duke.ui.TaskUi;
 
 //@@author marken9
 public class PriorityCommand implements Command {
-    public static final int PRIORITY_MIN_LENGTH = 5;
+    public static final int PRIORITY_MIN_LENGTH = 2;
+    public static final int PRIORITY_TODO_ARGLENGTH = 5;
     public static final int INDEX_OF_TASKTYPE = 1;
     public static final int INDEX_OF_TODO = 3;
     public static final int INDEX_OF_PRIORITY = 4;
@@ -23,7 +24,7 @@ public class PriorityCommand implements Command {
     @Override
     public void execute(AppContainer container) {
         if (sentence.length < PRIORITY_MIN_LENGTH) {
-            ErrorUi.printMissingArgs("Insufficient arguments for priority command");
+            ErrorUi.printUnknownCommand("priority", "todo");
             return;
         }
 
@@ -31,6 +32,10 @@ public class PriorityCommand implements Command {
         switch (secondCommand) {
         case "todo":
             try {
+                if (sentence.length < PRIORITY_TODO_ARGLENGTH) {
+                    ErrorUi.printMissingArgs("\nCorrect format: priority todo [catIndex] [todoIndex] [priority]");
+                    return;
+                }
                 int categoryIndex = CommandSupport.getCategoryIndex(container, sentence);
                 int todoIndex = Integer.parseInt(sentence[INDEX_OF_TODO]) - 1;
                 int priority = Integer.parseInt(sentence[INDEX_OF_PRIORITY]);
