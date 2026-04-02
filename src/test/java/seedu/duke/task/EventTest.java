@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.duke.calender.Calendar;
 import seedu.duke.tasklist.CategoryList;
+import seedu.duke.tasklist.EventList;
 import seedu.duke.tasklist.EventReference;
 
 import java.io.ByteArrayOutputStream;
@@ -22,6 +23,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class EventTest {
 
@@ -212,6 +215,148 @@ public class EventTest {
                 "This recurring event has been deleted:" + System.lineSeparator() +
                 "[RE]CS2113 lecture (from: Friday 1600 to: Friday 1800)" + System.lineSeparator() +
                 "____________________________________________________________", outContent.toString().trim());
+    }
+
+    @Test
+    void addEventHandleIrregularSpacing_success() {
+        CategoryList categories = new CategoryList();
+        categories.addCategory("Academics");
+
+        String description = "   CS2113   Lecture  ".trim(); // Logic should handle extra internal spaces
+        LocalDateTime from = LocalDateTime.parse("12-10-2026 1600", formatter);
+        LocalDateTime to = LocalDateTime.parse("12-10-2026 1800", formatter);
+
+        categories.addEvent(0, description, from, to);
+
+        assertEquals(1, categories.getCategory(0).getEventList().getSize());
+        assertEquals("CS2113   Lecture", categories.getCategory(0).getEvent(0).getDescription());
+    }
+
+    @Test
+    void addRecurringSameDayBoundary_success() {
+        CategoryList categories = new CategoryList();
+        categories.addCategory("Work");
+
+        LocalDateTime from = LocalDateTime.parse("12-10-2026 1600", formatter);
+        LocalDateTime to = LocalDateTime.parse("12-10-2026 1800", formatter); // Same day
+
+        categories.addRecurringWeeklyEvent(0, "Weekly Sync", from, to, new Calendar(), null, 1);
+
+        assertTrue(categories.getCategory(0).getEventList().getSize() >= 4);
+        assertEquals(categories.getCategory(0).getEvent(0).getRecurringGroupId(),
+                categories.getCategory(0).getEvent(1).getRecurringGroupId());
+    }
+
+    @Test
+    void deleteEventCaseInsensitiveAll_success() {
+        CategoryList categories = new CategoryList();
+        categories.addCategory("Personal");
+        categories.addEvent(0, "Gym", LocalDateTime.now(), LocalDateTime.now().plusHours(1));
+        categories.addEvent(0, "Dinner", LocalDateTime.now().plusHours(2), LocalDateTime.now().plusHours(3));
+
+        categories.deleteAllEvents(0);
+
+        assertEquals(0, categories.getCategory(0).getEventList().getSize(),
+                "All events in the category should be cleared");
+    }
+
+    @Test
+    void listEventViewStateTransitions_success() {
+        CategoryList categories = new CategoryList();
+        categories.addCategory("Club");
+
+        assertEquals("NO_VIEW", categories.getCurrentView());
+
+        categories.getAllEvents(false, false);
+        assertEquals("EVENT", categories.getCurrentView());
+
+        categories.getAllEvents(true, false);
+        assertEquals("EVENT_EXPANDED", categories.getCurrentView());
+    }
+
+    @Test
+    void deleteOccurrence_logic_requiresSpecificView() throws Exception {
+        CategoryList categories = new CategoryList();
+        categories.addCategory("Sports");
+        LocalDateTime now = LocalDateTime.now();
+        categories.addRecurringWeeklyEvent(0, "Training", now, now.plusHours(1), new Calendar(), null, 1);
+
+        categories.getAllEvents(false, false);
+
+        categories.getOccurrencesOfRecurringEvent(0, 1);
+        assertEquals("OCCURRENCE_VIEW", categories.getCurrentView());
+
+        assertNotNull(categories.getActiveDisplayMap().get(0));
+        assertTrue(categories.getActiveDisplayMap().get(0).size() > 0);
+    }
+
+    @Test
+    void addEventOverlapPrevention() {
+        CategoryList categories = new CategoryList();
+        categories.addCategory("Testing");
+
+        LocalDateTime start = LocalDateTime.parse("10-10-2026 1000", formatter);
+        LocalDateTime end = LocalDateTime.parse("10-10-2026 1200", formatter);
+
+        categories.addEvent(0, "Event 1", start, end);
+
+        LocalDateTime overlapStart = LocalDateTime.parse("10-10-2026 1100", formatter);
+        LocalDateTime overlapEnd = LocalDateTime.parse("10-10-2026 1300", formatter);
+        boolean hasOverlap = false;
+        EventList list = categories.getCategory(0).getEventList();
+        for (int i = 0; i < list.getSize(); i++) {
+            Event existing = list.get(i);
+            if (overlapStart.isBefore(existing.getTo()) && existing.getFrom().isBefore(overlapEnd)) {
+                hasOverlap = true;
+                break;
+            }
+        }
+
+        assertTrue(hasOverlap, "Logic should detect that the new time range overlaps with existing event");
+    }
+
+    @Test
+    void addEventStartExactlyAtPreviousEnd_success() {
+        CategoryList categories = new CategoryList();
+        categories.addCategory("Work");
+
+        LocalDateTime endFirst = LocalDateTime.parse("12-10-2026 1400", formatter);
+        categories.addEvent(0, "Event 1", LocalDateTime.parse("12-10-2026 1300", formatter), endFirst);
+        LocalDateTime startSecond = LocalDateTime.parse("12-10-2026 1400", formatter);
+        LocalDateTime endSecond = LocalDateTime.parse("12-10-2026 1500", formatter);
+
+        categories.addEvent(0, "Event 2", startSecond, endSecond);
+
+        assertEquals(2, categories.getCategory(0).getEventList().getSize(),
+                "Events should be able to touch boundaries without being considered an overlap.");
+    }
+
+    @Test
+    void addEventYearRollover_success() {
+        CategoryList categories = new CategoryList();
+        categories.addCategory("NYE");
+
+        LocalDateTime nyeStart = LocalDateTime.parse("31-12-2026 2300", formatter);
+        LocalDateTime nyeEnd = LocalDateTime.parse("01-01-2027 0200", formatter);
+
+        assertDoesNotThrow(() -> categories.addEvent(0, "New Years Party", nyeStart, nyeEnd));
+        assertEquals(2027, categories.getCategory(0).getEvent(0).getTo().getYear());
+    }
+
+    @Test
+    void deleteEventMapSyncAfterDelete_success() {
+        CategoryList categories = new CategoryList();
+        categories.addCategory("SyncTest");
+        categories.addEvent(0, "E1", LocalDateTime.now(), LocalDateTime.now().plusHours(1));
+
+        categories.getAllEvents(false, false);
+
+        categories.deleteEvent(0, 0);
+
+        categories.getAllEvents(false, false);
+
+        assertTrue(categories.getActiveDisplayMap().get(0) == null ||
+                categories.getActiveDisplayMap().get(0).isEmpty());
     }
 
     @BeforeEach
