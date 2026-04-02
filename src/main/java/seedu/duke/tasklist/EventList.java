@@ -6,6 +6,7 @@ import seedu.duke.task.Event;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class EventList extends TaskList<Event> {
@@ -32,9 +33,21 @@ public class EventList extends TaskList<Event> {
     }
 
     public void sortByDate() {
-        tasks.sort(Comparator
-                .comparing(Event::getFrom)
-                .thenComparing(Event::getTo));
+        List<Event> normal = tasks.stream()
+                .filter(e -> !e.getIsRecurring())
+                .sorted(Comparator.comparing(Event::getFrom).thenComparing(Event::getTo))
+                .toList();
+
+        List<Event> recurring = tasks.stream()
+                .filter(Event::getIsRecurring)
+                .sorted(Comparator
+                        .comparingInt((Event e) -> e.getFrom().getDayOfWeek().getValue())
+                        .thenComparing(e -> e.getFrom().toLocalTime()))
+                .toList();
+
+        tasks.clear();
+        tasks.addAll(normal);
+        tasks.addAll(recurring);
     }
 
     public Event getLatest() {
@@ -72,7 +85,10 @@ public class EventList extends TaskList<Event> {
     }
 
     public void sortByDay() {
-        Comparator<Event> dayOfWeek = Comparator.comparingInt(d -> d.getFrom().getDayOfWeek().getValue());
+        Comparator<Event> dayOfWeek = Comparator
+                .comparingInt((Event e) -> e.getFrom().getDayOfWeek().getValue())
+                .thenComparing(e -> e.getFrom().toLocalTime());
         tasks.sort(dayOfWeek);
+
     }
 }

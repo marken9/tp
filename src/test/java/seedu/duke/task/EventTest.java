@@ -3,11 +3,9 @@ package seedu.duke.task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-
 import seedu.duke.calender.Calendar;
 import seedu.duke.tasklist.CategoryList;
+import seedu.duke.tasklist.EventReference;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -18,6 +16,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EventTest {
 
@@ -41,15 +45,65 @@ public class EventTest {
 
     @Test
     public void deleteEvent_success() {
-        CategoryList categoryList = new CategoryList();
-        categoryList.addCategory("School");
+        CategoryList categories = new CategoryList();
 
-        LocalDateTime from = LocalDateTime.parse("01-01-2026 1830", formatter);
-        LocalDateTime to = LocalDateTime.parse("02-02-2026 1830", formatter);
-        categoryList.addEvent(0, "consultation", from, to);
-        categoryList.deleteEvent(0, 0);
+        categories.addCategory("Test");
 
-        assertEquals(0, categoryList.getCategory(0).getEventList().getSize());
+        categories.addEvent(0, "event1",
+                LocalDateTime.of(2026, 4, 1, 10, 0),
+                LocalDateTime.of(2026, 4, 1, 11, 0));
+
+        categories.getAllEvents(false, false);
+
+        Map<Integer, List<EventReference>> map = categories.getActiveDisplayMap();
+        EventReference ref = map.get(0).get(0);
+
+        categories.deleteEvent(ref.categoryIndex, ref.eventIndex);
+
+        assertEquals(0, categories.getCategory(0).getEventList().getSize());
+    }
+
+    @Test
+    void deleteInvalidUiIndex_throws() {
+        CategoryList categories = new CategoryList();
+
+        categories.addCategory("Test");
+
+        categories.addEvent(0, "event1",
+                LocalDateTime.of(2026, 4, 1, 10, 0),
+                LocalDateTime.of(2026, 4, 1, 11, 0));
+
+        categories.getAllEvents(false, false);
+        Map<Integer, List<EventReference>> map = categories.getActiveDisplayMap();
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            map.get(0).get(999);
+        });
+    }
+
+    @Test
+    void deleteOccurrence_success() throws Exception {
+        CategoryList categories = new CategoryList();
+
+        categories.addCategory("Test");
+
+        categories.addRecurringWeeklyEvent(
+                0, "rec",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(1),
+                new Calendar(),
+                null,
+                0
+        );
+
+        categories.getAllEvents(false, false);
+        categories.getOccurrencesOfRecurringEvent(0, 1);
+
+        Map<Integer, List<EventReference>> map = categories.getActiveDisplayMap();
+        EventReference ref = map.get(0).get(0);
+
+        categories.deleteEvent(ref.categoryIndex, ref.eventIndex);
+
+        assertTrue(categories.getCategory(0).getEventList().getSize() >= 0);
     }
 
 

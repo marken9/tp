@@ -44,6 +44,8 @@ public class AddCommand implements Command {
     public static final int INDEX_OF_RECURRING_EVENT_INFO = 5;
     public static final int INDEX_OF_DEADLINE_EVENT_DESCRIPTION = 0;
     public static final int INDEX_OF_DEADLINE_EVENT_DATETIME = 1;
+    public static final int INDEX_OF_WORD_WEEKLY = 3;
+    public static final int INDEX_OF_WORD_EVENT = 4;
 
     private final String[] sentence;
 
@@ -231,20 +233,18 @@ public class AddCommand implements Command {
 
             String raw = String.join(" ", Arrays.copyOfRange(sentence, INDEX_OF_TASK_INFO, sentence.length));
 
+
             if (raw.stripLeading().startsWith("/from")) {
                 throw new UniTaskerException("Empty description! Include the event description");
             }
 
-            if (!raw.contains(" /from ")) {
-                throw new UniTaskerException("Missing '/from' keyword! Use: /from dd-MM-yyyy HHmm");
-            }
-            if (!raw.contains(" /to ")) {
-                throw new UniTaskerException("Missing '/to' keyword! "
-                        + "Format: add event [index] [desc] /from [start] /to [end]");
+            if (!raw.matches("(?s).*\\S+.*\\s+/from\\s+\\S+.*\\s+/to\\s+\\S+.*")) {
+                throw new UniTaskerException("Missing or invalid format. "
+                        + "Expected: add event [index] [desc] /from dd-MM-yyyy HHmm /to dd-MM-yyyy HHmm");
             }
 
-            String[] eventDetails = raw.split(" /from ");
-            String[] eventTimeDetails = eventDetails[INDEX_OF_DEADLINE_EVENT_DATETIME].split(" /to ");
+            String[] eventDetails = raw.split("\\s+/from\\s+");
+            String[] eventTimeDetails = eventDetails[INDEX_OF_DEADLINE_EVENT_DATETIME].split("\\s+/to\\s+");
 
             LocalDateTime from = DateUtils.parseDateTime(eventTimeDetails[INDEX_OF_DAY_EVENTS]);
             LocalDateTime to = DateUtils.parseDateTime(eventTimeDetails[INDEX_OF_TIME_EVENTS]);
@@ -280,7 +280,8 @@ public class AddCommand implements Command {
         try {
             int eventCategoryIndex = CommandSupport.getCategoryIndex(container, sentence);
             boolean isMissingInvalidInfo = sentence.length < ADD_RECURRING_EVENT_MIN_LENGTH
-                    || !sentence[3].equals("weekly") || !sentence[4].equals("event");
+                    || !sentence[INDEX_OF_WORD_WEEKLY].equals("weekly")
+                    || !sentence[INDEX_OF_WORD_EVENT].equals("event");
             if (isMissingInvalidInfo) {
                 throw new UniTaskerException("Missing or invalid info. "
                         + "Expected format: add recurring <categoryIndex> weekly event <description> "
@@ -307,12 +308,12 @@ public class AddCommand implements Command {
             String[] eventTimeDetails = eventDetails[INDEX_OF_DEADLINE_EVENT_DATETIME].split(" /to ");
 
             String[] fromComponents = getFromToComponents(eventTimeDetails,true);
-            String fromDayOfWeek = fromComponents[INDEX_OF_DAY_EVENTS];
-            String fromTime = fromComponents[INDEX_OF_TIME_EVENTS];
+            String fromDayOfWeek = fromComponents[INDEX_OF_DAY_EVENTS].trim();
+            String fromTime = fromComponents[INDEX_OF_TIME_EVENTS].trim();
 
             String[] toComponents = getFromToComponents(eventTimeDetails,false);
-            String toDayOfWeek = toComponents[INDEX_OF_DAY_EVENTS];
-            String toTime = toComponents[INDEX_OF_TIME_EVENTS];
+            String toDayOfWeek = toComponents[INDEX_OF_DAY_EVENTS].trim();
+            String toTime = toComponents[INDEX_OF_TIME_EVENTS].trim();
 
             DateUtils.parseRecurringDayFrom(fromDayOfWeek);
             DateUtils.parseRecurringDayTo(toDayOfWeek);
@@ -389,7 +390,7 @@ public class AddCommand implements Command {
 
     //@@author sushmiithaa
     private String[] getFromToComponents(String[] eventTimeDetails,boolean isFrom) throws UniTaskerException {
-        String[] components = eventTimeDetails[(isFrom ? 0:1)].split(" ");
+        String[] components = eventTimeDetails[(isFrom ? 0:1)].trim().split("\\s+");
         if (isFrom) {
             if (components.length != MIN_LENGTH_OF_TOFROM_COMPONENTS) {
                 throw new UniTaskerException("Missing start day or time after '/from'. "

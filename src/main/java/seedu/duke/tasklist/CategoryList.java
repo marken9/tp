@@ -58,6 +58,10 @@ public class CategoryList {
         return currentView;
     }
 
+    public void setCurrentView(String view) {
+        this.currentView = view;
+    }
+
     public void addTodo(int categoryIndex, String description) {
         categories.get(categoryIndex).addTodo(new Todo(description));
     }

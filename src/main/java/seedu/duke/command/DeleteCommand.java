@@ -126,15 +126,22 @@ public class DeleteCommand implements Command {
             case "occurrence":
                 int uiIdx = Integer.parseInt(sentence[INDEX_OF_TASK_TO_DELETE]) - 1;
                 if (!container.categories().getCurrentView().equals("OCCURRENCE_VIEW")) {
-                    GeneralUi.printBordered("Please run 'list occurrence' first to see individual dates.");
+                    GeneralUi.printBordered("Please ensure that you have run 'list event' then 'list occurrence' " +
+                            "first to see individual dates.");
                     break;
                 }
                 Map<Integer, List<EventReference>> mapOccurrence = container.categories().getActiveDisplayMap();
+                System.out.println(categoryIndex);
                 List<EventReference> categoryMapOccurrence = mapOccurrence.get(categoryIndex);
+                if (categoryMapOccurrence == null){
+                    throw new UniTaskerException("There has been a mismatch between the categoryIndex used for " +
+                            "list occurrence\nand delete occurrence. Please use the correct categoryIndex");
+                }
                 EventReference target = categoryMapOccurrence.get(uiIdx);
                 Event eventToDel = container.categories().getEvent(target.categoryIndex, target.eventIndex);
                 container.categories().deleteEvent(target.categoryIndex, target.eventIndex);
                 EventUi.printRecurringEventDeleted(eventToDel);
+                container.categories().setCurrentView("NO_VIEW");
                 break;
             //@@author
             default:
@@ -153,7 +160,7 @@ public class DeleteCommand implements Command {
         } catch (IndexOutOfBoundsException e) {
             ErrorUi.printIndexNotFound();
         } catch (UniTaskerException e) {
-            ErrorUi.printError("Error occurred: ",e.getMessage());
+            ErrorUi.printError("Error occurred ",e.getMessage());
         } catch (Exception e) {
             ErrorUi.printError("An unexpected error occurred", e.getMessage());
         }
