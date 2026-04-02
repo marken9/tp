@@ -36,7 +36,6 @@ Command Line Interface (CLI).
   - [Find tasks: `find`](#find-command-find)
   - [Set limit to number of tasks or year: `limit`](#limit-command-limit-)
   - [See reminders for tasks: `reminder`](#reminder-command-reminder)
-  - [Exiting the program: `exit`](#exit-program-exit)
   - [Course commands: `course`](#course-command-course)
     - [Add course: `course add`](#add-course-course-add)
     - [Delete course: `course delete`](#delete-course-course-delete)
@@ -46,6 +45,8 @@ Command Line Interface (CLI).
     - [Record score: `course score`](#record-score-course-score)
     - [Delete assessment: `course delete-assessment`](#delete-assessment-course-delete-assessment)
   - [Undo: `undo`](#undo-command-undo)
+  - [Exiting the program: `exit`](#exit-program-exit)
+
 - [FAQ](#faq)
 - [Command Summary](#command-summary)
 
@@ -85,7 +86,7 @@ Format: `add category [name]`
 
 Adds a todo item under a specific category.
 
-Format: `add todo [categoryIndex] [description] /p [priorityValue]`
+Format: `add todo [CATEGORYINDEX] [DESCRIPTION] /p [PRIORITYVALUE]`
 
 - `categoryIndex`: Integer value corresponding to the category
 - `description`: Description of the task
@@ -103,7 +104,7 @@ Format: `add todo [categoryIndex] [description] /p [priorityValue]`
 
 Adds a deadline with a specified due date and time.
 
-Format: `add deadline [categoryIndex] [description] /by [date time]`
+Format: `add deadline [CATEGORYINDEX] [DESCRIPTION] /by [DATE TIME]`
 
 - `categoryIndex`: Integer value corresponding to the category
 - `description`: Description of the task
@@ -120,16 +121,14 @@ Format: `add deadline [categoryIndex] [description] /by [date time]`
 
 Adds an event with a start and end time.
 
-Format: `add event [categoryIndex] [description] /from [start] /to [end]`
+Format: `add event [CATEGORYINDEX] [DESCRIPTION] /from [START] /to [END]`
 
 - `categoryIndex`: Integer value corresponding to the category
 - `description`: Description of the event
 - `/from`: Keyword indicating event start time
 - `/to`: Keyword indicating event end time
 - `start` and `end`: Format `dd-MM-yyyy HHmm`
-- `description`: Description of the event
-- `/from`: Start date and time
-- `/to`: End date and time
+
 
 **Example:**
 
@@ -141,7 +140,7 @@ Format: `add event [categoryIndex] [description] /from [start] /to [end]`
 
 Adds a weekly recurring event.
 
-Format: `add recurring [categoryIndex] weekly event [description] /from [day time] /to [day time]`
+Format: `add recurring [CATEGORYINDEX] weekly event [DESCRIPTION] /from [DAY TIME /to [DAY TIME]`
 
 - `categoryIndex`: Integer value corresponding to the category
 - `description`: Description of the event
@@ -451,16 +450,6 @@ Format:
 *Note*: *Anything after 'reminder' will be ignored*
 
 ---
-### Exit program: `exit`
-Exits the program
-
-Format:
-
-`exit`
-
-*Note*: *Anything after 'exit' will be ignored*
-
----
 
 ### Course Command: `course`
 Manages your course grading structure. Supports adding/deleting courses and assessments,
@@ -567,6 +556,17 @@ Format: `undo`
 
 ---
 
+### Exit program: `exit`
+Exits the program
+
+Format:
+
+`exit`
+
+*Note*: *Anything after 'exit' will be ignored*
+
+---
+
 ## FAQ
 
 **Q**: How do I transfer my data to another computer? 
@@ -576,20 +576,20 @@ is located in the other computer.
 
 ## Command Summary
 
-| Action      | Format, Examples                                                                                                                                                                                                                                                                             | 
-|-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| help        | `help`                                                                                                                                                                                                                                                                                       |
-| add         | `add category [DESC]`, `add todo [CATEGORYINDEX] [DESC]`, <br/> `add todo [categoryIndex] [description] /p [priorityValue]`,                                                                                                                                                                 |
-| delete      | `delete [KEYWORD] [CATEGORYINDEX] [TASKINDEX]`, `delete [KEYWORD] [CATEGORYINDEX] all`                                                                                                                                                                                                       |
-| list        | `list [keyword] [CATEGORYINDEX] [TASKINDEX]`                                                                                                                                                                                                                                                 |
-| mark/unmark | `mark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`, `unmark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`                                                                                                                                                                                               |
-| reorder     | `reorder category [FROMINDEX] [TOINDEX]`, `reorder todo [CATEGORYINDEX] [FROMINDEX] [TOINDEX]`                                                                                                                                                                                               |
-| priority    | `priority todo [CATEGORYINDEX] [TODOINDEX] [PRIORITYVALUE]`                                                                                                                                                                                                                                  |
-| sort        | `sort todo [CATEGORYINDEX]`                                                                                                                                                                                                                                                                  |
-| find        | `find [SUBSTRING]`                                                                                                                                                                                                                                                                           |
-| limit       | `limit [keyword]`                                                                                                                                                                                                                                                                            |
-| reminder    | `reminder`                                                                                                                                                                                                                                                                                   |
-| course      | `course add [COURSE_CODE]`, `course delete [COURSE_CODE]`, `course list`, `course view [COURSE_CODE]`, `course add-assessment [COURSE_CODE] /n [NAME] /w [WEIGHTAGE] /ms [MAX_SCORE]`, `course score [COURSE_CODE] /n [NAME] /s [SCORE]`, `course delete-assessment [COURSE_CODE] /n [NAME]` |                                                                                                           |
-| undo        | `undo`                                                                                                                                                                                                                                                                                       |
-| exit        | `exit`                                                                                                                                                                                                                                                                                       |
+| Action      | Format, Examples                                                                                                                                                                                                                                                                                                                                                    | 
+|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| help        | `help`                                                                                                                                                                                                                                                                                                                                                              |
+| add         | `add category [DESC]`, `add todo [CATEGORYINDEX] [DESC]`, <br/> `add todo [CATEGORYINDEX] [DESCRIPTION] /p [PRIORITYVALUE]`, `add deadline [CATEGORYINDEX] [DESCRIPTION] /by [DATE TIME]`, <br/> `add event [CATEGORYINDEX] [DESCRIPTION] /from [START] /to [END]`, <br/> `add recurring [CATEGORYINDEX] weekly event [DESCRIPTION] /from [DAY TIME /to [DAY TIME]` |
+| delete      | `delete [KEYWORD] [CATEGORYINDEX] [TASKINDEX]`, `delete [KEYWORD] [CATEGORYINDEX] all`                                                                                                                                                                                                                                                                              |
+| list        | `list [keyword] [CATEGORYINDEX] [TASKINDEX]`                                                                                                                                                                                                                                                                                                                        |
+| mark/unmark | `mark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`, `unmark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`                                                                                                                                                                                                                                                                      |
+| reorder     | `reorder category [FROMINDEX] [TOINDEX]`, `reorder todo [CATEGORYINDEX] [FROMINDEX] [TOINDEX]`                                                                                                                                                                                                                                                                      |
+| priority    | `priority todo [CATEGORYINDEX] [TODOINDEX] [PRIORITYVALUE]`                                                                                                                                                                                                                                                                                                         |
+| sort        | `sort todo [CATEGORYINDEX]`                                                                                                                                                                                                                                                                                                                                         |
+| find        | `find [SUBSTRING]`                                                                                                                                                                                                                                                                                                                                                  |
+| limit       | `limit [keyword]`                                                                                                                                                                                                                                                                                                                                                   |
+| reminder    | `reminder`                                                                                                                                                                                                                                                                                                                                                          |
+| course      | `course add [COURSE_CODE]`, `course delete [COURSE_CODE]`, `course list`, <br/> `course view [COURSE_CODE]`, `course add-assessment [COURSE_CODE] /n [NAME] /w [WEIGHTAGE] /ms [MAX_SCORE]`, <br/> `course score [COURSE_CODE] /n [NAME] /s [SCORE]`, `course delete-assessment [COURSE_CODE] /n [NAME]`                                                            |                                                                                                           |
+| undo        | `undo`                                                                                                                                                                                                                                                                                                                                                              |
+| exit        | `exit`                                                                                                                                                                                                                                                                                                                                                              |
 
