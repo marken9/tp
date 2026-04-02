@@ -70,7 +70,7 @@ deactivate AC
 AC --> CP: task scheduled and saved successfully
 deactivate AC
 deactivate AC
-<-- CP: wait for next command
+<-- CP:
 
 deactivate CP
 

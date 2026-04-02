@@ -70,7 +70,7 @@ Task <|-- Deadline
 Timed <|.. Deadline
 TaskListT <.. TaskListDeadline
 TaskListDeadline <|-- DeadlineList
-DeadlineList "1" o-- "0..*" Deadline : <<added>>
+DeadlineList *-- "0..*" Deadline : <<added>>
 Deadline ..> DateUtils : <<uses>>
 Calendar "1" o-- "0..*" Deadline : <<registers>>
 
