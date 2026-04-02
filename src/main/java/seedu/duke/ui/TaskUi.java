@@ -1,5 +1,7 @@
 package seedu.duke.ui;
 
+import java.util.ArrayList;
+
 import seedu.duke.tasklist.CategoryList;
 
 public class TaskUi {
@@ -46,5 +48,28 @@ public class TaskUi {
             GeneralUi.printBordered(type + ": " + name + " inside category " + categoryIndex
                     + " moved to index " + newIndex);
         }
+    }
+
+    public static void printBatchResult(String taskType, int successCount, ArrayList<String> invalidIndexes, boolean isMark) {
+        GeneralUi.printDottedLine();
+        String action = isMark ? "Marked" : "Unmarked";
+
+        if (successCount > 0 && invalidIndexes.isEmpty()) {
+            System.out.println(action + " " + successCount + " " + taskType + "(s) successfully.");
+            return;
+        }
+
+        if (successCount > 0) {
+            System.out.println(action + " " + successCount + " " + taskType + "(s) successfully.");
+        }
+
+        if (!invalidIndexes.isEmpty()) {
+            System.out.println("Skipped invalid indexes: " + String.join(", ", invalidIndexes));
+        }
+
+        if (successCount == 0 && !invalidIndexes.isEmpty()) {
+            System.out.println("No valid " + taskType + " indexes were provided.");
+        }
+        GeneralUi.printDottedLine();
     }
 }

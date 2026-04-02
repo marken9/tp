@@ -88,7 +88,7 @@ public class MarkCommand implements Command {
             }
         }
 
-        printBatchResult("todo", successCount, invalidIndexes, isMark);
+        TaskUi.printBatchResult("todo", successCount, invalidIndexes, isMark);
     }
 
     //@@author WenJunYu5984
@@ -114,7 +114,7 @@ public class MarkCommand implements Command {
             }
         }
 
-        printBatchResult("deadline", successCount, invalidIndexes, isMark);
+        TaskUi.printBatchResult("deadline", successCount, invalidIndexes, isMark);
 
 
     }
@@ -154,30 +154,10 @@ public class MarkCommand implements Command {
                 invalidIndexes.add(sentence[i]);
             }
         }
-        printBatchResult("event", successCount, invalidIndexes, isMark);
+        TaskUi.printBatchResult("event", successCount, invalidIndexes, isMark);
 
     }
 
-    private void printBatchResult(String taskType, int successCount, ArrayList<String> invalidIndexes, boolean isMark) {
-        String action = isMark ? "Marked" : "Unmarked";
-
-        if (successCount > 0 && invalidIndexes.isEmpty()) {
-            System.out.println(action + " " + successCount + " " + taskType + "(s) successfully.");
-            return;
-        }
-
-        if (successCount > 0) {
-            System.out.println(action + " " + successCount + " " + taskType + "(s) successfully.");
-        }
-
-        if (!invalidIndexes.isEmpty()) {
-            System.out.println("Skipped invalid indexes: " + String.join(", ", invalidIndexes));
-        }
-
-        if (successCount == 0 && !invalidIndexes.isEmpty()) {
-            System.out.println("No valid " + taskType + " indexes were provided.");
-        }
-    }
 
     private void handleOccurrence(AppContainer container) {
         int categoryIndex;
@@ -206,7 +186,7 @@ public class MarkCommand implements Command {
             }
         }
 
-        printBatchResult("event", successCount, invalidIndexes, isMark);
+        TaskUi.printBatchResult("event", successCount, invalidIndexes, isMark);
     }
 
     private void setStatusAndPrintMessage(AppContainer container, EventReference ref, Event event) {
