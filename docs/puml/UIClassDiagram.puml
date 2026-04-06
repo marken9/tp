@@ -1,5 +1,8 @@
 @startuml UI
 
+left to right direction
+skinparam nodesep 30
+skinparam ranksep 150
 skinparam classAttributeIconSize 0
 skinparam CircledCharacterFontSize 0
 skinparam CircledCharacterRadius 0
@@ -9,20 +12,29 @@ skinparam class {
     ArrowColor Black
 }
 
-class GeneralUi
-class ErrorUi
-class CategoryUi
-class DeadlineUi
-class EventUi
-class TaskUi
-class LimitUi
-class CommandHelp
+together {
+    class ErrorUi
+    class CategoryUi
+    class DeadlineUi
+}
 
-ErrorUi    ..> GeneralUi : <<uses>>
-CategoryUi ..> GeneralUi : <<uses>>
-DeadlineUi ..> GeneralUi : <<uses>>
-EventUi    ..> GeneralUi : <<uses>>
-TaskUi     ..> GeneralUi : <<uses>>
-LimitUi    ..> GeneralUi : <<uses>>
+
+together {
+    class EventUi
+    class TaskUi
+    class LimitUi
+    class CommandHelp
+}
+
+class GeneralUi
+ErrorUi -[hidden]- GeneralUi
+GeneralUi -[hidden]- EventUi
+
+ErrorUi     -- GeneralUi : uses ▶
+CategoryUi  -- GeneralUi : uses ▶
+DeadlineUi  -- GeneralUi : uses ▶
+EventUi     -- GeneralUi : uses ▶
+TaskUi      -- GeneralUi : uses ▶
+LimitUi     -- GeneralUi : uses ▶
 
 @enduml

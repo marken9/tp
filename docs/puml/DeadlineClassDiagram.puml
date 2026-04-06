@@ -1,4 +1,6 @@
 @startuml DeadlineClassDiagram
+
+left to right direction
 skinparam classAttributeIconSize 0
 skinparam CircledCharacterFontSize 0
 skinparam CircledCharacterRadius 0
@@ -70,9 +72,9 @@ Task <|-- Deadline
 Timed <|.. Deadline
 TaskListT <.. TaskListDeadline
 TaskListDeadline <|-- DeadlineList
-DeadlineList *-- "0..*" Deadline : <<added>>
-Deadline ..> DateUtils : <<uses>>
-Calendar "1" o-- "0..*" Deadline : <<registers>>
+DeadlineList *-- "0..*" Deadline :  ◀ added to
+Deadline -- DateUtils : uses ▶
+Calendar "1" o-- "0..*" Deadline : ◀ registered to
 
 note right of Deadline
   getDate() delegates to getBy()

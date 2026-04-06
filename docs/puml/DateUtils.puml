@@ -1,6 +1,7 @@
 @startuml DateUtilsSequenceDiagram
 !pragma teoz true
 
+
 skinparam sequenceArrowThickness 2
 skinparam roundcorner 10
 
@@ -13,7 +14,7 @@ participant ":LocalDateTime" as LDT
 
 note over CP, LDT : This sequence diagram covers the happy path only.
 
--> CP : enters date string\n(e.g. "31-12-2025 1800")
+-> CP : add VarDate \n(e.g. "... 31-12-2025 1800")
 activate CP
 
 CP -> CP : parse(line)
@@ -62,6 +63,7 @@ end
 DU -> DU : validateYearRange(parsedDate, trimmedInput)
 activate DU #lightyellow
 note over DU : startYear = LocalDate.now().getYear()\nendYear = UniTasker.getEndYear()
+deactivate DU
 
 DU --> AC : parsedDate (LocalDateTime)
 deactivate DU

@@ -1,5 +1,6 @@
 @startuml Storage
 
+left to right direction
 skinparam classAttributeIconSize 0
 skinparam CircledCharacterFontSize 0
 skinparam CircledCharacterRadius 0
@@ -38,7 +39,7 @@ class CategoryList
 class ErrorUi
 
 
-Storage ..> CategoryList : <<uses>>
-Storage ..> ErrorUi     : <<uses>>
+Storage -- CategoryList : uses ▶
+Storage -- ErrorUi     : uses ▶
 
 @enduml
