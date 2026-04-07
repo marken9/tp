@@ -10,10 +10,10 @@ skinparam class {
 }
 
 class AppContainer {
-    + categories : CategoryList
-    + calendar : Calendar
-    + storage : Storage
-    + courseParser : CourseParser
+    - categories : CategoryList
+    - calendar : Calendar
+    - storage : Storage
+    - courseParser : CourseParser
     --
     + getDailyTaskLimit() : int
     + setDailyTaskLimit(dailyTaskLimit : int)
@@ -33,6 +33,6 @@ AppContainer *-- Calendar
 AppContainer *-- Storage
 AppContainer *-- CourseParser
 
-AppContainer ..> UniTasker : get and set settings
+AppContainer ..> UniTasker : access settings
 
 @enduml

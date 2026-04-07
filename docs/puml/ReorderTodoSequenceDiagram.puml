@@ -1,13 +1,12 @@
 @startuml
 
+
 actor User
 
 participant ":UniTasker" as UniTasker
-participant ":CommandParser" as CommandParser
 
-participant ":UI" as UI
-participant ":Storage" as Storage
-participant ":AppContainer" as AppContainer
+box command
+participant ":CommandParser" as CommandParser
 
 User -> UniTasker : "reorder todo 1 1 2"
 activate UniTasker
@@ -20,6 +19,8 @@ CommandParser -> command : create
 activate command
 command --> CommandParser
 deactivate command
+
+end box
 
 CommandParser --> UniTasker :
 deactivate CommandParser
@@ -51,5 +52,12 @@ destroy command
 
 UniTasker --> User :
 deactivate UniTasker
+
+participant ":UI" as UI
+
+note over UI
+UI represents any class within the UI package
+(e.g. TaskUi, ErrorUi)
+end note
 
 @enduml
