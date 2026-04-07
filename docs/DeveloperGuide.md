@@ -143,12 +143,11 @@ The `CategoryList` class:
 - allows unified control over todos, deadlines, and events through their parent categories
 - provides methods for category-level operations such as adding, deleting, and reordering categories
 - provides methods for task-level operations such as adding, deleting, marking, unmarking, reordering, and setting priorities
-- serves as the main model component accessed by commands through the `AppContainer`
+- can be accessed via `AppContainer`
 
 This design allows related tasks to be grouped under a category, making it easier for users 
 to organize work by module or context. It also improves maintainability by centralizing 
-task management logic within `CategoryList` and `Category`, instead of scattering it 
-across multiple unrelated classes.
+task management logic within `CategoryList` and `Category`.
 
 ### Delete Marked Command
 
