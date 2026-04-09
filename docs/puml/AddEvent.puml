@@ -2,28 +2,39 @@
 
 skinparam sequenceArrowThickness 2
 skinparam roundcorner 10
+skinparam DefaultFontSize 30
+skinparam ArrowFontSize 24
 
 title Add Event / Recurring Event
 
-participant ":AddCommand" as AC
+participant ":CommandParser" as CP
+-> CP : parse("add event ...") or\n parse("add recurring ...")
+activate CP
+create "command:AddCommand" as AC
+CP -> AC : new
+activate AC
+AC --> CP :
+deactivate AC
+CP -->[ : Command
+deactivate CP
+
+-> AC : execute(container)
+activate AC
 participant ":CategoryList" as CL
 participant ":Category" as CAT
 participant ":EventList" as EL
 participant ":EventUI" as UI
 participant ":Calendar" as CAL
 
- -> AC : add event
-activate AC
-
-
 alt Normal event
     note right of AC
         validation and parsing has been omitted from this sequence diagram
     end note
-        AC -> CL : addEvent(categoryIndex, desc, from, to)
+        AC -> CL : addEvent(categoryIndex, desc,\n from, to)
         activate CL
-        CL -> CL : createEvent(categoryIndex, desc, from, to,false,-1)
-        activate CL
+
+        CL -> CL : createEvent(categoryIndex, desc, \n from, to,false,-1)
+        activate CL #grey
         CL --> CL : Event
         deactivate CL
         CL -> CAT : addEvent(Event)
@@ -53,7 +64,7 @@ alt Normal event
 
 else Recurring Event
 
-        AC -> CL : addRecurringWeeklyEvent(eventCategoryIndex, desc, from, to,calendar, endDate, months)
+        AC -> CL : addRecurringWeeklyEvent(\n  eventCategoryIndex, desc, \n  from, to, calendar, \n  endDate, months)
         activate CL
 
         CL -> CL : increment recurringGroupId
@@ -61,11 +72,16 @@ else Recurring Event
         recurringGroupId is incremented once
         and reused for all occurrences
         end note
+        CL -> CL : createEvent(categoryIndex, desc, \n from, to,false,-1)
+        activate CL #grey
+        CL --> CL : Event
+        deactivate CL
 
-        CL -> CAT : addRecurringWeeklyEvent(event, calendar, date, months)
+
+        CL -> CAT : addRecurringWeeklyEvent(event,\n  calendar, date, months)
         activate CAT
 
-        CAT -> EL : addRecurringWeeklyEvent(event, calendar, date, months)
+        CAT -> EL : addRecurringWeeklyEvent(event, \n calendar, date, months)
         activate EL
 
         EL -> EL : determine boundaryDateTime

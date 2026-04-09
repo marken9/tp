@@ -208,22 +208,23 @@ The `Deadline` class,
 ### Event management
 The event commands manages one-time occurrences and automated recurring schedules, utilising a mapping layer to ensure UI actions correctly modify the underlying data.
 
+*Note: The relationship between `Event` class with `EventList`, `Tasked`, `Timed`, `Calendar`, `DateUtils` and `TaskList` classes is similar to the relationship between `Deadline` class and the classes mentioned above under the Deadline Class Diagram section.*
 #### Add Event Command
 
 **Workflow for Add Event command**
 1. User enters either:
    - `add event <categoryIndex> <description> /from <startDateTime> /to <endDateTime>`
    - `add recurring <categoryIndex> weekly event <description> /from <day> <time> /to <day> <time> /(date or month) <dateOrMonth>`
-2. Input is parsed and `AddEventCommand` is created.
-3. `AddEventCommand` calls `CategoryList` functions to add events.
+2. Input is parsed and `AddCommand` is created.
+3. `AddCommand` calls `CategoryList` functions to add events.
 4. If non-recurring:
    - `EventList` `add(Event)` is called
 5. If recurring:
-   - `EventList` `addRecurringWeeklyEvent(addRecurringWeeklyEvent(event, calendar, date, months)` is called to generate and group weekly events.
+   - `EventList` `addRecurringWeeklyEvent(event, calendar, date, months)` is called to generate and group weekly events.
 6. Event(s) are stored in `EventList`, persisted by `Storage`, and reflected in the `Calendar`
 
 **Sequence Diagram for `add event` command**
-![AddEvent Sequence Diagram](pictures/AddRecurringNonRecurringEvent.png)
+![AddEvent Sequence Diagram](pictures/AddEventSequence.png)
 
 #### List Event Command
 
@@ -235,9 +236,9 @@ The list command is a prerequisite for deletion and modification as it synchroni
 
 2. Input is parsed by the `CommandParser`, which creates a `ListCommand` object.
 
-3. ListCommand calls `CategoryList.getAllEvents()` with flags determining the view (e.g., collapsed vs. expanded).
+3. ListCommand calls `CategoryList.getAllEvents(showAll,showNormalEventsOnly)` with flags determining the view (e.g., collapsed vs. expanded).
 
-4. Mapping Generation: As the `CategoryList` iterates through categories and events to build the display string, it simultaneously populates the `ActiveDisplayMap`.
+4. Mapping Generation: As the `CategoryList` iterates through categories and events to build the display string, it simultaneously populates the `activeDisplayMap`.
 
 5. Each displayed line is assigned a UI Index, which is mapped to an `EventReference` containing the (categoryIndex, eventIndex).
 
@@ -256,7 +257,7 @@ The list command is a prerequisite for deletion and modification as it synchroni
    create a `DeleteCommand` object
 2. In `DeleteCommand` under 'event' uiIndex is parsed and used as an index in the list of `EventReference` objects to
    get the particular `EventReference` object
-3. Event is then deleted using `EventReference.categoryIndex` and `EventReference.eventIndex` if it is non-recurring. If it is recurring it will prompt user to use `list occurrence`
+3. Event is then deleted using `EventReference.categoryIndex` and `EventReference.eventIndex`.
 4. Changes are updated in `Storage` class and `Calendar` object
 
 Note:
@@ -283,7 +284,7 @@ To maintain a clean user interface, UniTasker utilises a translation layer that 
 
 Example:
 
-    `list event /all`
+    list event /all
 
 | categoryIndex | uiIndex | EventReference (categoryIndex, eventIndex) |   Description   |
 |:-------------:|:-------:|:------------------------------------------:|:---------------:|
@@ -297,7 +298,7 @@ Example:
 |       1       |    2    |                   (1,1)                    |   yoga lesson   |
 
 
-    `list event`
+    list event
 
 | categoryIndex | uiIndex | EventReference (categoryIndex, eventIndex) |   Description   |
 |:-------------:|:-------:|:------------------------------------------:|:---------------:|
@@ -308,7 +309,7 @@ Example:
 |       1       |    1    |                   (1,0)                    |   yoga lesson   |
 
 
-    `list recurring`
+    list recurring
 
 | categoryIndex | uiIndex | EventReference (categoryIndex, eventIndex) |   Description   |
 |:-------------:|:-------:|:------------------------------------------:|:---------------:|

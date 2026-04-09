@@ -3,19 +3,25 @@
 
 skinparam sequenceArrowThickness 2
 skinparam roundcorner 10
+skinparam DefaultFontSize 24
+skinparam ArrowFontSize 24
 
 title TaskValidator Sequence Diagram
 
-participant ":AddCommand" as AC
+participant ":CommandParser" as CP
+
+-> CP : add sentence \n(description, dateTime, catIdx)
+activate CP
+
+create "AC:AddCommand" as AC
+CP -> AC : new AddCommand(sentence)
+activate AC
+
 participant ":TaskValidator" as TV
 participant ":CategoryList" as CL
 participant ":Category" as CAT
 participant ":EventList" as EL
-
-note over AC, EL : This sequence diagram covers the happy path only.
-
--> AC : add task\n(description, dateTime, catIdx)
-activate AC
+note over CP,EL : This sequence diagram covers the happy path only.
 
 '─── Step 1: Unique Task ───────────────────────────────────
 AC -> TV : validateUniqueTask(categories, catIdx, description)
@@ -81,7 +87,10 @@ end
 TV --> AC : all validations passed
 deactivate TV
 
-<-- AC : task added successfully
+AC --> CP : task added successfully
 deactivate AC
+
+<-- CP
+deactivate CP
 
 @enduml
