@@ -1,6 +1,7 @@
 package seedu.duke.command;
 
 import seedu.duke.appcontainer.AppContainer;
+import seedu.duke.course.Course;
 import seedu.duke.exception.CourseException;
 import seedu.duke.ui.ErrorUi;
 import seedu.duke.ui.LimitUi;
@@ -9,6 +10,7 @@ public class CourseCommand implements Command {
     private final String line;
     private String undoAction;
     private String undoArgument;
+    private Course savedCourse;
 
     public CourseCommand(String line) {
         this.line = line;
@@ -23,6 +25,14 @@ public class CourseCommand implements Command {
             //remembers what action was taken so can be reversed later
             undoAction = parts[0];
             undoArgument = parts.length > 1 ? parts[1] : "";
+
+            // store full course before delete
+            if (undoAction.equals("delete")) {
+                savedCourse = container.courseParser()
+                        .getCourseManager()
+                        .getCourseList()
+                        .get(undoArgument.trim().toUpperCase());
+            }
 
             String result = container.courseParser().parse(courseCommand);
             LimitUi.printCourseResult(result);
@@ -61,7 +71,7 @@ public class CourseCommand implements Command {
                 LimitUi.printCourseResult("Undo: removed course " + undoArgument);
                 break;
             case "delete":
-                container.courseParser().parse("add " + undoArgument);
+                container.courseParser().getCourseManager().getCourseList().add(savedCourse);
                 LimitUi.printCourseResult("Undo: restored course " + undoArgument);
                 break;
             case "add-assessment":
