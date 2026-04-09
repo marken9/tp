@@ -16,7 +16,14 @@ activate CP
 create "AC:AddCommand" as AC
 CP -> AC : new AddCommand(sentence)
 activate AC
+AC --> CP
+deactivate AC
+<-- CP
+deactivate CP
 
+
+-> AC : execute(container)
+activate AC
 participant ":TaskValidator" as TV
 participant ":CategoryList" as CL
 participant ":Category" as CAT

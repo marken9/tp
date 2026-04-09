@@ -76,7 +76,7 @@ Timed <|.. Deadline
 TaskListT <.. TaskListDeadline
 TaskListDeadline <|-- DeadlineList
 DeadlineList *-- "0..*" Deadline :  ◀ added to
-Deadline ..> DateUtils : uses ▶
+Deadline ..> DateUtils
 Calendar "1" o-- "0..*" Deadline : ◀ registered to
 
 note right of Deadline

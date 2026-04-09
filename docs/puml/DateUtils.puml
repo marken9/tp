@@ -17,8 +17,14 @@ activate CP
 create "command:AddCommand" as command
 CP -> command : new AddCommand(sentence)
 activate command
-command -> command : execute(container)
+command --> CP
+deactivate command
 
+<-- CP
+deactivate CP
+-> command : execute(container)
+
+activate command
 command -> command : handleAddDeadline / handleAddEvent(container)
 activate command #grey
 note over command : generalised — represents both in code
@@ -66,10 +72,9 @@ DU --> command : parsedDate (LocalDateTime)
 deactivate DU
 deactivate DU
 deactivate command
-command --> CP: task scheduled and saved successfully
+ <-- command : task scheduled and saved successfully
 deactivate command
 deactivate command
-<-- CP:
 
 deactivate CP
 

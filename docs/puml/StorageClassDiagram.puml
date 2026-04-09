@@ -39,7 +39,7 @@ class CategoryList
 class ErrorUi
 
 
-Storage ..> CategoryList : uses ▶
-Storage ..> ErrorUi     : uses ▶
+Storage ..> CategoryList
+Storage ..> ErrorUi
 
 @enduml

@@ -30,11 +30,11 @@ class GeneralUi
 ErrorUi -[hidden]- GeneralUi
 GeneralUi -[hidden]- EventUi
 
-ErrorUi     ..> GeneralUi : uses ▶
-CategoryUi  ..> GeneralUi : uses ▶
-DeadlineUi  ..> GeneralUi : uses ▶
-EventUi     ..> GeneralUi : uses ▶
-TaskUi      ..> GeneralUi : uses ▶
-LimitUi     ..> GeneralUi : uses ▶
+ErrorUi     ..> GeneralUi
+CategoryUi  ..> GeneralUi
+DeadlineUi  ..> GeneralUi
+EventUi     ..> GeneralUi
+TaskUi      ..> GeneralUi
+LimitUi     ..> GeneralUi
 
 @enduml
