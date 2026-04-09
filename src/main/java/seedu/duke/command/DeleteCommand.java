@@ -62,10 +62,10 @@ public class DeleteCommand implements Command {
                     DeadlineUi.printItemDeleted("todo", null, categoryIndex);
                 } else {
                     int todoIndex = Integer.parseInt(sentence[INDEX_OF_TASK_TO_DELETE]) - 1;
-                    String todoName = container.categories().getCategory(categoryIndex)
-                            .getTodo(todoIndex).getDescription();
+                    TaskUi.printTodoDeleted(container.categories()
+                            .getCategory(categoryIndex)
+                            .getTodo(todoIndex));
                     container.categories().deleteTodo(categoryIndex, todoIndex);
-                    TaskUi.printTaskAction("Deleted", "todo", todoName);
                 }
                 break;
             //@@author WenJunYu5984

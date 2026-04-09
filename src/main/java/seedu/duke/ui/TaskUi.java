@@ -2,6 +2,7 @@ package seedu.duke.ui;
 
 import java.util.ArrayList;
 
+import seedu.duke.task.Event;
 import seedu.duke.task.Todo;
 import seedu.duke.tasklist.CategoryList;
 
@@ -18,6 +19,10 @@ public class TaskUi {
         System.out.println("   " + todo);
         System.out.println(" Now you have " + count + " todos in this category.");
         GeneralUi.printDottedLine();
+    }
+
+    public static void printTodoDeleted(Todo todo) {
+        GeneralUi.printWithBorder("This todo has been deleted:", todo.toString());
     }
 
     public static void printMarkTodoResult(boolean isMark, String errorMessage) {
