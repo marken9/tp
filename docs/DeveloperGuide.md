@@ -224,7 +224,7 @@ The event commands manages one-time occurrences and automated recurring schedule
 6. Event(s) are stored in `EventList`, persisted by `Storage`, and reflected in the `Calendar`
 
 **Sequence Diagram for `add event` command**
-![AddEvent Sequence Diagram](pictures/AddRecurringNonRecurringEvent.png)
+![AddEvent Sequence Diagram](pictures/AddEventSeq.png)
 
 #### List Event Command
 

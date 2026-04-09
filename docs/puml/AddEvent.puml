@@ -34,7 +34,7 @@ alt Normal event
         activate CL
 
         CL -> CL : createEvent(categoryIndex, desc, \n from, to,false,-1)
-        activate CL #lightgrey
+        activate CL #darkgrey
         CL --> CL : Event
         deactivate CL
         CL -> CAT : addEvent(Event)
@@ -73,7 +73,7 @@ else Recurring Event
         and reused for all occurrences
         end note
         CL -> CL : createEvent(categoryIndex, desc, \n from, to,false,-1)
-        activate CL #lightgrey
+        activate CL #darkgrey
         CL --> CL : Event
         deactivate CL
 
