@@ -2,6 +2,8 @@
 
 skinparam sequenceArrowThickness 2
 skinparam roundcorner 10
+skinparam DefaultFontSize 28
+skinparam ArrowFontSize 24
 
 title List Event (Populating map for deletion (Main List))
 
@@ -9,20 +11,24 @@ actor User
 
 participant ":UniTasker" as UT
 participant ":CommandParser" as CP
-participant ":ListCommand" as LC
-participant ":CategoryList" as CL
-participant ":GeneralUI" as GU
 
 User -> UT : list event
 activate UT
 
 UT -> CP : parse(line)
 activate CP
-CP -> LC : new ListCommand(sentence)
+create "command:ListCommand" as LC
+CP -> LC : new
+activate LC
+LC --> CP
+deactivate LC
 CP --> UT : Command
 deactivate CP
 
-UT -> LC : execute()
+participant ":CategoryList" as CL
+participant ":GeneralUI" as GU
+
+UT -> LC : execute(container)
 activate LC
 
 LC -> CL : getAllEvents(showAll,showNormalEventsOnly)
@@ -50,6 +56,7 @@ activate GU
 GU --> LC : show list
 deactivate GU
 LC --> UT : show list
-UT --> User: show list
 deactivate LC
+UT --> User: show list
+deactivate UT
 @enduml

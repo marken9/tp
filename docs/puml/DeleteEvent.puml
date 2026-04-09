@@ -1,11 +1,25 @@
 @startuml DeleteEvent
 
 skinparam sequenceArrowThickness 2
+skinparam DefaultFontSize 28
+skinparam ArrowFontSize 24
 skinparam roundcorner 10
 
 title Delete Event (Mapping-Based Deletion)
 
-participant ":DeleteCommand" as DC
+participant ":CommandParser" as CP
+-> CP : parse("delete event ...")
+activate CP
+create "command:DeleteCommand" as DC
+CP -> DC : new
+activate DC
+DC --> CP :
+deactivate DC
+CP -->[ : Command
+deactivate CP
+
+-> DC : execute(container)
+activate DC
 participant ":CategoryList" as CL
 participant ":Category" as CAT
 participant ":EventList" as EL
@@ -13,8 +27,6 @@ participant ":GeneralUI" as UI
 participant ":CommandSupport" as CS
 participant ":Storage" as STORE
 
--> DC : delete event <categoryIndex> <uiIndex>
-activate DC
 DC -> CL : getCurrentView()
 activate CL
 CL --> DC : return view
@@ -28,10 +40,9 @@ CL --> DC : return view
 
     DC -> DC : ref = categoryMap.get(uiIndex)
 
-    DC -> CL : getEvent(ref.categoryIndex, ref.eventIndex)
+    DC -> CL : getEvent(ref.categoryIndex, \n ref.eventIndex)
     CL --> DC : Event
-
-        DC -> CL : deleteEvent(ref.categoryIndex, ref.eventIndex)
+        DC -> CL : deleteEvent(ref.categoryIndex, \n ref.eventIndex)
         CL -> CAT : deleteEvent(eventIndex)
         activate CAT
         CAT -> EL : remove(eventIndex)
