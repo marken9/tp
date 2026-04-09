@@ -277,7 +277,7 @@ To maintain a clean user interface, UniTasker utilises a translation layer that 
 
 Example:
 
-    `list event /all`
+    list event /all
 
 | categoryIndex | uiIndex | EventReference (categoryIndex, eventIndex) |   Description   |
 |:-------------:|:-------:|:------------------------------------------:|:---------------:|
@@ -291,7 +291,7 @@ Example:
 |       1       |    2    |                   (1,1)                    |   yoga lesson   |
 
 
-    `list event`
+    list event
 
 | categoryIndex | uiIndex | EventReference (categoryIndex, eventIndex) |   Description   |
 |:-------------:|:-------:|:------------------------------------------:|:---------------:|
@@ -302,7 +302,7 @@ Example:
 |       1       |    1    |                   (1,0)                    |   yoga lesson   |
 
 
-    `list recurring`
+    list recurring
 
 | categoryIndex | uiIndex | EventReference (categoryIndex, eventIndex) |   Description   |
 |:-------------:|:-------:|:------------------------------------------:|:---------------:|
