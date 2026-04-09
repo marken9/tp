@@ -286,6 +286,54 @@ class DukeTest {
         assertEquals(1, categories.getAmount());
         assertEquals("School", categories.getCategory(0).getName());
     }
+
+    @Test
+    public void parseAndExecute_batchMark_deleteMarked_deleteTodoAll_success() {
+        CategoryList categories = new CategoryList();
+
+        AppContainer container = new AppContainer(
+                categories,
+                new Calendar(),
+                new Storage("testTodo.txt", "testDeadline.txt", "testEvent.txt"),
+                null
+        );
+
+        CommandParser parser = new CommandParser();
+        Command command;
+
+        command = parser.parse("add category School");
+        command.execute(container);
+        command = parser.parse("add todo 1 CS2113 tp");
+        command.execute(container);
+        command = parser.parse("add todo 1 CS2113 demo video");
+        command.execute(container);
+        command = parser.parse("add todo 1 CS2113 quiz");
+        command.execute(container);
+        command = parser.parse("add todo 1 CS2113 finals cheatsheet");
+        command.execute(container);
+
+        assertEquals(4, container.categories().getCategory(0).getTodoList().getSize());
+
+        command = parser.parse("mark todo 1 2 4 6 2 4");
+        command.execute(container);
+
+        assertTrue(container.categories().getCategory(0).getTodo(1).getIsDone());
+        assertTrue(container.categories().getCategory(0).getTodo(3).getIsDone());
+
+        assertFalse(container.categories().getCategory(0).getTodo(0).getIsDone());
+        assertFalse(container.categories().getCategory(0).getTodo(2).getIsDone());
+
+        command = parser.parse("delete marked");
+        command.execute(container);
+
+        assertEquals(2, container.categories().getCategory(0).getTodoList().getSize());
+
+        command = parser.parse("delete todo 1 all");
+        command.execute(container);
+
+        assertEquals(0, container.categories().getCategory(0).getTodoList().getSize());
+
+    }
 }
 
 
