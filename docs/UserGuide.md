@@ -39,7 +39,7 @@ Command Line Interface (CLI).
   - [Set priority to a todo: `priority`](#priority-command-priority)
   - [Sort todos within a category: `sort todo`](#sort-command-sort-todo)
   - [Find tasks: `find`](#find-command-find)
-  - [Set limit to number of tasks or year: `limit`](#limit-command-limit-)
+  - [Set limit to number of tasks or year: `limit`](#limit-command-limit)
   - [See reminders for tasks: `reminder`](#reminder-command-reminder)
   - [Course commands: `course`](#course-command-course)
     - [Add course: `course add`](#add-course-course-add)
@@ -665,7 +665,7 @@ Example: `find assignment`
 
 ---
 
-### Limit Command: `limit` 
+### Limit Command: `limit`
 Sets a limit on the following: task,year,...
 Allow user to set the limit for the following: `Task`, `Year`
 
