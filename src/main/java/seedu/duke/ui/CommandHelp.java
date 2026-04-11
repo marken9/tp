@@ -300,17 +300,17 @@ public class CommandHelp {
         }
 
         return switch (topic.toLowerCase()) {
-            case "task", "todo" -> getTaskHelp();
-            case "deadline" -> getDeadlineHelp();
-            case "event" -> getEventHelp();
-            case "course" -> getCourseHelp();
-            case "add" -> getAddCommandHelp();
-            case "delete" -> getDeleteCommandHelp();
-            case "list" -> getListCommandHelp();
-            default -> "Unknown help topic: '" + topic + "'\n" +
-                    "Try: help, help task, help deadline, help event," +
-                    " help course, help add, help delete, help list\n" +
-                    DOTTED_LINE;
+                case "task", "todo" -> getTaskHelp();
+                case "deadline" -> getDeadlineHelp();
+                case "event" -> getEventHelp();
+                case "course" -> getCourseHelp();
+                case "add" -> getAddCommandHelp();
+                case "delete" -> getDeleteCommandHelp();
+                case "list" -> getListCommandHelp();
+                default -> "Unknown help topic: '" + topic + "'\n" +
+                        "Try: help, help task, help deadline, help event," +
+                        " help course, help add, help delete, help list\n" +
+                        DOTTED_LINE;
         };
     }
 }
