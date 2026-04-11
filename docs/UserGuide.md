@@ -829,7 +829,7 @@ If the save data file exists, data will also be loaded automatically into the pr
 
 ### Editing the data file
 UniTasker data is saved as text files in the same directory as the JAR file.  
-Advanced users may edit these files directly, but should copy existing entries to maintain the correct format.
+Advanced users may edit these files directly, but should copy and edit existing entries to maintain the correct format.
 
 *Note*: If changes to the data file makes its format invalid, data loading can behave unexpectedly.
 For example, invalid lines may result in wrong information loaded or the entire line being skipped completely.

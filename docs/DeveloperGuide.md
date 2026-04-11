@@ -499,13 +499,84 @@ can accomplish most of the tasks faster using commands than using the mouse.
 
 ## Instructions for Manual Testing
 
-### Adding Todos
+### Testing Todo and Category Management
+
+The following steps can be used to manually test category and todo management in UniTasker.
 
 1. Launch the application.
-2. Ensure at least one category exists. If not, create one: `add category School`
-3. Add a todo to a category: `add todo 1 finish tutorial`
-4. Add a todo with priority: `add todo 1 reply email /p 5`
-5. Verify that the todo appears under the School category using: `list category`  
+
+2. Add a category:
+   `add category School`
+
+3. Add todos to the category:
+   `add todo 1 finish tutorial`  
+   `add todo 1 reply email /p 5`  
+   `add todo 1 submit assignment /p 4`
+
+4. Verify that the category and todos are added correctly:
+   `list category`  
+   `list category 1`  
+   `list todo`
+
+5. Mark todos:
+   `mark todo 1 1`  
+   `mark todo 1 1 2 3`
+
+6. Unmark todos:
+   `unmark todo 1 1 2`
+
+7. Verify the status changes:
+   `list category 1`
+
+8. Set priority for a todo:
+   `priority todo 1 1 3`
+
+9. Sort todos by priority:
+   `sort todo 1`
+
+10. Verify sorting:
+    `list category 1`
+
+11. Reorder todos:
+    `reorder todo 1 1 2`
+
+12. Reorder categories (at least two categories required):
+    `add category Work`  
+    `reorder category 1 2`
+
+13. Verify reordered results:
+    `list category`
+
+14. Delete a specific todo:
+    `delete todo 2 1`
+
+15. Delete all todos in a category:
+    `delete todo 2 all`
+
+16. Add more todos for further testing:
+    `add todo 1 task one`  
+    `add todo 1 task two`
+
+17. Mark multiple todos:
+    `mark todo 1 1 2`
+
+18. Delete all marked tasks:
+    `delete marked`
+
+19. Verify that only unmarked tasks remain:
+    `list category 1`
+
+20. Search for tasks:
+    `find tutorial`
+
+21. Verify that only matching tasks are displayed.
+
+22. Delete a category:
+    `delete category 1`
+
+23. Verify final state:
+    `list category`
+
 
 ### Testing Course Tracker
 

@@ -69,6 +69,7 @@ public class TaskUi {
                                         boolean isMark) {
         GeneralUi.printDottedLine();
         String action = isMark ? "Marked" : "Unmarked";
+        String actionLower = isMark ? "marked" : "unmarked";
 
         // Success message
         if (successCount > 0) {
@@ -88,7 +89,7 @@ public class TaskUi {
         }
 
         if (successCount == 0 && (!invalidIndexes.isEmpty() || !validDuplicateIndexes.isEmpty())) {
-            System.out.println("No valid " + taskType + " indexes were provided.");
+            System.out.println("No " + taskType + "s were " + actionLower + ".");
         }
     }
 }
