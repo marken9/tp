@@ -692,13 +692,13 @@ Examples:
 
 `limit year 2035`
 
-*Note 1: Year refers to the furthest year that can be accessed/added to from the list*
+*Note 1*: *Year refers to the furthest year that can be accessed/added to from the list*
 
-*Note 2: Cannot further reduce year **x** if there is a task in **x** year*
+*Note 2*: *Cannot further reduce year **x** if there is a task in **x** year*
 
-*Note 3: Latest Year is set to 2100 and Max task is set to 24*
+*Note 3*: *Latest Year is set to 2100 and Max task is set to 24*
 
-*Note 4: Task refers to timed task: `deadline`, `event`*
+*Note 4*: *Task refers to timed task: `deadline`, `event`*
 
 ---
 
@@ -839,8 +839,8 @@ If the save data file exists, data will also be loaded automatically into the pr
 UniTasker data is saved as text files in the same directory as the JAR file.  
 Advanced users may edit these files directly, but should copy and edit existing entries to maintain the correct format.
 
-*Note*: If changes to the data file makes its format invalid, data loading can behave unexpectedly.
-For example, invalid lines may result in wrong information loaded or the entire line being skipped completely.
+*Note*: *If changes to the data file makes its format invalid, data loading can behave unexpectedly.
+For example, invalid lines may result in wrong information loaded or the entire line being skipped completely.*
 
 ---
 

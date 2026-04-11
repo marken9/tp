@@ -30,7 +30,8 @@ General contributions:
 - Implement Calendar class as a central data structure for storing and accessing timed class
 - Implement the general structure for storage class, handling loading, saving and updating of all tasks, taskLimit and endYear.
 - Implement logging configuration
-- Added Validation classes for all tasks
+- Added Task Validation for all tasks
+- Added Date Validation for all timed task
 
 **Testing**
 
@@ -53,5 +54,3 @@ Added JUnit tests for the following classes:
 **Review/Mentoring Contributions**
 - Reviewed PRs and provided feedback
 - Guided group member on how to push and pull commits to GitHub
-
-
