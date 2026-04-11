@@ -139,6 +139,10 @@ Format: `add event [CATEGORYINDEX] [DESCRIPTION] /from [START] /to [END]`
 
 `add event 1 meeting /from 25-05-2026 1400 /to 25-05-2026 1600`
 
+*Note*: *
+- `start` must be earlier than `end`
+- for `end` if time is not specified, default time 2359 is used but start date and time must be specified
+
 ---
 
 #### Add Recurring Event: `add recurring`
@@ -151,7 +155,7 @@ Format: `add recurring [CATEGORYINDEX] weekly event [DESCRIPTION] /from [DAY TIM
 - `description`: Description of the event
 - `/from`: Start day and time (e.g. Friday 1600)
 - `/to`: End day and time
-- `day time`: Format `EEEE HHmm` where EEE is Monday, Tuesday, Wednesday, Thursday, Friday
+- `day time`: Format `EEEE HHmm` where EEE is Monday, Tuesday, Wednesday, Thursday, Friday. Saturday, Sunday
 - `/date` or `/month` : (optional) end duration for the recurring group
 - `end duration` : (optional) number of months or end date , Format for end date: `dd-MM-yyyy`
 
@@ -173,7 +177,11 @@ ______________________________________________________________________
 
 `add recurring 1 weekly event CS2113 lecture /from Friday 1600 /to Friday 1800`
 
-*Note*: *Use `/date or /month` but not both to set the end duration*
+*Note*: 
+- start day and time specified after `/from` must be earlier than end day and time specified after `/to`
+- Use `/date or /month` but not both to set the end duration.
+  - If both are used the second one is taken (as long as it is valid) and the first one is ignored*
+  - if `/month` is used without stating the number of month default duration (1 month) is set
 
 ---
 
@@ -190,7 +198,7 @@ Example: `delete category 1`
 
 Format: `delete [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`
 
-- TASKTYPE : `todo`, `deadline`, `
+- TASKTYPE : `todo`, `deadline`
 - CATEGORYINDEX: Integer value up to number of categories added
 - TASKINDEX: Integer value up to number of tasks in the category
 
@@ -477,7 +485,7 @@ Example:
 
 ### List Command: `list`
 Displays a list of tasks. The `list` command can be used with the following keywords: 
-`category`, `todo`, `deadline`, `range`, `limit`, `event`, `recurring`, `occurence`
+`category`, `todo`, `deadline`, `range`, `limit`, `event`, `recurring`, `occurrence`
 
 ---
 
@@ -567,7 +575,7 @@ Examples:
 #### List Occurrence: `list occurrence`
 List occurrence shows all events within a recurring group.
 
-Format: `list occurence [CATEGORYINDEX] [UIINDEX]`
+Format: `list occurrence [CATEGORYINDEX] [UIINDEX]`
 
 - CATEGORYINDEX: Integer value up to number of categories added
 - UIINDEX: Positive integer displayed in `list event` or `list event /all`
@@ -599,7 +607,7 @@ Examples:
 
 `list occurrence 1 1`
 
-*Note*: *Must use `list event` or `list event /all` before using this list command*
+*Note*: *Must use `list event` before using this list command*
 
 ---
 
@@ -825,7 +833,7 @@ is located in the other computer.
 | help        | `help`                                                                                                                                                                                                                                                                                                                           |
 | add         | `add category [DESC]`, `add todo [CATEGORYINDEX] [DESCRIPTION] /p [PRIORITYVALUE]`, <br/> `add deadline [CATEGORYINDEX] [DESCRIPTION] /by [DATE TIME]`, <br/> `add event [CATEGORYINDEX] [DESCRIPTION] /from [START] /to [END]`, <br/> `add recurring [CATEGORYINDEX] weekly event [DESCRIPTION] /from [DAY TIME /to [DAY TIME]` |
 | delete      | `delete [KEYWORD] [CATEGORYINDEX] [TASKINDEX]`, `delete [KEYWORD] [CATEGORYINDEX] all`                                                                                                                                                                                                                                           |
-| list        | `list category [CATEGORYINDEX]`, `list todo`, `list deadline`, `list limit`, `list range [START] [END] [FLAG]`, <br/> `list event [TYPE]`, `list recurring`, `list occurence [CATEGORYINDEX] [UIINDEX]`                                                                                                                          |
+| list        | `list category [CATEGORYINDEX]`, `list todo`, `list deadline`, `list limit`, `list range [START] [END] [FLAG]`, <br/> `list event [TYPE]`, `list recurring`, `list occurrence [CATEGORYINDEX] [UIINDEX]`                                                                                                                         |
 | mark/unmark | `mark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`, `unmark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`                                                                                                                                                                                                                                   |
 | reorder     | `reorder category [FROMINDEX] [TOINDEX]`, `reorder todo [CATEGORYINDEX] [FROMINDEX] [TOINDEX]`                                                                                                                                                                                                                                   |
 | priority    | `priority todo [CATEGORYINDEX] [TODOINDEX] [PRIORITYVALUE]`                                                                                                                                                                                                                                                                      |
