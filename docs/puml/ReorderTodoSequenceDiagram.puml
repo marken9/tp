@@ -45,7 +45,7 @@ deactivate categories
 participant ":Storage" as Storage
 
 command -> command : saveData()
-activate command
+activate command #grey
 command -> Storage : save(categories)
 activate Storage
 Storage --> command :

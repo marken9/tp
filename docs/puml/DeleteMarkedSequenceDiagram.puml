@@ -42,15 +42,15 @@ loop for each Category
 
 
     Category -> Category : todoList.deleteMarked()
-    activate Category
+    activate Category #grey
     Category --> Category
     deactivate Category
     Category -> Category : deadlineList.deleteMarked()
-    activate Category
+    activate Category #grey
     Category --> Category
     deactivate Category
     Category -> Category : eventList.deleteMarked()
-    activate Category
+    activate Category #grey
     Category --> Category
     deactivate Category
 
@@ -71,7 +71,7 @@ deactivate UI
 participant ":Storage" as Storage
 
 command -> command : saveData()
-activate command
+activate command #grey
 command -> Storage : save(categories)
 activate Storage
 Storage --> command :
