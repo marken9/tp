@@ -3,7 +3,6 @@ package seedu.duke.ui;
 import java.util.ArrayList;
 
 import seedu.duke.task.Todo;
-import seedu.duke.tasklist.CategoryList;
 
 public class TaskUi {
     public static final int INDEX_LOWER_LIMIT = 0;
