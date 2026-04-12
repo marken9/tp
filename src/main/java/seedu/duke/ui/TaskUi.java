@@ -78,7 +78,8 @@ public class TaskUi {
         }
 
         if (!validDuplicateIndexes.isEmpty()) {
-            System.out.println("Skipped valid " + actionLower + " indexes: " + String.join(", ", validDuplicateIndexes));
+            System.out.println("Skipped valid " + actionLower + " indexes: "
+                    + String.join(", ", validDuplicateIndexes));
         }
 
         if (successCount == 0 && invalidIndexes.isEmpty() && validDuplicateIndexes.isEmpty()) {
