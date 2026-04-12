@@ -71,7 +71,7 @@ public class CourseCommand implements Command {
                         "delete".equals(undoAction) ||
                         "add-assessment".equals(undoAction) ||
                         "score".equals(undoAction)
-        );
+                );
     }
 
     @Override
