@@ -82,8 +82,9 @@ public class CourseParser {
 
         String courseCode = parts[0].trim();
         String name = parts[1].trim();
-        double weight = Double.parseDouble(parts[2].trim());
-        double maxScore = Double.parseDouble(parts[3].trim());
+
+        double weight = parseDouble(parts[2], "Weightage");
+        double maxScore = parseDouble(parts[3], "Max Score");
 
         return courseManager.addAssessment(courseCode, name, weight, maxScore);
     }
@@ -99,7 +100,7 @@ public class CourseParser {
 
         String courseCode = parts[0].trim();
         String name = parts[1].trim();
-        double score = Double.parseDouble(parts[2].trim());
+        double score = parseDouble(parts[2], "Score");
 
         return courseManager.recordScore(courseCode, name, score);
     }
@@ -117,5 +118,17 @@ public class CourseParser {
         String name = parts[1].trim();
 
         return courseManager.deleteAssessment(courseCode, name);
+    }
+
+    private double parseDouble(String value, String fieldName) throws CourseException {
+        try {
+            double result = Double.parseDouble(value.trim());
+            if (!Double.isFinite(result)) {
+                throw new CourseException(fieldName + " must be a valid finite number.");
+            }
+            return result;
+        } catch (NumberFormatException e) {
+            throw new CourseException(fieldName + " must be a valid number. Please enter a numeric value (eg. 40)");
+        }
     }
 }

@@ -171,8 +171,8 @@ public class CommandHelp {
                 "  - /ms : Maximum score\n" +
                 "\n" +
                 "RECORD SCORE:\n" +
-                "  course score <code> <assessment_name> <score_obtained>\n" +
-                "  Example: course score CS2113 Finals 85\n" +
+                "  course score <code> /n <assessment_name> /s <score_obtained>\n" +
+                "  Example: course score CS2113 /n Finals /s 85\n" +
                 "\n" +
                 "DELETE:\n" +
                 "  course delete <code>\n" +

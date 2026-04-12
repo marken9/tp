@@ -39,10 +39,23 @@ public abstract class TaskList<T extends Task> {
         return tasks.size();
     }
 
+    /**
+     * Removes all tasks that are marked as done from the task list.
+     *
+     * <p>This method iterates through the task list and deletes any task
+     * whose {@code isDone} status is {@code true}.</p>
+     */
     public void deleteMarked() {
         tasks.removeIf(Task::getIsDone);
     }
 
+    /**
+     * Returns a list of tasks whose descriptions contain the given input substring.
+     * The matching is case-insensitive.
+     *
+     * @param input The substring to search for within task descriptions.
+     * @return An ArrayList containing all tasks that match the given input.
+     */
     public ArrayList<T> findMatchesList(String input) {
         ArrayList<T> findMatchList = new ArrayList<T>();
         String lowerInput = input.toLowerCase();

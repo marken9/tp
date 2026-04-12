@@ -177,6 +177,20 @@ public class Category {
                 && eventList.getSize() == 0;
     }
 
+    /**
+     * Returns a new Category containing only tasks whose descriptions
+     * match the given input substring.
+     *
+     * <p>The matching is case-insensitive and is applied across all task types
+     * (Todo, Deadline, and Event) within this category.</p>
+     *
+     * <p>The returned Category retains the same name as the original category,
+     * but only includes tasks that match the input.</p>
+     *
+     * @param input The substring to search for within task descriptions.
+     * @return A new Category containing all matching tasks. If no matches are found,
+     *         an empty Category (with the same name) is returned.
+     */
     public Category findMatches(String input) {
         Category foundCategory = new Category(getName());
 

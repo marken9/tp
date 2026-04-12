@@ -12,6 +12,17 @@ public class TodoList extends TaskList<Todo> {
         tasks.get(index).setPriority(priority);
     }
 
+    /**
+     * Reorders a todo in the list by moving it from one index to another.
+     *
+     * <p>The todo at {@code fromIndex} is removed from its current position
+     * and inserted at {@code toIndex}. Both indices must refer to valid
+     * positions in the list.</p>
+     *
+     * @param fromIndex The current index of the todo to be moved.
+     * @param toIndex The target index to move the todo to.
+     * @throws UniTaskerException If either index is out of bounds.
+     */
     public void reorder(int fromIndex, int toIndex) throws UniTaskerException {
         if (fromIndex >= this.getSize() || fromIndex < INDEX_LOWER_LIMIT) {
             throw new UniTaskerException("First todoIndex does not exist.");
@@ -25,6 +36,13 @@ public class TodoList extends TaskList<Todo> {
         tasks.add(toIndex, todo);
     }
 
+    /**
+     * Sorts the todos in the list in descending order of priority.
+     *
+     * <p>Todos with higher priority values appear before those with lower
+     * priority values. The sorting is performed in-place and modifies
+     * the current task list.</p>
+     */
     public void sortByPriority() {
         tasks.sort(Comparator.comparingInt(Todo::getPriority).reversed());
     }

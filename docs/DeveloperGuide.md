@@ -428,6 +428,10 @@ The following class diagram shows the structure of the undo feature:
 - Only course commands that modify data are pushed to the stack (`add`, `delete`, `add-assessment`)
 - Undo history is cleared on app exit
 
+**Current Limitation**
+Undo is currently supported for course commands only. Other commands such as `add todo`,
+`add deadline` and `add event` are not undoable. This is a known limitation planned as a future enhancement.
+
 ---
 
 ## Product scope
@@ -477,6 +481,7 @@ and focus on completing their academic responsibilities.
 | v1.0    | University Student | view all assessments within a course                                       | understand how my course grading is structured                |
 | v1.0    | University Student | record my score for an assessment                                          | keep track of my performance in each assessment               |
 | v2.0    | University Student | delete all marked tasks                                                    | quickly clean up completed work across categories             |
+| v2.0    | University Student | bulk mark and unmark tasks                                                 | quickly update the status of multiple tasks at once           |
 | v2.0    | University Student | search for tasks across all categories                                     | quickly find relevant tasks                                   |
 | v2.0    | University Student | customize the maximum tasks permitted per day                              | schedule my tasks without burning myself out                  |
 | v2.0    | University Student | customize the year of my schedule                                          | plan beyond my acedemic years                                 |

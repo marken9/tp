@@ -11,6 +11,10 @@ public class CourseCommand implements Command {
     private String undoAction;
     private String undoArgument;
     private Course savedCourse;
+    private boolean executedSuccessfully = false;
+    private double previousScore = -1;
+    private String scoreCourseCode;
+    private String scoreAssessmentName;
 
     public CourseCommand(String line) {
         this.line = line;
@@ -34,28 +38,40 @@ public class CourseCommand implements Command {
                         .get(undoArgument.trim().toUpperCase());
             }
 
+            if (undoAction.equals("score")) {
+                String[] scoreParts = undoArgument.split("/n|/s");
+                if (scoreParts.length >= 3) {
+                    scoreCourseCode = scoreParts[0].trim();
+                    scoreAssessmentName = scoreParts[1].trim();
+                    Course course = container.courseParser()
+                            .getCourseManager()
+                            .getCourseList()
+                            .get(scoreCourseCode.toUpperCase());
+                    if (course != null && course.getAssessment(scoreAssessmentName) != null) {
+                        previousScore = course.getAssessment(scoreAssessmentName).getScoreObtained();
+                    }
+                }
+            }
+
             String result = container.courseParser().parse(courseCommand);
+            executedSuccessfully = true;
             LimitUi.printCourseResult(result);
         } catch (CourseException e) {
             ErrorUi.printError(e.getMessage());
         } catch (Exception e) {
-            ErrorUi.printError("Could not process course command.");
+            ErrorUi.printError("Invalid course command: " + e.getMessage());
         }
+
     }
 
     @Override
     public boolean isUndoable() {
-        if (undoAction == null) {
-            return false;
-        }
-        switch (undoAction) {
-        case "add":
-        case "delete":
-        case "add-assessment":
-            return true;
-        default:
-            return false;
-        }
+        return executedSuccessfully && (
+                "add".equals(undoAction) ||
+                        "delete".equals(undoAction) ||
+                        "add-assessment".equals(undoAction) ||
+                        "score".equals(undoAction)
+                );
     }
 
     @Override
@@ -85,7 +101,21 @@ public class CourseCommand implements Command {
                 LimitUi.printCourseResult("Cannot undo delete-assessment: assessment data not stored.");
                 break;
             case "score":
-                LimitUi.printCourseResult("Cannot undo score: original score not stored.");
+                if (previousScore == -1) {
+                    // was not graded before, reset to ungraded
+                    Course course = container.courseParser()
+                            .getCourseManager()
+                            .getCourseList()
+                            .get(scoreCourseCode.toUpperCase());
+                    if (course != null && course.getAssessment(scoreAssessmentName) != null) {
+                        course.getAssessment(scoreAssessmentName).resetScore();
+                    }
+                    LimitUi.printCourseResult("Undo: reverted score for " + scoreAssessmentName);
+                } else {
+                    container.courseParser().getCourseManager()
+                            .recordScore(scoreCourseCode, scoreAssessmentName, previousScore);
+                    LimitUi.printCourseResult("Undo: reverted score for " + scoreAssessmentName);
+                }
                 break;
             default:
                 LimitUi.printCourseResult("This course action cannot be undone.");
