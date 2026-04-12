@@ -46,7 +46,9 @@ Added JUnit tests for the following classes:
 - Added implementation details for deadline using a class diagram
 - Added implementation details for storage using a class diagram
 - Added implementation details for UI using a class diagram
-- Added implementation details for TaskValidation and DateUtils using sequence diagrams
+- Added implementation details for TaskValidation using sequence diagram
+- Added implementation details for DateUtils using sequence diagram
+- Added manual testing for deadline commands and limit commands
 
 **User Guide Contributions**
 
