@@ -53,7 +53,6 @@ Added JUnit tests for the following classes:
 - Added documentation for the following features:
   - `delete`, `list`, `limit`, `deadline`
 - Added documentation what command changes the total complete and incomplete task
-- Added manual testing for deadline commands and limit commands
 
 **Review/Mentoring Contributions**
 - Reviewed PRs and provided feedback
