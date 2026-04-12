@@ -67,6 +67,9 @@ public class Assessment {
     }
     //records the student's score
 
+    public void resetScore() {
+        this.scoreObtained = -1;
+    }
 
     public double getWeightedScore() {
         if (!isGraded() || maxScore == 0) {
