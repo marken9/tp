@@ -1,6 +1,5 @@
 package seedu.duke.command;
 
-import seedu.duke.UniTasker;
 import seedu.duke.appcontainer.AppContainer;
 import seedu.duke.exception.UniTaskerException;
 import seedu.duke.task.Event;
