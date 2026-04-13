@@ -22,6 +22,7 @@ public class MarkCommand implements Command {
 
     public static final int INDEX_OF_MARK_TYPE = 1;
     public static final int INDEX_OF_FIRST_TASK_TO_MARK = 3;
+    public static final String INSUFFICIENT_ARG_SPACES_FORMATTING = "                ";
 
     private final String[] sentence;
     private final boolean isMark;
@@ -34,7 +35,11 @@ public class MarkCommand implements Command {
     @Override
     public void execute(AppContainer container) {
         if (sentence.length < MARK_MIN_LENGTH) {
-            ErrorUi.printUnknownCommand("mark/unmark", "todo, deadline or event");
+            ErrorUi.printCommandFailed("mark/unmark",
+                    "Insufficient arguments.",
+                    "mark [taskType] [categoryIndex] [taskIndex]...\n"
+                            + INSUFFICIENT_ARG_SPACES_FORMATTING
+                            + "unmark [taskType] [categoryIndex] [taskIndex]...");
             return;
         }
 
