@@ -5,6 +5,11 @@ import seedu.duke.storage.CourseStorage;
 import seedu.duke.ui.CourseUi;
 
 public class CourseManager {
+    private static final double MAX_ALLOWED_SCORE = 10000;
+    private static final double MAX_WEIGHTAGE = 100;
+    private static final double MIN_WEIGHTAGE = 0;
+    private static final double MIN_SCORE = 0;
+
     //stores all courses
     private final CourseList courseList;
     //handles saving and loading courses
@@ -63,10 +68,10 @@ public class CourseManager {
         if (assessmentName == null || assessmentName.trim().isEmpty()) {
             throw new CourseException("Assessment name cannot be empty.");
         }
-        if (weightage <= 0) {
+        if (weightage <= MIN_WEIGHTAGE) {
             throw new CourseException("Weightage must be greater than 0.");
         }
-        if (maxScore <= 0) {
+        if (maxScore <= MIN_SCORE) {
             throw new CourseException("Maximum score must be greater than 0.");
         }
 
@@ -87,11 +92,11 @@ public class CourseManager {
             throw new CourseException("Total assessment weightage cannot exceed 100%.");
         }
 
-        if (weightage > 100) {
+        if (weightage > MAX_WEIGHTAGE) {
             throw new CourseException("Weightage must be between 0 and 100.");
         }
 
-        if (maxScore > 10000) {
+        if (maxScore > MAX_ALLOWED_SCORE) {
             throw new CourseException("Maximum score cannot exceed 10000.");
         }
 

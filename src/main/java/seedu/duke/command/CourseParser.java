@@ -9,6 +9,14 @@ import seedu.duke.exception.CourseException;
  * Handles commands: add, delete, list, view, add-assessment, score, delete-assessment.
  */
 public class CourseParser {
+    private static final int ADD_ASSESSMENT_MIN_PARTS = 4;
+    private static final int RECORD_SCORE_MIN_PARTS = 3;
+    private static final int DELETE_ASSESSMENT_MIN_PARTS = 2;
+    private static final int INDEX_COURSE_CODE = 0;
+    private static final int INDEX_NAME = 1;
+    private static final int INDEX_WEIGHT = 2;
+    private static final int INDEX_MAX_SCORE = 3;
+    private static final int INDEX_SCORE = 2;
 
     private final CourseManager courseManager;
 
@@ -48,8 +56,8 @@ public class CourseParser {
         String command = parts[0];
 
         String arguments = "";
-        if (parts.length > 1) {
-            arguments = parts[1];
+        if (parts.length > INDEX_NAME) {
+            arguments = parts[INDEX_NAME];
         }
 
         switch (command) {
@@ -97,16 +105,16 @@ public class CourseParser {
 
         String[] parts = args.split("/n|/w|/ms");
 
-        if (parts.length < 4) {
+        if (parts.length < ADD_ASSESSMENT_MIN_PARTS) {
             throw new CourseException(
                     "Usage: course add-assessment COURSE /n NAME /w WEIGHT /ms MAX_SCORE");
         }
 
-        String courseCode = parts[0].trim();
-        String name = parts[1].trim();
+        String courseCode = parts[INDEX_COURSE_CODE].trim();
+        String name = parts[INDEX_NAME].trim();
 
-        double weight = parseDouble(parts[2], "Weightage");
-        double maxScore = parseDouble(parts[3], "Max Score");
+        double weight = parseDouble(parts[INDEX_WEIGHT], "Weightage");
+        double maxScore = parseDouble(parts[INDEX_MAX_SCORE], "Max Score");
 
         return courseManager.addAssessment(courseCode, name, weight, maxScore);
     }
@@ -115,14 +123,14 @@ public class CourseParser {
 
         String[] parts = args.split("/n|/s");
 
-        if (parts.length < 3) {
+        if (parts.length < RECORD_SCORE_MIN_PARTS) {
             throw new CourseException(
                     "Usage: course score COURSE /n NAME /s SCORE");
         }
 
-        String courseCode = parts[0].trim();
-        String name = parts[1].trim();
-        double score = parseDouble(parts[2], "Score");
+        String courseCode = parts[INDEX_COURSE_CODE].trim();
+        String name = parts[INDEX_NAME].trim();
+        double score = parseDouble(parts[INDEX_SCORE], "Score");
 
         return courseManager.recordScore(courseCode, name, score);
     }
@@ -131,13 +139,13 @@ public class CourseParser {
 
         String[] parts = args.split("/n");
 
-        if (parts.length < 2) {
+        if (parts.length < DELETE_ASSESSMENT_MIN_PARTS) {
             throw new CourseException(
                     "Usage: course delete-assessment COURSE /n NAME");
         }
 
-        String courseCode = parts[0].trim();
-        String name = parts[1].trim();
+        String courseCode = parts[INDEX_COURSE_CODE].trim();
+        String name = parts[INDEX_NAME].trim();
 
         return courseManager.deleteAssessment(courseCode, name);
     }

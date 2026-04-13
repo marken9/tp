@@ -12,12 +12,13 @@ import seedu.duke.ui.LimitUi;
  * and undoing the course actions
  */
 public class CourseCommand implements Command {
+    private static final double UNGRADED_SCORE = -1;
     private final String line;
     private String undoAction;
     private String undoArgument;
     private Course savedCourse;
     private boolean executedSuccessfully = false;
-    private double previousScore = -1;
+    private double previousScore = UNGRADED_SCORE;
     private String scoreCourseCode;
     private String scoreAssessmentName;
 
@@ -132,7 +133,7 @@ public class CourseCommand implements Command {
                 LimitUi.printCourseResult("Cannot undo delete-assessment: assessment data not stored.");
                 break;
             case "score":
-                if (previousScore == -1) {
+                if (previousScore == UNGRADED_SCORE) {
                     // was not graded before, reset to ungraded
                     Course course = container.courseParser()
                             .getCourseManager()
