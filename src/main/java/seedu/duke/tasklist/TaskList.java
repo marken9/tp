@@ -19,6 +19,10 @@ public abstract class TaskList<T extends Task> {
         return tasks.get(index);
     }
 
+    public boolean isEmpty() {
+        return tasks.isEmpty();
+    }
+
     public T delete(int index) {
         return tasks.remove(index);
     }

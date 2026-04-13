@@ -1,5 +1,6 @@
 package seedu.duke.tasklist;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -48,6 +49,10 @@ public class CategoryList {
 
     public int getAmount() {
         return categories.size();
+    }
+
+    public ArrayList<Category> getCategories() {
+        return categories;
     }
 
     public Category getCategory(int index) {
