@@ -55,7 +55,7 @@ Added JUnit tests for the following classes:
 
 - Added documentation for the following features:
   - `delete`, `list`, `limit`, `deadline` , `range`
-- Added documentation what command changes the total complete and incomplete task
+- Added documentation what command changes the total completed and incomplete task
 
 **Review/Mentoring Contributions**
 - Reviewed PRs and provided feedback
