@@ -1,6 +1,5 @@
 package seedu.duke.command;
 
-import seedu.duke.UniTasker;
 import seedu.duke.appcontainer.AppContainer;
 import seedu.duke.exception.UniTaskerException;
 import seedu.duke.task.Event;
@@ -26,8 +25,8 @@ public class DeleteCommand implements Command {
     public static final int INDEX_OF_TASK_TO_DELETE = 3;
     public static final int INDEX_OF_CATEGORY_TO_DELETE = 2;
     public static final String DELETE_COMMAND_SPACE_FORMATTING = "                ";
-    public static final String DELETE_SECOND_KEYWORD_CHOICES = "category, marked, todo, deadline, event, occurrence or recurring.";
-
+    public static final String DELETE_SECOND_KEYWORD_CHOICES =
+            "category, marked, todo, deadline, event, occurrence or recurring.";
 
     private final String[] sentence;
 

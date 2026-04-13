@@ -6,7 +6,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.time.LocalDate;
 
-import seedu.duke.exception.UniTaskerException;
 import seedu.duke.util.TaskValidator;
 import seedu.duke.ui.LimitUi;
 
