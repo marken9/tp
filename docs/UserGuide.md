@@ -54,6 +54,7 @@ Command Line Interface (CLI).
   - [Exiting the program: `exit`](#exit-program-exit)
   - [Saving and loading the data](#saving-and-loading-the-data)
   - [Editing the data file](#editing-the-data-file)
+  - [Additional Notes](#additional-notes)
 
 - [FAQ](#faq)
 - [Command Summary](#command-summary)

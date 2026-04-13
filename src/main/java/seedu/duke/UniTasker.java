@@ -43,6 +43,9 @@ public class UniTasker {
 
     private static final int DEFAULT_END_YEAR = 2030;
     private static final int DEFAULT_DAILY_TASK_LIMIT = 8;
+    private static final int DEFAULT_MAX_TASK_LIMIT = 24;
+    private static final int DEFAULT_MIN_TASK_LIMIT = 1;
+
 
     //keeps track of commands that can be undone
     private static final Stack<Command> commandHistory = new Stack<>();
@@ -117,6 +120,10 @@ public class UniTasker {
     }
 
     public static boolean setEndYear(int year) {
+        if (year < java.time.Year.now().getValue()) {
+            ErrorUi.printError("endYear must be " + java.time.Year.now().getValue() + " or later.");
+            return false;
+        }
         try {
             DateUtils.validateEndYearReduction(categories, year);
         } catch (IllegalArgumentException e) {
@@ -132,10 +139,15 @@ public class UniTasker {
         return startYear;
     }
 
-    public static void setDailyTaskLimit(int newLimit) {
+    public static boolean setDailyTaskLimit(int newLimit) {
+        if (newLimit < DEFAULT_MIN_TASK_LIMIT || newLimit > DEFAULT_MAX_TASK_LIMIT) {
+            ErrorUi.printError("Daily task limit must be between 1 and 24.");
+            return false;
+        }
         dailyTaskLimit = newLimit;
         LimitUi.printDailyTaskLimitUpdated(dailyTaskLimit);
         saveSettings();
+        return true;
     }
 
     public static Stack<Command> getCommandHistory() {
