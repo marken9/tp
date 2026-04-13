@@ -87,6 +87,14 @@ public class CourseManager {
             throw new CourseException("Total assessment weightage cannot exceed 100%.");
         }
 
+        if (weightage > 100) {
+            throw new CourseException("Weightage must be between 0 and 100.");
+        }
+
+        if (maxScore > 10000) {
+            throw new CourseException("Maximum score cannot exceed 10000.");
+        }
+
         course.addAssessment(new Assessment(normalizedAssessmentName, weightage, maxScore));
         save();
 
