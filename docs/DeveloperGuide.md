@@ -318,7 +318,7 @@ Example:
 |       1       |    1    |                   (1,0)                    |   yoga lesson   |
 
 
-<!--@@authorWenJunYu5984-->
+<!-- @@author WenJunYu5984 -->
 **2. Polymorphism and Time-Based Tasks**
 
 UniTasker treats deadlines and events differently from todos to enable advanced scheduling features:
@@ -386,7 +386,7 @@ Before any task (Todo, Deadline, Event) is added to the system, the AddCommand i
 - If totalTimedTask is greater than or equal to maxTask, throw a HighWorkloadException error
 - Otherwise, check for any overlap in timing with existing events
 - If yes throw an OverlapEventException, otherwise all validators have been passed and task is added successfully
-<!--@@author-->
+<!-- @@author -->
 
 ### Feature: Course Tracker
 

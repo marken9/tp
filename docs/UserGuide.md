@@ -107,7 +107,7 @@ Format: `add todo [CATEGORYINDEX] [DESCRIPTION] /p [PRIORITYVALUE]`
 `add todo 1 reply email /p 5`
 
 ---
-<!--@@authorWenJunYu5984-->
+<!-- @@author WenJunYu5984 -->
 #### Add Deadline: `add deadline`
 
 Adds a deadline with a specified due date and time (optional). If no time is given, time is defaulted to 2359.
@@ -126,7 +126,7 @@ Format: `add deadline [CATEGORYINDEX] [DESCRIPTION] /by [DATE TIME]`
 `add deadline 1 Homework /by 25-05-2026`
 
 *Note*: *Adding a deadline will increase total incomplete task on particular date*
-<!--@@author-->
+<!-- @@author -->
 
 ---
 
@@ -534,7 +534,7 @@ Format: `list deadline`
 Example: `list deadline`
 
 ---
-<!--@@authorWenJunYu5984-->
+<!-- @@author WenJunYu5984 -->
 #### List Limit: `list limit`
 Shows the current year range and daily task limit.
 
@@ -556,7 +556,7 @@ Examples:
 `list range 25-06-2026 27-06-2026`
 `list range 25-06-2026 27-06-2026 /deadline`
 `list range 25-06-2026 27-06-2026 /event`
-<!--@@author-->
+<!-- @@author -->
 
 ---
 
@@ -690,7 +690,7 @@ Example: `find assignment`
 
 ---
 
-<!--@@authorWenJunYu-->
+<!-- @@author WenJunYu5984 -->
 ### Limit Command: `limit`
 Sets a limit on the following: task, year
 

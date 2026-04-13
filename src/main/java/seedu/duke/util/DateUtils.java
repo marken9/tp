@@ -188,7 +188,7 @@ public class DateUtils {
         }
     }
 
-    //@author sushmiithaa
+    //@@author sushmiithaa
     private static LocalDateTime parseRecurringTime(LocalDate today, String dayOfWeek,
                                                     String time, boolean isStart) throws IllegalDateException {
 
