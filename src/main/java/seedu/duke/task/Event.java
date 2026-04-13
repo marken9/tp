@@ -2,6 +2,7 @@ package seedu.duke.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.logging.Logger;
 
 /**
@@ -10,11 +11,14 @@ import java.util.logging.Logger;
  * It implements the {@link Timed} interface to
  * allow for chronological sorting and calendar integration.
  */
+//@@author sushmiithaa
 public class Event extends Task implements Timed {
     private static final Logger logger = Logger.getLogger(Event.class.getName());
 
     private static final DateTimeFormatter STORAGE_FORMATTER =
-            DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
+            DateTimeFormatter
+                    .ofPattern("dd-MM-uuuu HHmm")
+                    .withResolverStyle(ResolverStyle.STRICT);
     private static final DateTimeFormatter RECURRING_GROUP_FORMATTER = DateTimeFormatter.ofPattern("EEEE HHmm");
 
     protected LocalDateTime from;
@@ -34,7 +38,7 @@ public class Event extends Task implements Timed {
         this.to = to;
         this.isRecurring = isRecurring;
         this.recurringGroupId = recurringGroupId;
-        logger.fine("Event created: " + description + " from " + from  +" to " + to
+        logger.fine("Event created: " + description + " from " + from + " to " + to
                 + " recurring " + isRecurring + " recurringGroupId " + recurringGroupId);
 
     }
@@ -52,7 +56,7 @@ public class Event extends Task implements Timed {
     }
 
     public void setRecurringGroupId(int recurringGroupIndex) {
-        assert (recurringGroupIndex > 0): "Recurring event must have a group ID > 0";
+        assert (recurringGroupIndex > 0) : "Recurring event must have a group ID > 0";
         this.recurringGroupId = recurringGroupIndex;
     }
 
@@ -61,8 +65,8 @@ public class Event extends Task implements Timed {
     }
 
     public String toString() {
-        assert (from != null && to!=null): "There must be a start date time and end date time";
-        assert (description != null && !description.isEmpty()): "There must be a description for the events";
+        assert (from != null && to != null) : "There must be a start date time and end date time";
+        assert (description != null && !description.isEmpty()) : "There must be a description for the events";
 
         DateTimeFormatter displayFormatter = STORAGE_FORMATTER;
         String fromFormatted = from.format(displayFormatter);
@@ -80,9 +84,9 @@ public class Event extends Task implements Timed {
     }
 
     private String recurringEventString(boolean isList) {
-        assert (from != null && to!=null): "There must be a start date time and end date time";
-        assert (description != null && !description.isEmpty()): "There must be a description for the events";
-        assert (isRecurring): "Event to be printed must be recurring";
+        assert (from != null && to != null) : "There must be a start date time and end date time";
+        assert (description != null && !description.isEmpty()) : "There must be a description for the events";
+        assert (isRecurring) : "Event to be printed must be recurring";
 
         DateTimeFormatter displayFormatterTime = RECURRING_GROUP_FORMATTER;
         String fromFormatted = from.format(displayFormatterTime);
@@ -97,14 +101,14 @@ public class Event extends Task implements Timed {
 
     @Override
     public String toFileFormat() {
-        assert (from != null && to!=null): "There must be a start date time and end date time";
-        assert (description != null && !description.isEmpty()): "There must be a description for the events";
+        assert (from != null && to != null) : "There must be a start date time and end date time";
+        assert (description != null && !description.isEmpty()) : "There must be a description for the events";
 
         String fromFormatted = from.format(STORAGE_FORMATTER);
         String toFormatted = to.format(STORAGE_FORMATTER);
         if (isRecurring) {
             return String.format("RE | %d | %s | %s | %s | %d", (isDone ? 1 : 0), description,
-                    fromFormatted, toFormatted,recurringGroupId);
+                    fromFormatted, toFormatted, recurringGroupId);
         }
         return String.format("E | %d | %s | %s | %s", (isDone ? 1 : 0), description,
                 fromFormatted, toFormatted);

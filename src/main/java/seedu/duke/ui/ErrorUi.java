@@ -41,7 +41,11 @@ public class ErrorUi {
 
 
     public static void printMissingByKeyword() {
-        printError("Missing '/by' keyword. Example: add deadline 1 Homework /by 2026-01-01");
+        printError("Missing '/by' keyword. Example: add deadline 1 Homework /by 01-01-2026");
+    }
+
+    public static void printMissingDescription() {
+        printError("Missing task description.");
     }
 
     public static void printAddEventFormatError() {
@@ -68,6 +72,10 @@ public class ErrorUi {
                 "(e.g., list range 01-03-2026 07-03-2026)");
     }
 
+    public static void printMissingDates() {
+        printError("Missing date. Include date in command.");
+    }
+
     public static void printRangeStartAfterEnd() {
         printError("Start date must be earlier than End date " +
                 "(e.g., list range 01-11-2026 07-11-2026)");
@@ -84,6 +92,12 @@ public class ErrorUi {
     public static void printLimitYearBeforeStart(int startYear) {
         printError("End year cannot be before the start year (" + startYear + ").");
     }
+
+    public static void printUseDateOnly(){
+        printError("list range only accepts dates, not times. " +
+                "Use: list range dd-MM-yyyy dd-MM-yyyy");
+    }
+
 
     public static void printUnknownLimitType() {
         printError("Unknown limit type. Use 'task' or 'year'.");

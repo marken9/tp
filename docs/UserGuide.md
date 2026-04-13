@@ -2,7 +2,7 @@
 
 ## Introduction
 
-UniTasker is a desktop app for managing tasks and courses, optimized for use via a
+UniTasker is a desktop app for students managing tasks and courses, optimized for use via a
 Command Line Interface (CLI).
 
 - [Quick Start](#quick-start)
@@ -16,6 +16,7 @@ Command Line Interface (CLI).
     - [Adding a recurring event: `recurring`](#add-recurring-event-add-recurring)
   - [Deleting tasks: `delete`](#delete-command-delete)
     - [Deleting a category: `category`](#delete-category-delete-category)
+    - [Deleting marked tasks: `marked`](#delete-marked-delete-marked)
     - [Deleting a todo/deadline: `todo` `deadline`](#delete-task-todos-and-deadlines-delete-tasktype)
     - [Deleting an event (recurring, non-recurring, occurrence): `event` `recurring` `occurrence`](#delete-events-delete-eventtype)
   - [Marking a task: `mark`](#mark-command-mark)
@@ -51,6 +52,8 @@ Command Line Interface (CLI).
     - [Delete assessment: `course delete-assessment`](#delete-assessment-course-delete-assessment)
   - [Undo: `undo`](#undo-command-undo)
   - [Exiting the program: `exit`](#exit-program-exit)
+  - [Saving and loading the data](#saving-and-loading-the-data)
+  - [Editing the data file](#editing-the-data-file)
 
 - [FAQ](#faq)
 - [Command Summary](#command-summary)
@@ -104,21 +107,26 @@ Format: `add todo [CATEGORYINDEX] [DESCRIPTION] /p [PRIORITYVALUE]`
 `add todo 1 reply email /p 5`
 
 ---
-
+<!-- @@author WenJunYu5984 -->
 #### Add Deadline: `add deadline`
 
-Adds a deadline with a specified due date and time.
+Adds a deadline with a specified due date and time (optional). If no time is given, time is defaulted to 2359.
 
 Format: `add deadline [CATEGORYINDEX] [DESCRIPTION] /by [DATE TIME]`
 
 - `categoryIndex`: Integer value corresponding to the category
 - `description`: Description of the task
 - `/by`: Keyword indicating deadline
-- `date time`: Format `dd-MM-yyyy HHmm`
+- `date time`: Format `dd-MM-yyyy HHmm` , `dd-MM-yyyy`
 
 **Example:**
 
 `add deadline 1 Homework /by 25-05-2026 1800`
+
+`add deadline 1 Homework /by 25-05-2026`
+
+*Note*: *Adding a deadline will increase total incomplete task on particular date*
+<!-- @@author -->
 
 ---
 
@@ -139,9 +147,10 @@ Format: `add event [CATEGORYINDEX] [DESCRIPTION] /from [START] /to [END]`
 
 `add event 1 meeting /from 25-05-2026 1400 /to 25-05-2026 1600`
 
-*Note*: *
+*Note*:
 - `start` must be earlier than `end`
 - for `end` if time is not specified, default time 2359 is used but start date and time must be specified
+- Adding an event will increase total incomplete task on particular (/from) date. This is also applicable to recurring
 
 ---
 
@@ -194,6 +203,13 @@ Format: `delete category [CATEGORYINDEX]`
 
 Example: `delete category 1`
 
+#### Delete Marked: `delete marked`
+Deletes all marked tasks.
+
+Format: `delete marked`
+
+Example: `delete marked`
+
 #### Delete Task (Todos and Deadlines): `delete [TASKTYPE]`
 
 Format: `delete [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]`
@@ -208,6 +224,8 @@ Examples:
 `delete deadline 1 all`
 
 *Note*: *Use `delete todo/deadline categoryIndex all` to delete all todos/deadlines in specific category*
+
+*Note*: *Deleting a deadline will affect the total number of incomplete task and complete task on particular date. This is applicable to `delete deadline categoryIndex all` but total complete and incomplete task per date will not be shown*
 
 
 
@@ -305,6 +323,7 @@ Examples:
 *Note*:
 - *Use `delete event categoryIndex all` to delete all events in specific category*
 - *For deleting events always use its respective list views first before using its delete operations to match the index to delete (shown above under UIINDEX description)*
+- *Deleting an event will affect the total number of complete task incomplete task on particular date. This is applicable to `delete event categoryIndex all` but total incomplete and complete task per date will not be shown*
 
 ---
 ### Mark Command: `mark`
@@ -313,7 +332,7 @@ Mark existing task(s) (todos and deadlines) in a category.
 
 Format: `mark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]...`
 
-- TASKTYPE : `todo`, `deadline`, 
+- TASKTYPE : `todo`, `deadline` 
 - CATEGORYINDEX: Integer value up to number of categories added
 - TASKINDEX: One or more integer values corresponding to tasks in the category
 
@@ -321,6 +340,7 @@ Format: `mark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]...`
 - `mark todo 1 1`
 - `mark todo 1 1 2 3 4`
 
+*Note*: *Marking a deadline will increase total complete task and decrease total incomplete task on particular date*
 
 #### Mark Events `mark [EVENTTYPE]`
 Mark existing event(s) in the category.
@@ -394,6 +414,7 @@ Marked 1 event(s) successfully.
 *Note*: 
 - *For marking events always use its respective list views first before using its mark operations to match the index to mark (shown above under UIINDEX description)*
 - *For multiple marking of events e.g. `mark event 1 1 3` if 3/1 is a recurring group it will not be marked*
+- *Marking an event will increase total complete task and decrease total incomplete task on particular (/from) date*
 
 
 ### Unmark Command: `unmark`
@@ -409,6 +430,8 @@ Format: `unmark [TASKTYPE] [CATEGORYINDEX] [TASKINDEX]...`
 **Examples:**
 - `unmark deadline 1 1`
 - `unmark deadline 1 1 2 3 4`
+
+*Note*: *Unmarking a deadline will increase total incomplete task and decrease total complete task on particular date*
 
 #### Unmark Events `unmark [EVENTTYPE]`
 Unmark existing event(s) in the category.
@@ -479,6 +502,7 @@ Example:
 *Note*: 
 - *For unmarking events always use its respective list views first before using its unmark operations to match the index to unmark (shown above under UIINDEX description)*
 - *For multiple unmarking of events e.g. `unmark event 1 1 3` if 3/1 is a recurring group it will not be unmarked*
+- *Unmarking an event or occurrence will increase total incomplete task and decrease total complete task on particular (/from) date*
 
 
 ---
@@ -517,14 +541,13 @@ Format: `list deadline`
 Example: `list deadline`
 
 ---
-
+<!-- @@author WenJunYu5984 -->
 #### List Limit: `list limit`
 Shows the current year range and daily task limit.
 
 Format: `list limit`
 
 Example: `list limit`
-
 ---
 
 #### List Range: `list range`
@@ -540,6 +563,7 @@ Examples:
 `list range 25-06-2026 27-06-2026`
 `list range 25-06-2026 27-06-2026 /deadline`
 `list range 25-06-2026 27-06-2026 /event`
+<!-- @@author -->
 
 ---
 
@@ -673,8 +697,10 @@ Example: `find assignment`
 
 ---
 
+<!-- @@author WenJunYu5984 -->
 ### Limit Command: `limit`
-Sets a limit on the following: task,year,...
+Sets a limit on the following: task, year
+
 Allow user to set the limit for the following: `Task`, `Year`
 
 Format: `limit [KEYWORD] [INT]`
@@ -688,7 +714,14 @@ Examples:
 
 `limit year 2035`
 
-*Note*: Year refers to the furthest year that can be accessed/added to from the list
+*Note 1*: *Year refers to the furthest year that can be accessed/added to from the list*
+
+*Note 2*: *Cannot further reduce year **x** if there is a task in the year **x***
+
+*Note 3*: *Latest Year is set to 2100 and Max task is set to 24*
+
+*Note 4*: *Task refers to timed task: `deadline`, `event`*
+<!--@@author-->
 
 ---
 
@@ -816,6 +849,24 @@ Format:
 `exit`
 
 *Note*: *Anything after 'exit' will be ignored*
+
+---
+
+### Saving and loading the data
+UniTasker data is saved automatically to the same folder after any change to the data.
+If the save data file exists, data will also be loaded automatically into the program.
+
+---
+
+### Editing the data file
+UniTasker data is saved as text files in the same directory as the JAR file.  
+Advanced users may edit these files directly, but should copy and edit existing entries to maintain the correct format.
+
+*Note*: *If changes to the data file makes its format invalid, data loading can behave unexpectedly.
+For example, invalid lines may result in wrong information loaded or the entire line being skipped completely.*
+
+### Additional Notes
+Additional characters behind a correct complete command will almost always be ignored, allowing most command to succeed without error message. This gives user some "additional room" for accidental error.
 
 ---
 

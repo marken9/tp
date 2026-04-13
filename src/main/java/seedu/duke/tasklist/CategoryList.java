@@ -96,7 +96,7 @@ public class CategoryList {
      * delegating the marking operation to the corresponding {@code Category}.</p>
      *
      * @param categoryIndex The index of the category containing the todo.
-     * @param todoIndex The index of the todo to be marked.
+     * @param todoIndex     The index of the todo to be marked.
      * @throws UniTaskerException If the categoryIndex or todoIndex is invalid.
      */
     public void markTodo(int categoryIndex, int todoIndex) throws UniTaskerException {
@@ -109,6 +109,7 @@ public class CategoryList {
         }
         categories.get(categoryIndex).markTodo(todoIndex);
     }
+
     /**
      * Marks a specific todo as not completed within a given category.
      *
@@ -116,7 +117,7 @@ public class CategoryList {
      * the unmark operation to the corresponding {@code Category}.</p>
      *
      * @param categoryIndex The index of the category containing the todo.
-     * @param todoIndex The index of the todo to be unmarked.
+     * @param todoIndex     The index of the todo to be unmarked.
      * @throws UniTaskerException If the categoryIndex or todoIndex is invalid.
      */
     public void unmarkTodo(int categoryIndex, int todoIndex) throws UniTaskerException {
@@ -128,6 +129,7 @@ public class CategoryList {
         }
         categories.get(categoryIndex).unmarkTodo(todoIndex);
     }
+
     /**
      * Reorders categories by moving a category from one index to another.
      *
@@ -135,7 +137,7 @@ public class CategoryList {
      * and inserts it at {@code toCategoryIndex}, shifting other categories accordingly.</p>
      *
      * @param fromCategoryIndex The original index of the category.
-     * @param toCategoryIndex The target index to move the category to.
+     * @param toCategoryIndex   The target index to move the category to.
      * @throws UniTaskerException If either index is invalid.
      */
     public void reorderCategory(int fromCategoryIndex, int toCategoryIndex) throws UniTaskerException {
@@ -148,6 +150,7 @@ public class CategoryList {
         Category category = categories.remove(fromCategoryIndex);
         categories.add(toCategoryIndex, category);
     }
+
     /**
      * Reorders todos within a specific category.
      *
@@ -156,7 +159,7 @@ public class CategoryList {
      *
      * @param categoryIndex The index of the category containing the todos.
      * @param fromTodoIndex The original index of the todo.
-     * @param toTodoIndex The target index to move the todo to.
+     * @param toTodoIndex   The target index to move the todo to.
      * @throws UniTaskerException If any of the indexes entered are invalid.
      */
     public void reorderTodo(int categoryIndex, int fromTodoIndex, int toTodoIndex) throws UniTaskerException {
@@ -173,8 +176,8 @@ public class CategoryList {
      * the priority update to the corresponding {@code Category}.</p>
      *
      * @param categoryIndex The index of the category containing the todo.
-     * @param todoIndex The index of the todo whose priority is to be updated.
-     * @param priority The priority level to assign to the todo.
+     * @param todoIndex     The index of the todo whose priority is to be updated.
+     * @param priority      The priority level to assign to the todo.
      * @throws UniTaskerException If the categoryIndex or todoIndex is invalid.
      */
     public void setTodoPriority(int categoryIndex, int todoIndex, int priority) throws UniTaskerException {
@@ -191,9 +194,9 @@ public class CategoryList {
      * Adds non-recurring event based on its categoryIndex, description, start and end date and time
      *
      * @param categoryIndex The index of the category containing the event.
-     * @param description The description of the event.
-     * @param from The start date and time of the event.
-     * @param to The end date and time of the event.
+     * @param description   The description of the event.
+     * @param from          The start date and time of the event.
+     * @param to            The end date and time of the event.
      */
     public void addEvent(int categoryIndex, String description, LocalDateTime from, LocalDateTime to) {
         categories.get(categoryIndex).addEvent(createEvent(description, from, to,
@@ -206,18 +209,18 @@ public class CategoryList {
      * Adds recurring event based on its categoryIndex, description, start and end date and time
      * and its recurring group index from the saved file
      *
-     * @param categoryIndex The index of the category containing the event.
-     * @param description The description of the event.
-     * @param from The start date and time of the event.
-     * @param to The end date and time of the event.
+     * @param categoryIndex       The index of the category containing the event.
+     * @param description         The description of the event.
+     * @param from                The start date and time of the event.
+     * @param to                  The end date and time of the event.
      * @param recurringGroupIndex The recurring group in which the event exists
      *
      */
     public void addRecurringWeeklyEventFile(int categoryIndex, String description,
-            LocalDateTime from, LocalDateTime to, int recurringGroupIndex) {
+                                            LocalDateTime from, LocalDateTime to, int recurringGroupIndex) {
         assert (recurringGroupIndex > 0) : "Recurring Group Id must be greater than 0";
         addRecurring(categoryIndex, description, from, to, recurringGroupIndex,
-                null,null, 0, true);
+                null, null, 0, true);
 
     }
 
@@ -226,23 +229,23 @@ public class CategoryList {
      * and its recurring group index
      *
      * @param categoryIndex The index of the category containing the event.
-     * @param description The description of the event.
-     * @param from The start date and time of the event.
-     * @param to The end date and time of the event.
-     * @param calendar The Calendar object in which the event is to be saved.
-     * @param date The end date to stop adding recurring events within that group.
-     * @param months The number of months to add weekly recurring events.
+     * @param description   The description of the event.
+     * @param from          The start date and time of the event.
+     * @param to            The end date and time of the event.
+     * @param calendar      The Calendar object in which the event is to be saved.
+     * @param date          The end date to stop adding recurring events within that group.
+     * @param months        The number of months to add weekly recurring events.
      *
      */
     public void addRecurringWeeklyEvent(int categoryIndex, String description, LocalDateTime from,
-            LocalDateTime to, Calendar calendar, LocalDateTime date, int months) {
+                                        LocalDateTime to, Calendar calendar, LocalDateTime date, int months) {
         assert (calendar != null) : "Calendar should exist";
         recurringGroupId += 1;
         addRecurring(categoryIndex, description, from, to, recurringGroupId, calendar, date, months, false);
     }
 
     private void addRecurring(int categoryIndex, String description, LocalDateTime from, LocalDateTime to,
-            int groupId, Calendar calendar, LocalDateTime date, int months, boolean isFromFile) {
+                              int groupId, Calendar calendar, LocalDateTime date, int months, boolean isFromFile) {
 
         Event event = createEvent(description, from, to, true, groupId);
 
@@ -266,7 +269,7 @@ public class CategoryList {
     }
 
     private Event createEvent(String description, LocalDateTime from, LocalDateTime to,
-            boolean isRecurring, int groupId) {
+                              boolean isRecurring, int groupId) {
         eventAssertions(description, from, to);
         return new Event(description, from, to, isRecurring, groupId);
     }
@@ -275,7 +278,7 @@ public class CategoryList {
      * Deletes event based on the categoryIndex and the eventIndex.
      *
      * @param categoryIndex The index of the category containing the event.
-     * @param eventIndex The index of the event within the EventList.
+     * @param eventIndex    The index of the event within the EventList.
      *
      */
     public void deleteEvent(int categoryIndex, int eventIndex) {
@@ -303,9 +306,9 @@ public class CategoryList {
      * Returns a list of all events expanded or collapsed view or all non-recurring events
      * and updates base map with the current view.
      *
-     * @param isExpanded Check for the type of view.
+     * @param isExpanded        Check for the type of view.
      * @param isNormalEventOnly Checks if it only non-recurring events.
-     * @return  The string of the list of events based on the user-defined view.
+     * @return The string of the list of events based on the user-defined view.
      *
      */
     public String getAllEvents(boolean isExpanded, boolean isNormalEventOnly) {
@@ -326,7 +329,7 @@ public class CategoryList {
             for (int eventIndex = 0; eventIndex < eventList.getSize(); eventIndex++) {
                 Event event = eventList.get(eventIndex);
                 if (shouldDisplayEvent(event, isExpanded, isNormalEventOnly, printedGroups)) {
-                    displayEvent(sb, event, categoryMap, categoryIndex, eventIndex, isExpanded,uiIndex);
+                    displayEvent(sb, event, categoryMap, categoryIndex, eventIndex, isExpanded, uiIndex);
                     updatePrintedGroups(event, printedGroups);
                     uiIndex++;
                 }
@@ -339,9 +342,9 @@ public class CategoryList {
     }
 
     private void displayEvent(StringBuilder sb, Event event, List<EventReference> map,
-            int categoryIndex, int eventIndex, boolean isExpanded, int uiIndex) {
+                              int categoryIndex, int eventIndex, boolean isExpanded, int uiIndex) {
 
-        sb.append(uiIndex+1).append(". ")
+        sb.append(uiIndex + 1).append(". ")
                 .append((event.getIsRecurring() && !isExpanded) ? event.toStringRecurringList() : event.toString())
                 .append(System.lineSeparator());
 
@@ -357,7 +360,7 @@ public class CategoryList {
     /**
      * Returns a list of all recurring event groups and updates base map with the current view.
      *
-     * @return  The string of the list of all recurring event groups.
+     * @return The string of the list of all recurring event groups.
      *
      */
     public String getAllRecurringEvents() {
@@ -412,7 +415,7 @@ public class CategoryList {
     /**
      * Returns a list of all events within a recurring group and updates base map with the current view.
      *
-     * @return  The string of the list of all events within a recurring group.
+     * @return The string of the list of all events within a recurring group.
      * @throws UniTaskerException If index is invalid event chosen to display occurrence is not a recurring event.
      *
      */
@@ -426,7 +429,7 @@ public class CategoryList {
 
         EventReference ref = categoryMap.get(groupUiIndex - 1);
         Event template = categories.get(ref.categoryIndex).getEvent(ref.eventIndex);
-        if (!template.getIsRecurring()){
+        if (!template.getIsRecurring()) {
             throw new UniTaskerException("This is not a recurring event, list occurrence or " +
                     "other occurrence operations are only for recurring event");
         }
@@ -550,7 +553,7 @@ public class CategoryList {
      * Deletes all events within a recurring group.
      *
      * @param categoryIndex The index of the category containing the event.
-     * @param groupIndex The index of the group containing the recurring event.
+     * @param groupIndex    The index of the group containing the recurring event.
      *
      */
     public void deleteRecurringEvent(int categoryIndex, int groupIndex) {
@@ -563,6 +566,7 @@ public class CategoryList {
         }
         logger.info("Delete recurring event group at : " + categoryIndex + " " + groupIndex);
     }
+
     /**
      * Deletes all tasks that have been marked as completed across all categories.
      *
@@ -575,17 +579,18 @@ public class CategoryList {
             categories.get(i).deleteMarkedTasks();
         }
     }
+
     /**
-     * Returns a new {@code CategoryList} containing tasks that match the given input substring.
+     * Returns a new String containing tasks that match the given input substring.
      *
      * <p>This method searches through all categories and retrieves tasks whose descriptions
      * contain the specified input substring. Matching tasks are grouped under their respective
      * categories. Categories with no matching tasks are excluded from the result.</p>
      *
      * @param input The substring to search for within task descriptions.
-     * @return A {@code CategoryList} containing only categories with matching tasks.
+     * @return A String containing only categories with matching tasks.
      */
-    public CategoryList returnFoundTasks(String input) {
+    public String returnFoundTasks(String input) {
         CategoryList foundTasks = new CategoryList();
         for (int i = 0; i < this.getAmount(); i += 1) {
             Category foundCategory = this.getCategory(i).findMatches(input);
@@ -593,14 +598,22 @@ public class CategoryList {
                 foundTasks.categories.add(foundCategory);
             }
         }
-        return foundTasks;
+        return foundTaskToString(foundTasks);
+    }
+
+    private String foundTaskToString(CategoryList input) {
+        String result = "";
+        for (int i = 0; i < input.getAmount(); i += 1) {
+            result += "[" + (i + 1) + "]" + input.getCategory(i).toString() + System.lineSeparator();
+        }
+        return result;
     }
 
     /**
      * Returns a map of all events and deadlines for the day
      *
      * @param today The current date.
-     * @return  The map with the key as the category and the value as the list of {@code Task} objects within that day
+     * @return The map with the key as the category and the value as the list of {@code Task} objects within that day
      *
      */
     public Map<String, List<Task>> findTasksForTheDay(LocalDate today) {
@@ -615,7 +628,7 @@ public class CategoryList {
     }
 
     private void addMatchedTask(LocalDate today, Category category, TaskList taskList,
-            Map<String, List<Task>> reminders) {
+                                Map<String, List<Task>> reminders) {
         for (int i = 0; i < taskList.getSize(); i++) {
             Task task = taskList.get(i);
             if (!task.getIsDone() && isTaskOnDate(task, today)) {

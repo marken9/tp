@@ -12,6 +12,15 @@ public class UnknownCommand implements Command {
 
     @Override
     public void execute(AppContainer container) {
+        if (commandWord.isEmpty()) {
+            return;
+        }
+
+        if (commandWord.equals("|")) {
+            ErrorUi.printError("The character '|' is not allowed in the input.");
+            return;
+        }
+
         ErrorUi.printUnknownCommandHint(commandWord);
     }
 }

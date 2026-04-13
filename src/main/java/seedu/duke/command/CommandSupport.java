@@ -1,10 +1,17 @@
 package seedu.duke.command;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.time.LocalDate;
+
+import seedu.duke.util.TaskValidator;
+import seedu.duke.ui.LimitUi;
 
 import seedu.duke.appcontainer.AppContainer;
 import seedu.duke.ui.ErrorUi;
+
 
 /**
  * Provides shared utility methods used across command classes.
@@ -21,21 +28,47 @@ public final class CommandSupport {
 
     private static final Logger logger = Logger.getLogger(CommandSupport.class.getName());
 
-    private CommandSupport() {}
+    private CommandSupport() {
+    }
+
+
+    public static void saveData(AppContainer container) {
+        saveDataWithDates(container, new ArrayList<>());
+    }
+
+    public static void saveData(AppContainer container, LocalDate date) {
+        if (date != null) {
+            saveDataWithDates(container, List.of(date));
+        } else {
+            saveDataWithDates(container, new ArrayList<>());
+        }
+    }
+
+    public static void saveData(AppContainer container, List<LocalDate> dates) {
+        saveDataWithDates(container, dates != null ? dates : new ArrayList<>());
+    }
 
     /**
-     * Saves the current application state to persistent storage.
+     * Saves the current application state to persistent storage and prints a
+     * daily task summary for each provided date.
      *
      * <p>If either the category list or the storage component is {@code null},
-     * the method returns silently without performing any I/O.
+     * the save step is skipped silently. If {@code dates} is empty, no summary
+     * is printed.
      *
      * @param container the {@link AppContainer} holding the category list
      *                  and the storage component to write to
+     * @param dates     the list of dates for which to print a done/undone
+     *                  task summary; must not be {@code null}
      */
-    public static void saveData(AppContainer container) {
+    private static void saveDataWithDates(AppContainer container, List<LocalDate> dates) {
         try {
             if (container.categories() != null && container.storage() != null) {
                 container.storage().save(container.categories());
+            }
+            for (LocalDate date : dates) {
+                int[] summary = TaskValidator.countDoneUndoneOnDate(container.categories(), date);
+                LimitUi.printDailyTaskSummary(date, summary[0], summary[1]);
             }
         } catch (java.io.IOException e) {
             ErrorUi.printFileSaveError();

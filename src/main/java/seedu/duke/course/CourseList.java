@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * Similar role to TaskList in your Duke iP.
  * MICHAEL:
  * - Your manager class will likely keep one CourseList object
- *   and use it to add/get/remove courses.
+ * and use it to add/get/remove courses.
  */
 
 public class CourseList {

@@ -10,7 +10,7 @@ public class SortCommand implements Command {
     public static final int SORT_MIN_LENGTH = 2;
     public static final int INDEX_OF_TASKTYPE = 1;
     public static final int SORT_TODO_MIN_LENGTH = 3;
-    
+
     private final String[] sentence;
 
     public SortCommand(String[] sentence) {

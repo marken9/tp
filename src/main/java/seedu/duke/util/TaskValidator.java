@@ -46,14 +46,16 @@ public class TaskValidator {
 
             // Count Deadlines on this date
             for (int j = 0; j < cat.getDeadlineList().getSize(); j++) {
-                if (cat.getDeadlineList().get(j).getBy().toLocalDate().equals(targetDate)) {
+                if (!cat.getDeadlineList().get(j).getIsDone() &&
+                        cat.getDeadlineList().get(j).getBy().toLocalDate().equals(targetDate)) {
                     totalTimedTasks++;
                 }
             }
 
             // Count Events on this date
             for (int j = 0; j < cat.getEventList().getSize(); j++) {
-                if (cat.getEventList().get(j).getFrom().toLocalDate().equals(targetDate)) {
+                if (!cat.getEventList().get(j).getIsDone() &&
+                        cat.getEventList().get(j).getFrom().toLocalDate().equals(targetDate)) {
                     totalTimedTasks++;
                 }
             }
@@ -93,6 +95,33 @@ public class TaskValidator {
                 throw new DuplicateCategoryException("Category '" + name + "' already exists!");
             }
         }
+    }
+
+    public static int[] countDoneUndoneOnDate(CategoryList categories, LocalDate targetDate) {
+        int done = 0;
+        int undone = 0;
+        for (int i = 0; i < categories.getAmount(); i++) {
+            Category cat = categories.getCategory(i);
+            for (int j = 0; j < cat.getDeadlineList().getSize(); j++) {
+                if (cat.getDeadlineList().get(j).getBy().toLocalDate().equals(targetDate)) {
+                    if (cat.getDeadlineList().get(j).getIsDone()) {
+                        done++;
+                    } else {
+                        undone++;
+                    }
+                }
+            }
+            for (int j = 0; j < cat.getEventList().getSize(); j++) {
+                if (cat.getEventList().get(j).getFrom().toLocalDate().equals(targetDate)) {
+                    if (cat.getEventList().get(j).getIsDone()) {
+                        done++;
+                    } else {
+                        undone++;
+                    }
+                }
+            }
+        }
+        return new int[]{done, undone};
     }
 
 }

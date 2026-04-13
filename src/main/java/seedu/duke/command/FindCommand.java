@@ -1,8 +1,10 @@
 package seedu.duke.command;
 
 import java.util.Arrays;
+
 import seedu.duke.appcontainer.AppContainer;
 import seedu.duke.ui.ErrorUi;
+import seedu.duke.ui.GeneralUi;
 import seedu.duke.ui.TaskUi;
 
 public class FindCommand implements Command {
@@ -23,6 +25,11 @@ public class FindCommand implements Command {
         }
         String[] split = Arrays.copyOfRange(sentence, INDEX_OF_FIND_INFO, sentence.length);
         String input = String.join(" ", split);
-        TaskUi.printFindResults(container.categories().returnFoundTasks(input));
+        String result = container.categories().returnFoundTasks(input);
+        if (!result.isEmpty()) {
+            TaskUi.printFindResults(result);
+        } else {
+            GeneralUi.printBordered("No matching tasks found.");
+        }
     }
 }

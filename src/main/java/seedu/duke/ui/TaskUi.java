@@ -3,14 +3,9 @@ package seedu.duke.ui;
 import java.util.ArrayList;
 
 import seedu.duke.task.Todo;
-import seedu.duke.tasklist.CategoryList;
 
 public class TaskUi {
     public static final int INDEX_LOWER_LIMIT = 0;
-
-    public static void printTaskAction(String action, String type, String description) {
-        GeneralUi.printBordered(action + " " + type + ": " + description);
-    }
 
     public static void printTodoAdded(String categoryName, Todo todo, int count) {
         GeneralUi.printDottedLine();
@@ -39,10 +34,10 @@ public class TaskUi {
                 taskString);
     }
 
-    public static void printFindResults(CategoryList foundTasks) {
+    public static void printFindResults(String foundTasks) {
         GeneralUi.printDottedLine();
         System.out.println("Matching tasks found: " + System.lineSeparator());
-        System.out.print(foundTasks.toString());
+        System.out.print(foundTasks);
         GeneralUi.printDottedLine();
     }
 
@@ -63,18 +58,17 @@ public class TaskUi {
         }
     }
 
+    //@@author marken9
     public static void printBatchResult(String taskType,
                                         int successCount,
                                         ArrayList<String> invalidIndexes,
+                                        ArrayList<String> validDuplicateIndexes,
                                         boolean isMark) {
         GeneralUi.printDottedLine();
         String action = isMark ? "Marked" : "Unmarked";
+        String actionLower = isMark ? "marked" : "unmarked";
 
-        if (successCount > 0 && invalidIndexes.isEmpty()) {
-            System.out.println(action + " " + successCount + " " + taskType + "(s) successfully.");
-            return;
-        }
-
+        // Success message
         if (successCount > 0) {
             System.out.println(action + " " + successCount + " " + taskType + "(s) successfully.");
         }
@@ -83,9 +77,17 @@ public class TaskUi {
             System.out.println("Skipped invalid indexes: " + String.join(", ", invalidIndexes));
         }
 
-        if (successCount == 0 && !invalidIndexes.isEmpty()) {
-            System.out.println("No valid " + taskType + " indexes were provided.");
+        if (!validDuplicateIndexes.isEmpty()) {
+            System.out.println("Skipped valid " + actionLower + " indexes: "
+                    + String.join(", ", validDuplicateIndexes));
         }
-        GeneralUi.printDottedLine();
+
+        if (successCount == 0 && invalidIndexes.isEmpty() && validDuplicateIndexes.isEmpty()) {
+            System.out.println("No " + taskType + " indexes were provided.");
+        }
+
+        if (successCount == 0 && (!invalidIndexes.isEmpty() || !validDuplicateIndexes.isEmpty())) {
+            System.out.println("No " + taskType + "s were " + actionLower + ".");
+        }
     }
 }

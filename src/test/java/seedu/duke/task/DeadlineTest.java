@@ -116,16 +116,16 @@ public class DeadlineTest {
     @Test
     public void parseDateTime_midnightTime_parsedCorrectly() throws IllegalDateException {
         LocalDateTime result = Deadline.parseDateTime("05-05-2026 0000");
-        assertEquals(0,    result.getHour());
-        assertEquals(0,    result.getMinute());
+        assertEquals(0, result.getHour());
+        assertEquals(0, result.getMinute());
         assertEquals(2026, result.getYear());
     }
 
     @Test
     public void parseDateTime_endOfYearDate_parsedCorrectly() throws IllegalDateException {
         LocalDateTime result = Deadline.parseDateTime("31-12-2026 2359");
-        assertEquals(31,   result.getDayOfMonth());
-        assertEquals(12,   result.getMonthValue());
+        assertEquals(31, result.getDayOfMonth());
+        assertEquals(12, result.getMonthValue());
         assertEquals(2026, result.getYear());
     }
 
@@ -162,7 +162,7 @@ public class DeadlineTest {
         list.addCategory("Test");
         LocalDateTime t = LocalDateTime.of(2026, 3, 1, 10, 0);
 
-        list.addDeadline(0, "First",  t);
+        list.addDeadline(0, "First", t);
         list.addDeadline(0, "Second", t);
         list.deleteDeadline(0, 0); // remove "First"
 

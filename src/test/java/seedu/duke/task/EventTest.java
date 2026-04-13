@@ -204,7 +204,7 @@ public class EventTest {
 
         categoryList.addRecurringWeeklyEvent(0, "CS2113 lecture", from, to,
                 new Calendar(), null, 0);
-        Event eventToDelete = categoryList.getEvent(0,0);
+        Event eventToDelete = categoryList.getEvent(0, 0);
         categoryList.deleteRecurringEvent(0, eventToDelete.getRecurringGroupId());
         System.out.println("____________________________________________________________");
         System.out.println("This recurring event has been deleted:");

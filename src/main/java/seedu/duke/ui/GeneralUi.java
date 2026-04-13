@@ -32,7 +32,7 @@ public class GeneralUi {
         System.out.println("\n" + DOTTED_LINE);
         if (!isTestMode) {
             System.out.println("Current Year Range: " + startYear + " to " + endYear);
-            System.out.println("Current Daily Task Limit: " + dailyLimit);
+            System.out.println("Current Daily Timed Task Limit: " + dailyLimit);
             System.out.println("\nGET STARTED:");
             System.out.println("  Type 'help' to see all available commands");
             System.out.println("  Type 'help <mode>' for specific help (e.g., 'help task')");

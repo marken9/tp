@@ -2,6 +2,7 @@ package seedu.duke.command;
 
 import seedu.duke.appcontainer.AppContainer;
 import seedu.duke.ui.ErrorUi;
+import seedu.duke.ui.GeneralUi;
 import seedu.duke.ui.LimitUi;
 
 /**
@@ -19,6 +20,8 @@ public class LimitCommand implements Command {
     public static final int LIMIT_MIN_LENGTH = 3;
     public static final int INDEX_OF_TYPE = 1;
     public static final int INDEX_OF_NEWVALUE = 2;
+    public static final int MAX_DAILY_TASK_LIMIT = 24;
+    public static final int MAX_END_YEAR = 2100;
 
     private final String[] sentence;
 
@@ -43,6 +46,14 @@ public class LimitCommand implements Command {
                     ErrorUi.printLimitMinError();
                     return;
                 }
+                if (newValue == container.getDailyTaskLimit()) {
+                    GeneralUi.printMessage("Daily timed task limit is already set to " + newValue + ".");
+                    return;
+                }
+                if (newValue > MAX_DAILY_TASK_LIMIT) {
+                    ErrorUi.printError("Daily timed task limit cannot exceed " + MAX_DAILY_TASK_LIMIT + ".");
+                    return;
+                }
                 container.setDailyTaskLimit(newValue);
                 break;
             case "year":
@@ -50,8 +61,18 @@ public class LimitCommand implements Command {
                     ErrorUi.printLimitYearBeforeStart(container.getStartYear());
                     return;
                 }
-                container.setEndYear(newValue);
-                LimitUi.printEndYearUpdated(newValue);
+                if (newValue > MAX_END_YEAR) {
+                    ErrorUi.printError("End year cannot exceed " + MAX_END_YEAR + ".");
+                    return;
+                }
+                if (newValue == container.getEndYear()) {
+                    GeneralUi.printMessage("End year is already set to " + newValue + ".");
+                    return;
+                }
+
+                if (container.setEndYear(newValue)) {
+                    LimitUi.printEndYearUpdated(newValue);
+                }
                 break;
             default:
                 ErrorUi.printUnknownLimitType();

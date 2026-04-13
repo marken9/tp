@@ -1,11 +1,12 @@
 package seedu.duke.course;
+
 /**
  * Represents one assessment component inside a course.
  * Example:
  * Finals, 40% weightage, scored 85 out of 100
  * MICHAEL:
  * - Your parser/manager will create Assessment objects when the user types:
- *   add-assessment CS2113 /n Finals /w 40 /ms 100
+ * add-assessment CS2113 /n Finals /w 40 /ms 100
  * - Your score command will later call recordScore(...)
  */
 
@@ -66,6 +67,9 @@ public class Assessment {
     }
     //records the student's score
 
+    public void resetScore() {
+        this.scoreObtained = -1;
+    }
 
     public double getWeightedScore() {
         if (!isGraded() || maxScore == 0) {

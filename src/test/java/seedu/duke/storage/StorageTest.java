@@ -60,7 +60,7 @@ public class StorageTest {
         CategoryList list = new CategoryList();
         list.addCategory("Work");
         LocalDateTime from = LocalDateTime.of(2026, 6, 15, 9, 0);
-        LocalDateTime to   = LocalDateTime.of(2026, 6, 15, 10, 0);
+        LocalDateTime to = LocalDateTime.of(2026, 6, 15, 10, 0);
         list.addEvent(0, "Standup", from, to);
 
         storage.save(list);
@@ -95,7 +95,7 @@ public class StorageTest {
         list.addCategory("Alpha");
         list.addCategory("Beta");
         list.addDeadline(0, "Alpha task", LocalDateTime.of(2026, 3, 1, 10, 0));
-        list.addDeadline(1, "Beta task",  LocalDateTime.of(2026, 4, 1, 10, 0));
+        list.addDeadline(1, "Beta task", LocalDateTime.of(2026, 4, 1, 10, 0));
 
         storage.save(list);
 
@@ -104,7 +104,7 @@ public class StorageTest {
 
         assertEquals(2, loaded.getAmount());
         assertEquals("Alpha task", loaded.getCategory(0).getDeadlineList().get(0).getDescription());
-        assertEquals("Beta task",  loaded.getCategory(1).getDeadlineList().get(0).getDescription());
+        assertEquals("Beta task", loaded.getCategory(1).getDeadlineList().get(0).getDescription());
     }
 
     @Test
@@ -163,6 +163,7 @@ public class StorageTest {
 
         file.delete();
     }
+
     @Test
     public void load_invalidYear_skipsLine() throws IOException {
         String dlPath = "invalid_year.txt";

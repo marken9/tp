@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 
 public class Todo extends Task {
     public static final int MIN_PRIORITY = 0;
-    
+
     private static final Logger logger = Logger.getLogger(Todo.class.getName());
     protected int priority;
 

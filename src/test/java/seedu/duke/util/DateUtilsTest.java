@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import seedu.duke.exception.IllegalDateException;
+
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 
@@ -55,10 +57,10 @@ public class DateUtilsTest {
     void parseDateTime_validFullFormat_correctFields() throws IllegalDateException {
         LocalDateTime result = DateUtils.parseDateTime("15-06-2026 0900");
         assertEquals(15, result.getDayOfMonth());
-        assertEquals(6,  result.getMonthValue());
+        assertEquals(6, result.getMonthValue());
         assertEquals(2026, result.getYear());
-        assertEquals(9,  result.getHour());
-        assertEquals(0,  result.getMinute());
+        assertEquals(9, result.getHour());
+        assertEquals(0, result.getMinute());
     }
 
     @Test
@@ -73,8 +75,8 @@ public class DateUtilsTest {
         LocalDateTime result = DateUtils.parseDateTime("31-12-2026 0000");
         assertEquals(31, result.getDayOfMonth());
         assertEquals(12, result.getMonthValue());
-        assertEquals(0,  result.getHour());
-        assertEquals(0,  result.getMinute());
+        assertEquals(0, result.getHour());
+        assertEquals(0, result.getMinute());
     }
 
     @Test
@@ -181,7 +183,7 @@ public class DateUtilsTest {
         LocalDate today = LocalDate.of(2026, 3, 23); // Monday
         LocalDateTime result = DateUtils.parseRecurringTimeFrom(today, "Friday", "1600");
         assertEquals(16, result.getHour());
-        assertEquals(0,  result.getMinute());
+        assertEquals(0, result.getMinute());
     }
 
     @Test

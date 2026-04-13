@@ -4,6 +4,7 @@ package seedu.duke.ui;
  * Centralized help system for UniTasker.
  * Provides contextual help for each mode and command.
  */
+//@@author benguy6
 public class CommandHelp {
     private static final String DOTTED_LINE = "______________________________________________________________________";
 
@@ -98,9 +99,6 @@ public class CommandHelp {
                 "  delete deadline <cat_idx> <idx>\n" +
                 "  delete deadline <cat_idx> all    - Delete all deadlines in category\n" +
                 "\n" +
-                "SORT:\n" +
-                "  sort deadline <cat_idx>          - Sort by date\n" +
-                "\n" +
                 "LIST:\n" +
                 "  list deadline                    - List all deadlines\n" +
                 "  list range <start> <end> [/deadline]\n" +
@@ -173,8 +171,8 @@ public class CommandHelp {
                 "  - /ms : Maximum score\n" +
                 "\n" +
                 "RECORD SCORE:\n" +
-                "  course score <code> <assessment_name> <score_obtained>\n" +
-                "  Example: course score CS2113 Finals 85\n" +
+                "  course score <code> /n <assessment_name> /s <score_obtained>\n" +
+                "  Example: course score CS2113 /n Finals /s 85\n" +
                 "\n" +
                 "DELETE:\n" +
                 "  course delete <code>\n" +

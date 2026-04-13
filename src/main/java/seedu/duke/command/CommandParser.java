@@ -6,6 +6,9 @@ public class CommandParser {
 
     //@@author marken9
     public Command parse(String line) {
+        if (line.contains("|")) {
+            return new UnknownCommand("|");
+        }
         String[] sentence = line.trim().split("\\s+");
         String commandWord = sentence[INDEX_OF_COMMANDTYPE];
 

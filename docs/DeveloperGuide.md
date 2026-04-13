@@ -14,7 +14,11 @@ This section describes the design and implementation of the key components of Un
 
 ### Architecture
 
+<!-- @@author marken9 -->
+
 ![MainArchitecture](pictures/MainArchitecture.png)
+
+<!-- @@author -->
 
 The **Architecture Diagram** given above explains the high-level design of the App
 
@@ -32,7 +36,11 @@ The bulk of the app's work is done by the following components:
 
 **How the architecture components interact with each other:**
 
+<!-- @@author marken9 -->
+
 ![ReorderCommand](pictures/ReorderTodoSequenceDiagram.png)
+
+<!-- @@author -->
 
 1. User enters command in terminal
 2. UniTasker reads the input and passes it to CommandParser
@@ -57,6 +65,8 @@ The `AppContainer` component,
 - Stores all the information required for the application in a single object
 - Is passed as an object reference to commands during execution, 
 enabling access to shared application data and services without relying on global variables
+
+<!-- @@author WenJunYu5984 -->
 
 **Storage component**
 
@@ -91,10 +101,12 @@ The UI package consists of the following classes:
 The `UI` package,
 - Decouples all display logic from business logic by centralizing output into dedicated classes per task type 
 - Routes all formatted output through GeneralUi as a single shared rendering layer, ensuring consistent visual formatting across the application
+<!-- @@author -->
 
 **Command component**
-
+<!-- @@author marken9 -->
 ![CommandClassDiagram](pictures/CommandClassDiagram.png)
+<!-- @@author -->
 
 The `Command` component handles the execution of user commands. Each supported command is represented by a separate command class implementing the common `Command` interface.
 
@@ -183,6 +195,7 @@ By delegating the deletion process through `CategoryList` and `Category`:
 
 This design improves modularity and keeps command logic simple, while allowing `CategoryList` to coordinate operations affecting all three task lists.
 
+<!-- @@author WenJunYu5984 -->
 ### Deadline Class Diagram
 
 The figure below illustrates the relationship between Deadline class and the following classes: Task, Timed, Calendar, DateUtils, DeadlineList, TaskList. 
@@ -204,6 +217,7 @@ The `Deadline` class,
 - Extends `Task` to inherit description and completion state, adding only the `by` field to keep deadline-specific logic self-contained 
 - Implements the `Timed` interface so that `Calendar` can register and sort `Deadline` objects polymorphically without depending on the concrete type 
 - Delegates all date parsing to `DateUtils`, ensuring consistent validation and formatting rules are applied uniformly across task types
+<!-- @@author -->
 
 ### Event management
 The event commands manages one-time occurrences and automated recurring schedules, utilising a mapping layer to ensure UI actions correctly modify the underlying data.
@@ -318,7 +332,7 @@ Example:
 |       1       |    1    |                   (1,0)                    |   yoga lesson   |
 
 
-
+<!-- @@author WenJunYu5984 -->
 **2. Polymorphism and Time-Based Tasks**
 
 UniTasker treats deadlines and events differently from todos to enable advanced scheduling features:
@@ -386,7 +400,7 @@ Before any task (Todo, Deadline, Event) is added to the system, the AddCommand i
 - If totalTimedTask is greater than or equal to maxTask, throw a HighWorkloadException error
 - Otherwise, check for any overlap in timing with existing events
 - If yes throw an OverlapEventException, otherwise all validators have been passed and task is added successfully
-
+<!-- @@author -->
 
 ### Feature: Course Tracker
 
@@ -427,6 +441,10 @@ The following class diagram shows the structure of the undo feature:
 - `Command` interface exposes default `undo()` and `isUndoable()` methods so existing commands are unaffected
 - Only course commands that modify data are pushed to the stack (`add`, `delete`, `add-assessment`)
 - Undo history is cleared on app exit
+
+**Current Limitation**
+Undo is currently supported for course commands only. Other commands such as `add todo`,
+`add deadline` and `add event` are not undoable. This is a known limitation planned as a future enhancement.
 
 ---
 
@@ -477,6 +495,7 @@ and focus on completing their academic responsibilities.
 | v1.0    | University Student | view all assessments within a course                                       | understand how my course grading is structured                |
 | v1.0    | University Student | record my score for an assessment                                          | keep track of my performance in each assessment               |
 | v2.0    | University Student | delete all marked tasks                                                    | quickly clean up completed work across categories             |
+| v2.0    | University Student | bulk mark and unmark tasks                                                 | quickly update the status of multiple tasks at once           |
 | v2.0    | University Student | search for tasks across all categories                                     | quickly find relevant tasks                                   |
 | v2.0    | University Student | customize the maximum tasks permitted per day                              | schedule my tasks without burning myself out                  |
 | v2.0    | University Student | customize the year of my schedule                                          | plan beyond my acedemic years                                 |
@@ -499,13 +518,104 @@ can accomplish most of the tasks faster using commands than using the mouse.
 
 ## Instructions for Manual Testing
 
-### Adding Todos
+### Testing Todo and Category Management
+
+The following steps can be used to manually test category and todo management in UniTasker.
 
 1. Launch the application.
-2. Ensure at least one category exists. If not, create one: `add category School`
-3. Add a todo to a category: `add todo 1 finish tutorial`
-4. Add a todo with priority: `add todo 1 reply email /p 5`
-5. Verify that the todo appears under the School category using: `list category`  
+
+2. Add a category:
+   `add category School`
+
+3. Add todos to the category:
+   `add todo 1 finish tutorial`  
+   `add todo 1 reply email /p 5`  
+   `add todo 1 submit assignment /p 4`
+
+4. Verify that the category and todos are added correctly:
+   `list category`  
+   `list category 1`  
+   `list todo`
+
+5. Mark todos:
+   `mark todo 1 1`  
+   `mark todo 1 1 2 3`
+
+6. Unmark todos:
+   `unmark todo 1 1 2`
+
+7. Verify the status changes:
+   `list category 1`
+
+8. Set priority for a todo:
+   `priority todo 1 1 3`
+
+9. Sort todos by priority:
+   `sort todo 1`
+
+10. Verify sorting:
+    `list category 1`
+
+11. Reorder todos:
+    `reorder todo 1 1 2`
+
+12. Reorder categories (at least two categories required):
+    `add category Work`  
+    `reorder category 1 2`
+
+13. Verify reordered results:
+    `list category`
+
+14. Delete a specific todo:
+    `delete todo 2 1`
+
+15. Delete all todos in a category:
+    `delete todo 2 all`
+
+16. Add more todos for further testing:
+    `add todo 1 task one`  
+    `add todo 1 task two`
+
+17. Mark multiple todos:
+    `mark todo 1 1 2`
+
+18. Delete all marked tasks:
+    `delete marked`
+
+19. Verify that only unmarked tasks remain:
+    `list category 1`
+
+20. Search for tasks:
+    `find tutorial`
+
+21. Verify that only matching tasks are displayed.
+
+22. Delete a category:
+    `delete category 1`
+
+23. Verify final state:
+    `list category`
+
+### Testing Deadline and limits
+
+1. Add deadlines to a category: `add deadline 1 Homework /by 23-05-2026 2245` 
+`add deadline 1 Project /by 24-05-2026`
+`add deadline 1 Revision /by 23-05-2026 1200`
+2. Marking deadline(s): `mark deadline 1 1` `mark deadline 1 2 3`
+3. List deadline to verify all deadlines are marked: `list deadline`
+4. Unmarking deadline(s): `unmark deadline 1 1``unmark deadline 1 2 3`
+5. List deadline to verify all deadlines are unmarked: `list deadline`
+6. List range of dates to view deadlines: `list range 23-05-2026 25-05-2026 /deadline`
+7. Delete deadline: `delete deadline 1 1``delete deadline 1 all`
+8. List deadline to verify all deadlines in that category are deleted: `list deadline`
+9. List limit to check current bounds for task limit and year limit: `list limit`
+10. Change year limit: `limit year 2040`
+11. Change timed task limit: `limit task 10`
+12. Check current limits: `list limit`
+13. Exit program: `exit`
+14. Re-enter program: `java -jar UniTasker.jar`
+15. Check if limit bounds are saved: `list limit` or check welcome message stating current limits
+
 
 ### Testing Course Tracker
 

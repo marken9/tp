@@ -15,7 +15,7 @@ import java.util.logging.SimpleFormatter;
  * File — appends all log records ({@link Level#ALL}) to
  * {@code unitasker.log} in the working directory using
  * {@link SimpleFormatter}
- *
+ * <p>
  * Console - prints {@link Level#WARNING} and above to
  * {@code stderr}
  *

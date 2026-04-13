@@ -26,6 +26,7 @@ abstract class "{abstract}\nTask" as Task{
 
 class Deadline {
     - logger : Logger {static}
+    - DATE_FORMATTER : DateTimeFormatter {static}
     # by : LocalDateTime
     + Deadline(description : String, by : LocalDateTime)
     + parseDateTime(input : String) : LocalDateTime {static}
@@ -75,9 +76,9 @@ Task <|-down- Deadline
 Timed <|.down. Deadline
 TaskListT <.right. TaskListDeadline
 TaskListDeadline <|-right- DeadlineList
-DeadlineList *-up- "0..*" Deadline
+DeadlineList *-up- "*" Deadline
 Deadline .left.> DateUtils
-Calendar "1" o-up- "0..*" Deadline
+Calendar "1" o-up- "*" Deadline
 
 note bottom of Deadline
   getDate() delegates to getBy()

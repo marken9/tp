@@ -111,8 +111,8 @@ public class DeadlineListTest {
     public void sortByDate_reverseOrder_correctlySorted() {
         DeadlineList list = new DeadlineList();
         list.add(new Deadline("Dec", LocalDateTime.of(2026, 12, 1, 0, 0)));
-        list.add(new Deadline("Jun", LocalDateTime.of(2026,  6, 1, 0, 0)));
-        list.add(new Deadline("Jan", LocalDateTime.of(2026,  1, 1, 0, 0)));
+        list.add(new Deadline("Jun", LocalDateTime.of(2026, 6, 1, 0, 0)));
+        list.add(new Deadline("Jan", LocalDateTime.of(2026, 1, 1, 0, 0)));
 
         list.sortByDate();
 
@@ -125,9 +125,9 @@ public class DeadlineListTest {
     public void sortByDate_sameDate_orderStable() {
         DeadlineList list = new DeadlineList();
         LocalDateTime same = LocalDateTime.of(2026, 5, 5, 12, 0);
-        list.add(new Deadline("First",  same));
+        list.add(new Deadline("First", same));
         list.add(new Deadline("Second", same));
-        list.add(new Deadline("Third",  same));
+        list.add(new Deadline("Third", same));
 
         list.sortByDate();
 
@@ -138,7 +138,7 @@ public class DeadlineListTest {
     public void toString_listsAllItems_success() {
         DeadlineList list = new DeadlineList();
         list.add(new Deadline("Alpha", LocalDateTime.of(2026, 3, 1, 9, 0)));
-        list.add(new Deadline("Beta",  LocalDateTime.of(2026, 4, 1, 9, 0)));
+        list.add(new Deadline("Beta", LocalDateTime.of(2026, 4, 1, 9, 0)));
 
         String result = list.toString();
         assertTrue(result.contains("Alpha"));

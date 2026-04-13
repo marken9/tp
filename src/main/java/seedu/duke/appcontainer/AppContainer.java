@@ -26,8 +26,8 @@ public record AppContainer(CategoryList categories, Calendar calendar, Storage s
         return UniTasker.getEndYear();
     }
 
-    public void setEndYear(int endYear) {
-        UniTasker.setEndYear(endYear);
+    public boolean setEndYear(int endYear) {
+        return UniTasker.setEndYear(endYear);
     }
     //@@author
 }

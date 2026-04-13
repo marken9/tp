@@ -3,6 +3,7 @@ package seedu.duke.ui;
 import seedu.duke.task.Event;
 
 //@@author sushmiithaa
+
 /**
  * UI for event based operations
  */
@@ -27,6 +28,7 @@ public class EventUi {
     public static void printNormalEventDeleted(Event event) {
         GeneralUi.printWithBorder("This event has been deleted:", event.toString());
     }
+
     public static void printRecurringEventDeletedGroup(Event event) {
         GeneralUi.printWithBorder("This recurring event has been deleted:", event.toStringRecurringList());
     }

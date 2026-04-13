@@ -9,10 +9,13 @@ import seedu.duke.ui.ErrorUi;
 import seedu.duke.ui.GeneralUi;
 import seedu.duke.ui.TaskUi;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.LinkedHashSet;
 
 public class MarkCommand implements Command {
     public static final int MARK_MIN_LENGTH = 4;
@@ -35,6 +38,7 @@ public class MarkCommand implements Command {
             return;
         }
 
+        List<LocalDate> relevantDates = new ArrayList<>();
         try {
             String secondCommand = sentence[INDEX_OF_MARK_TYPE];
             switch (secondCommand) {
@@ -42,19 +46,19 @@ public class MarkCommand implements Command {
                 handleTodo(container);
                 break;
             case "deadline":
-                handleDeadline(container);
+                relevantDates = handleDeadline(container);
                 break;
             case "event":
-                handleEvent(container);
+                relevantDates = handleEvent(container);
                 break;
             case "occurrence":
-                handleOccurrence(container);
+                relevantDates = handleOccurrence(container);
                 break;
             default:
                 ErrorUi.printUnknownCommand("mark/unmark", "todo, deadline or event");
                 break;
             }
-            CommandSupport.saveData(container);
+            CommandSupport.saveData(container, relevantDates);
         } catch (Exception e) {
             ErrorUi.printMarkTaskError();
         }
@@ -71,6 +75,7 @@ public class MarkCommand implements Command {
         }
 
         ArrayList<String> invalidIndexes = new ArrayList<>();
+        ArrayList<String> validDuplicateIndexes = new ArrayList<>();
         int successCount = 0;
 
         for (int i = INDEX_OF_FIRST_TASK_TO_MARK; i < sentence.length; i++) {
@@ -85,132 +90,145 @@ public class MarkCommand implements Command {
                     }
                     successCount++;
                 } else {
-                    invalidIndexes.add(sentence[i]);
+                    validDuplicateIndexes.add(sentence[i]);
                 }
             } catch (Exception e) {
                 invalidIndexes.add(sentence[i]);
             }
         }
 
-        TaskUi.printBatchResult("todo", successCount, invalidIndexes, isMark);
+        TaskUi.printBatchResult("todo", successCount, invalidIndexes, validDuplicateIndexes, isMark);
     }
 
-    private boolean checkMarkedTodo(AppContainer container,int categoryIndex, int todoIndex, boolean isMark) {
+    private boolean checkMarkedTodo(AppContainer container, int categoryIndex, int todoIndex, boolean isMark) {
         return (container.categories().getCategory(categoryIndex).getTodo(todoIndex).getIsDone() != isMark);
     }
 
     //@@author WenJunYu5984
-    private void handleDeadline(AppContainer container) {
+    private List<LocalDate> handleDeadline(AppContainer container) {
         int categoryIndex;
         try {
             categoryIndex = CommandSupport.getCategoryIndex(container, sentence);
         } catch (Exception e) {
             ErrorUi.printError(e.getMessage());
-            return;
+            return new ArrayList<>();
         }
 
         ArrayList<String> invalidIndexes = new ArrayList<>();
+        ArrayList<String> validDuplicateIndexes = new ArrayList<>();
         int successCount = 0;
+        Set<LocalDate> dates = new LinkedHashSet<>();
 
         for (int i = INDEX_OF_FIRST_TASK_TO_MARK; i < sentence.length; i++) {
             try {
                 int taskIndex = Integer.parseInt(sentence[i]) - 1;
                 if (checkMarkedDeadline(container, categoryIndex, taskIndex, isMark)) {
                     container.categories().setDeadlineStatus(categoryIndex, taskIndex, isMark);
+                    dates.add(container.categories().getCategory(categoryIndex)
+                            .getDeadline(taskIndex).getBy().toLocalDate());
                     successCount++;
                 } else {
-                    invalidIndexes.add(sentence[i]);
+                    validDuplicateIndexes.add(sentence[i]);
                 }
             } catch (Exception e) {
                 invalidIndexes.add(sentence[i]);
             }
         }
 
-        TaskUi.printBatchResult("deadline", successCount, invalidIndexes, isMark);
+        TaskUi.printBatchResult("deadline", successCount, invalidIndexes, validDuplicateIndexes, isMark);
+        return new ArrayList<>(dates);
     }
 
-    private boolean checkMarkedDeadline(AppContainer container,int categoryIndex, int taskIndex, boolean isMark) {
+    private boolean checkMarkedDeadline(AppContainer container, int categoryIndex, int taskIndex, boolean isMark) {
         return (container.categories().getCategory(categoryIndex).getDeadline(taskIndex).getIsDone() != isMark);
     }
 
     //@@author sushmiithaa
-    private void handleEvent(AppContainer container) {
+    private List<LocalDate> handleEvent(AppContainer container) {
         int categoryIndex;
         try {
             categoryIndex = CommandSupport.getCategoryIndex(container, sentence);
             String[] validViews = {"EVENT", "EVENT_EXPANDED", "NORMAL_EVENT_ONLY"};
-            validateView(container,validViews,"To mark/unmark a specific event please " +
+            validateView(container, validViews, "To mark/unmark a specific event please " +
                     "use 'list event' or 'list event /all' first. " +
                     "To mark/unmark a occurrence use 'list occurrence' then 'mark/unmark occurrence'");
         } catch (Exception e) {
             ErrorUi.printError(e.getMessage());
-            return;
+            return new ArrayList<>();
         }
 
         ArrayList<String> invalidIndexes = new ArrayList<>();
+        ArrayList<String> validDuplicateIndexes = new ArrayList<>();
         int successCount = 0;
+        Set<LocalDate> dates = new LinkedHashSet<>();
         for (int i = INDEX_OF_FIRST_TASK_TO_MARK; i < sentence.length; i++) {
             try {
                 int uiIndex = Integer.parseInt(sentence[i]) - 1;
                 EventReference ref = getEventReference(container, categoryIndex, uiIndex);
                 Event event = container.categories().getEvent(ref.categoryIndex, ref.eventIndex);
                 if (event.getIsRecurring() &&
-                    (!container.categories().getCurrentView().equals("EVENT_EXPANDED"))) {
+                        (!container.categories().getCurrentView().equals("EVENT_EXPANDED"))) {
                     GeneralUi.printMessage((uiIndex + 1) + " is a recurring group. " +
                             "To mark/unmark the specific occurrence, please " +
-                        "use 'list event /all' or 'list occurrence " +
-                        (categoryIndex + 1) + " " + (uiIndex + 1) + "' first");
+                            "use 'list event /all' or 'list occurrence " +
+                            (categoryIndex + 1) + " " + (uiIndex + 1) + "' first");
                 } else {
-                    if (checkMarkedEvent(container,ref,isMark)) {
+                    if (checkMarkedEvent(container, ref, isMark)) {
                         successCount++;
                         setStatusAndPrintMessage(container, ref, event);
+                        dates.add(event.getFrom().toLocalDate());
                     } else {
-                        invalidIndexes.add(sentence[i]);
+                        validDuplicateIndexes.add(sentence[i]);
                     }
                 }
             } catch (Exception e) {
                 invalidIndexes.add(sentence[i]);
             }
         }
-        TaskUi.printBatchResult("event", successCount, invalidIndexes, isMark);
-
+        TaskUi.printBatchResult("event", successCount, invalidIndexes, validDuplicateIndexes, isMark);
+        return new ArrayList<>(dates);
     }
-    private boolean checkMarkedEvent(AppContainer container,EventReference ref, boolean isMark) {
+
+    private boolean checkMarkedEvent(AppContainer container, EventReference ref, boolean isMark) {
         return (container.categories().getCategory(ref.categoryIndex).getEvent(ref.eventIndex).getIsDone() != isMark);
     }
 
-    private void handleOccurrence(AppContainer container) {
+    private List<LocalDate> handleOccurrence(AppContainer container) {
         int categoryIndex;
         try {
             categoryIndex = CommandSupport.getCategoryIndex(container, sentence);
             String[] validViews = {"OCCURRENCE_VIEW"};
-            validateView(container,validViews,"To mark/unmark a specific event please " +
+            validateView(container, validViews, "To mark/unmark a specific event please " +
                     "use 'list event' or 'list event /all' first. " +
                     "To mark/unmark a occurrence use 'list occurrence' then 'mark/unmark occurrence'");
         } catch (Exception e) {
             ErrorUi.printError(e.getMessage());
-            return;
+            return new ArrayList<>();
         }
         ArrayList<String> invalidIndexes = new ArrayList<>();
+        ArrayList<String> validDuplicateIndexes = new ArrayList<>();
         int successCount = 0;
+        Set<LocalDate> dates = new LinkedHashSet<>();
 
         for (int i = INDEX_OF_FIRST_TASK_TO_MARK; i < sentence.length; i++) {
             try {
                 int uiIndex = Integer.parseInt(sentence[i]) - 1;
-                EventReference ref = getEventReference(container, categoryIndex,uiIndex);
+                EventReference ref = getEventReference(container, categoryIndex, uiIndex);
                 Event event = container.categories().getEvent(ref.categoryIndex, ref.eventIndex);
-                if (checkMarkedEvent(container,ref,isMark)) {
+                if (checkMarkedEvent(container, ref, isMark)) {
                     setStatusAndPrintMessage(container, ref, event);
+                    dates.add(event.getFrom().toLocalDate());
                     successCount++;
                 } else {
-                    invalidIndexes.add(sentence[i]);
+                    validDuplicateIndexes.add(sentence[i]);
                 }
             } catch (Exception e) {
                 invalidIndexes.add(sentence[i]);
             }
         }
 
-        TaskUi.printBatchResult("event", successCount, invalidIndexes, isMark);
+        TaskUi.printBatchResult("event", successCount, invalidIndexes, validDuplicateIndexes, isMark);
+        return new ArrayList<>(dates);
     }
 
     private void setStatusAndPrintMessage(AppContainer container, EventReference ref, Event event) {
@@ -219,7 +237,7 @@ public class MarkCommand implements Command {
     }
 
     private static void validateView(AppContainer container, String[] views,
-            String errorMessage) throws UniTaskerException {
+                                     String errorMessage) throws UniTaskerException {
         String currentView = container.categories().getCurrentView();
         boolean isInvalid = !(Arrays.asList(views).contains(currentView));
         if (isInvalid) {

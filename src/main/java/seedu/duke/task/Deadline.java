@@ -2,6 +2,7 @@ package seedu.duke.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.logging.Logger;
 
 import seedu.duke.exception.IllegalDateException;
@@ -15,6 +16,10 @@ import seedu.duke.util.DateUtils;
  */
 public class Deadline extends Task implements Timed {
     private static final Logger logger = Logger.getLogger(Deadline.class.getName());
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter
+                    .ofPattern("dd-MM-uuuu HHmm")
+                    .withResolverStyle(ResolverStyle.STRICT);
     protected LocalDateTime by;
 
     public Deadline(String description, LocalDateTime by) {
@@ -36,14 +41,12 @@ public class Deadline extends Task implements Timed {
 
     @Override
     public String toFileFormat() {
-        DateTimeFormatter storageFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
-        return String.format("D | %d | %s | %s", (isDone ? 1 : 0), description, by.format(storageFormatter));
+        return String.format("D | %d | %s | %s", (isDone ? 1 : 0), description, by.format(DATE_FORMATTER));
     }
 
     @Override
     public String toString() {
-        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HHmm");
-        return "[D]" + super.toString() + " (by: " + by.format(displayFormatter) + ")";
+        return "[D]" + super.toString() + " (by: " + by.format(DATE_FORMATTER) + ")";
     }
 
     /**

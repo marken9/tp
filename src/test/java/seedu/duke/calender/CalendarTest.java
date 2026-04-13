@@ -44,7 +44,7 @@ public class CalendarTest {
         Calendar calendar = new Calendar();
         LocalDate targetDate = LocalDate.of(2026, 7, 4);
         LocalDateTime from = targetDate.atTime(9, 0);
-        LocalDateTime to   = targetDate.atTime(10, 0);
+        LocalDateTime to = targetDate.atTime(10, 0);
 
         calendar.registerTask(new Event("Sprint review", from, to, false, -1));
 
@@ -56,10 +56,10 @@ public class CalendarTest {
         // Ensures tasks added exactly on the start and end of a range are both visible.
         Calendar calendar = new Calendar();
         LocalDate start = LocalDate.of(2026, 5, 1);
-        LocalDate end   = LocalDate.of(2026, 5, 31);
+        LocalDate end = LocalDate.of(2026, 5, 31);
 
         calendar.registerTask(new Deadline("Start boundary", start.atTime(0, 0)));
-        calendar.registerTask(new Deadline("End boundary",   end.atTime(23, 59)));
+        calendar.registerTask(new Deadline("End boundary", end.atTime(23, 59)));
 
         assertEquals(1, calendar.getTaskCountOnDate(start));
         assertEquals(1, calendar.getTaskCountOnDate(end));
@@ -225,7 +225,7 @@ public class CalendarTest {
     @Test
     public void displayRange_taskAfterEnd_notDisplayed() {
         Calendar calendar = new Calendar();
-        LocalDate end  = LocalDate.of(2026, 5, 31);
+        LocalDate end = LocalDate.of(2026, 5, 31);
         LocalDate late = LocalDate.of(2026, 6, 1); // one day past the end
 
         calendar.registerTask(new Deadline("Outside", late.atTime(8, 0)));
@@ -246,7 +246,7 @@ public class CalendarTest {
         LocalDateTime dateTime = date.atTime(12, 0);
 
         calendar.registerTask(new Deadline("I am a Deadline", dateTime));
-        calendar.registerTask(new Event("I am an Event", dateTime, dateTime.plusHours(1),false,
+        calendar.registerTask(new Event("I am an Event", dateTime, dateTime.plusHours(1), false,
                 -1));
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -266,7 +266,7 @@ public class CalendarTest {
     public void displaySpecificTypeInRange_noMatchingType_printsNotFound() {
         Calendar calendar = new Calendar();
         LocalDate date = LocalDate.of(2026, 9, 9);
-        calendar.registerTask(new Event("Only event", date.atTime(9,0), date.atTime(10,0), false, -1));
+        calendar.registerTask(new Event("Only event", date.atTime(9, 0), date.atTime(10, 0), false, -1));
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
@@ -293,7 +293,7 @@ public class CalendarTest {
 
         System.setOut(System.out);
         String output = out.toString();
-        assert  output.contains("Visible event");
+        assert output.contains("Visible event");
         assert !output.contains("Hidden deadline");
     }
 }

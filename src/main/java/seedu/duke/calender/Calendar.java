@@ -2,6 +2,7 @@ package seedu.duke.calender;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -24,7 +25,9 @@ public class Calendar {
 
     private static final Logger logger = Logger.getLogger(Calendar.class.getName());
 
-    private static final DateTimeFormatter UI_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter UI_DATE_FORMATTER = DateTimeFormatter
+            .ofPattern("dd-MM-uuuu")
+            .withResolverStyle(ResolverStyle.STRICT);
 
     /**
      * Internal storage mapping a date to a list of tasks occurring on that day.
@@ -120,7 +123,7 @@ public class Calendar {
     }
 
     /**
-     * Returns the number of tasks on a specific date.
+     * Returns the total number of tasks (including completed) on a specific date.
      * NOTE: This method is primarily used for JUnit testing to verify Calendar state.
      */
     public int getTaskCountOnDate(LocalDate date) {

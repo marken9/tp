@@ -26,6 +26,7 @@ import seedu.duke.command.CommandParser;
 import seedu.duke.command.ExitCommand;
 
 import seedu.duke.appcontainer.AppContainer;
+import seedu.duke.util.DateUtils;
 
 public class UniTasker {
 
@@ -115,9 +116,16 @@ public class UniTasker {
         startYear = year;
     }
 
-    public static void setEndYear(int year) {
+    public static boolean setEndYear(int year) {
+        try {
+            DateUtils.validateEndYearReduction(categories, year);
+        } catch (IllegalArgumentException e) {
+            ErrorUi.printError(e.getMessage());
+            return false;
+        }
         endYear = year;
         saveSettings();
+        return true;
     }
 
     public static int getStartYear() {
