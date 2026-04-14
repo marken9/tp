@@ -120,9 +120,9 @@ public class CommandHelp {
                 "  Example: add event 1 Lecture /from 25-03-2026 1400 /to 25-03-2026 1530\n" +
                 "\n" +
                 "ADD RECURRING EVENT (Weekly):\n" +
-                "  add recurring <cat_idx> weekly event <desc>\n" +
+                "  add recurring <cat_idx> <desc>\n" +
                 "  /from <day> <time> /to <day> <time> [/month <num> | /date <date>]\n" +
-                "  Example: add recurring 1 weekly event Lecture\n" +
+                "  Example: add recurring 1 Lecture\n" +
                 "           /from Monday 1400 /to Monday 1530 /month 3\n" +
                 "  - /month N  : Repeat for N months\n" +
                 "  - /date END : Repeat until END date (format: dd-MM-yyyy)\n" +
@@ -204,8 +204,8 @@ public class CommandHelp {
                 "  Example: add event 1 Meeting /from 25-03-2026 1400 /to 25-03-2026 1500\n" +
                 "\n" +
                 "RECURRING EVENTS:\n" +
-                "  add recurring <cat_idx> weekly event <desc> /from <day> <time> /to <day> <time>\n" +
-                "  Example: add recurring 1 weekly event Lecture /from Monday 1400 /to Monday 1530\n" +
+                "  add recurring <cat_idx> <desc> /from <day> <time> /to <day> <time>\n" +
+                "  Example: add recurring 1 Lecture /from Monday 1400 /to Monday 1530\n" +
                 "\n" +
                 "COURSES:\n" +
                 "  course add <code>\n" +
